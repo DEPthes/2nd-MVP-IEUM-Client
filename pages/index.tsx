@@ -1,11 +1,14 @@
 import useAlert from '@/recoil/alert/useAlert';
+import { cls } from '@/utils/cls';
+import { HTMLAttributes } from 'react';
 
 export default function Home() {
   const { showAlert } = useAlert();
   return (
-    <div className='flex justify-center items-center h-screen'>
+    <div className={cls('flex justify-center items-center h-screen')}>
+      <input />
       <button
-        className=' text-16 font-bold'
+        className=' font-heading--2xl'
         onClick={() =>
           showAlert({
             alertViewTitle: '제목',
@@ -15,7 +18,7 @@ export default function Home() {
           })
         }
       >
-        누르셈
+        로그아웃하시겠어요?
       </button>
     </div>
   );
