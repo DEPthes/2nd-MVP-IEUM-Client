@@ -2,9 +2,8 @@ import { AlertActionOptions } from '@/components/modal/alertAction';
 import { atom } from 'recoil';
 
 export type AlertOptions = {
-  alertViewTitle: string;
-  alertViewDesc?: string;
-  alertActions: AlertActionOptions[];
+  title: string;
+  actions: AlertActionOptions[];
   closeWithClickBackdrop?: boolean;
 };
 
@@ -16,9 +15,8 @@ type AlertStateType = {
 export const initialAlertState: AlertStateType = {
   show: false,
   alertOptions: {
-    alertViewTitle: '',
-    alertViewDesc: undefined,
-    alertActions: [],
+    title: '',
+    actions: [],
   },
 };
 

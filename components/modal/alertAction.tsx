@@ -1,7 +1,7 @@
 import { cls } from '@/utils/cls';
 import React from 'react';
 
-export type AlertActionStyle = 'primary' | 'destructive' | 'normal';
+export type AlertActionStyle = 'primary' | 'tertiary';
 
 export interface AlertActionOptions {
   title: string;
@@ -23,12 +23,8 @@ export default function AlertAction({ title, style, handler, closeAlert }: Alert
   return (
     <button
       className={cls(
-        'py-8 px-12 rounded-12 text-14',
-        style === 'primary'
-          ? ' bg-purple-500 text-white'
-          : style === 'destructive'
-          ? 'bg-danger text-white'
-          : 'bg-none text-black',
+        'flex justify-center items-center w-full py-6 rounded-10 font-label--md border-1 border-primary',
+        style === 'primary' ? 'bg-primary text-secondary' : 'bg-tertiary text-primary',
       )}
       onClick={handleClickAction}
     >

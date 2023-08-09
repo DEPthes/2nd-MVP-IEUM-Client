@@ -14,7 +14,7 @@ const BackDrop: React.FC<Props> = ({ children, onBackdropClick }) => {
   });
   return (
     <div
-      className='fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.3)] z-backdrop_1 flex justify-center items-center'
+      className='fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.6)] z-backdrop_1 flex justify-center items-center'
       onClick={onBackdropClick}
     >
       {children ?? null}

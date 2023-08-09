@@ -15,6 +15,7 @@ html {
 }
 
 body {
+  @apply bg-tertiary;
 }
 
 /* 모달창 띄울 때 스크롤 방지 */
