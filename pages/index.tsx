@@ -1,22 +1,27 @@
+import Layout from '@/components/layouts/layout';
 import useAlert from '@/recoil/alert/useAlert';
+import { cls } from '@/utils/cls';
 
 export default function Home() {
   const { showAlert } = useAlert();
+
   return (
-    <div className='flex justify-center items-center h-screen'>
-      <button
-        className=' text-16 font-bold'
-        onClick={() =>
-          showAlert({
-            alertViewTitle: '제목',
-            alertViewDesc: '내용',
-            closeWithClickBackdrop: true,
-            alertActions: [{ title: '확인', style: 'primary', handler: null }],
-          })
-        }
-      >
-        누르셈
-      </button>
-    </div>
+    <Layout>
+      <div className={cls('flex justify-center items-center h-screen font-heading--3xl')}>
+        <button
+          onClick={() =>
+            showAlert({
+              title: '로그아웃 하시겠어요?',
+              actions: [
+                { title: '예', style: 'primary', handler: null },
+                { title: '아니오', style: 'tertiary', handler: null },
+              ],
+            })
+          }
+        >
+          눌러
+        </button>
+      </div>
+    </Layout>
   );
 }
