@@ -8,10 +8,14 @@ const user = {
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [checkLogin, setCheckLogin] = useState(false);
-  const [idValue, setIdValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [idIsValid, setIdIsValid] = useState(true);
-  const [passwordIsValid, setPasswordIsValid] = useState(true);
+  const [formValue, setFormValue] = useState({
+    idValue: '',
+    passwordValue: '',
+  });
+  const [formIsValid, setFormIsValid] = useState({
+    idIsValid: true,
+    passwordIsValid: true,
+  });
 
   const togglePasswordHandler = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -21,25 +25,36 @@ export default function Login() {
     setCheckLogin((prevCheckLogin) => !prevCheckLogin);
   };
 
-  //이거 hook으로 만들어야 되나요?
   const idChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIdValue(event.target.value);
+    setFormValue((prevFormValue) => ({
+      ...prevFormValue,
+      idValue: event.target.value,
+    }));
   };
 
   const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordValue(event.target.value);
+    setFormValue((prevFormValue) => ({
+      ...prevFormValue,
+      passwordValue: event.target.value,
+    }));
   };
 
   const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setIdIsValid(true);
-    setPasswordIsValid(true);
+    //check
+    setFormIsValid({
+      idIsValid: true,
+      passwordIsValid: true,
+    });
 
     //id, password Check
-    if (user.id !== idValue || user.password !== passwordValue) {
-      setIdIsValid((prevId) => prevId && user.id === idValue);
-      setPasswordIsValid((prevPassword) => prevPassword && user.password === passwordValue);
+    if (user.id !== formValue.idValue || user.password !== formValue.passwordValue) {
+      setFormIsValid((prevFormIsValid) => ({
+        passwordIsValid: user.password === formValue.passwordValue,
+        idIsValid: user.id === formValue.idValue,
+      }));
+
       return;
     }
     alert('로그인 되었습니다.');
@@ -47,7 +62,7 @@ export default function Login() {
 
   let loginAble = false;
 
-  if (idValue !== '' && passwordValue !== '') {
+  if (formValue.idValue !== '' && formValue.passwordValue !== '') {
     loginAble = true;
   }
 
@@ -56,13 +71,6 @@ export default function Login() {
       <form onSubmit={submitHandler}>
         <div className='w-[390px] h-[844px] relative overflow-hidden bg-[#fffcf7]'>
           {/* Header */}
-          <div className='flex justify-between mt-59'>
-            <img src='/icons/logo1.svg' className='px-28' />
-            <div className='flex items-center justify-end mr-24'>
-              <img src='/icons/menu.svg' className='px-14' />
-              <img src='/icons/profile.svg' />
-            </div>
-          </div>
 
           {/* font-family */}
           <p className='mt-145 mx-167 text-[21px] font-SUITE text-left not-italic text-[#675149]'>로그인</p>
@@ -70,12 +78,12 @@ export default function Login() {
           {/* input Id */}
           <input
             className={`inline-flex w-342 h-50 ml-[24px] mt-[24px] pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
-              idIsValid ? 'bg-white border-[#675149]/30' : 'bg-[#e11900]/10 border-[#E11900]'
+              formIsValid.idIsValid ? 'bg-white border-[#675149]/30' : 'bg-[#e11900]/10 border-[#E11900]'
             }`}
             onChange={idChangeHandler}
             placeholder='아이디를 입력해주세요'
           />
-          {!idIsValid || !passwordIsValid ? (
+          {!formIsValid.idIsValid || !formIsValid.passwordIsValid ? (
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic line-hei text-[#e11900]'>
               아이디 또는 비밀번호를 다시 확인해주세요.
             </p>
@@ -90,7 +98,9 @@ export default function Login() {
               onChange={passwordChangeHandler}
               className={`inline-flex w-342 h-50 ml-[24px] mt-[5px] pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] ${
-                passwordIsValid ? 'bg-white border-2 border-[#675149]/30' : 'bg-[#e11900]/10 border-2 border-[#E11900]'
+                formIsValid.passwordIsValid
+                  ? 'bg-white border-2 border-[#675149]/30'
+                  : 'bg-[#e11900]/10 border-2 border-[#E11900]'
               }`}
               placeholder='비밀번호를 입력해주세요'
             />
@@ -121,7 +131,10 @@ export default function Login() {
             <div className='flex px-24'>
               <div className='inline-flex'>
                 <button onClick={toggleCheckLoginHandler} type='button'>
-                  <img src={checkLogin ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'} />
+                  <img
+                    src={checkLogin ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
+                    className='w-24 h-24'
+                  />
                 </button>
                 <p
                   className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 

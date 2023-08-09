@@ -4,29 +4,49 @@ let passwordIsValid: boolean;
 let checkPasswordIsValid: boolean;
 let signupIsValid: boolean;
 
-export default function signUpEmail() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showCheckPassword, setShowCheckPassword] = useState(false);
-  const [checkAge, setCheckAge] = useState(false);
-  const [checkAdmit, setCheckAdmit] = useState(false);
+const JoinPassword: React.FC = () => {
+  const [showPassword, setShowPassword] = useState({
+    showPassword: false,
+    showCheckPassword: false,
+  });
+  const [checkSquare, setCheckSquare] = useState({
+    ageSquare: false,
+    admitSquare: false,
+  });
+
   const [checkNickname, setCheckNickname] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [checkPasswordValue, setCheckPasswordValue] = useState('');
+
+  const [passwordValue, setPasswordValue] = useState({
+    passwordValue: '',
+    checkPasswordValue: '',
+  });
 
   const togglePasswordHandler = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
+    setShowPassword((prevShowPassword) => ({
+      ...prevShowPassword,
+      showPassword: !prevShowPassword.showPassword,
+    }));
   };
 
   const toggleCheckPasswordHandler = () => {
-    setShowCheckPassword((prevShowCheckPassword) => !prevShowCheckPassword);
+    setShowPassword((prevShowPassword) => ({
+      ...prevShowPassword,
+      showCheckPassword: !prevShowPassword.showCheckPassword,
+    }));
   };
 
   const toggleCheckAgeHandler = () => {
-    setCheckAge((prevCheckAge) => !prevCheckAge);
+    setCheckSquare((prevCheckSquare) => ({
+      ...prevCheckSquare,
+      ageSquare: !prevCheckSquare.ageSquare,
+    }));
   };
 
   const toggleCheckAdmitHandler = () => {
-    setCheckAdmit((prevCheckAdmit) => !prevCheckAdmit);
+    setCheckSquare((prevCheckSquare) => ({
+      ...prevCheckSquare,
+      admitSquare: !prevCheckSquare.admitSquare,
+    }));
   };
 
   const toggleDeleteHandler = () => {
@@ -38,25 +58,31 @@ export default function signUpEmail() {
   };
 
   const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordValue(event.target.value);
+    setPasswordValue((prevPasswordValue) => ({
+      ...prevPasswordValue,
+      passwordValue: event.target.value,
+    }));
   };
 
   const checkPasswordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckPasswordValue(event.target.value);
+    setPasswordValue((prevPasswordValue) => ({
+      ...prevPasswordValue,
+      checkPasswordValue: event.target.value,
+    }));
   };
 
   if (
-    (passwordValue.length >= 8 &&
-      passwordValue.length <= 12 &&
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue)) ||
-    passwordValue === ''
+    (passwordValue.passwordValue.length >= 8 &&
+      passwordValue.passwordValue.length <= 12 &&
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue.passwordValue)) ||
+    passwordValue.passwordValue === ''
   ) {
     passwordIsValid = true;
   } else {
     passwordIsValid = false;
   }
 
-  if (passwordValue === checkPasswordValue || checkPasswordValue === '') {
+  if (passwordValue.passwordValue === passwordValue.checkPasswordValue || passwordValue.checkPasswordValue === '') {
     checkPasswordIsValid = true;
   } else {
     checkPasswordIsValid = false;
@@ -69,13 +95,7 @@ export default function signUpEmail() {
       <form onSubmit={submitHandler}>
         <div className='w-[390px] h-[844px] relative overflow-hidden bg-[#fffcf7]'>
           {/* Header */}
-          <div className='flex justify-between mt-59'>
-            <img src='/icons/logo1.svg' className='px-28' />
-            <div className='flex items-center justify-end mr-24'>
-              <img src='/icons/menu.svg' className='px-14' />
-              <img src='/icons/profile.svg' />
-            </div>
-          </div>
+
           {/* font-family */}
           <p
             className='mt-153 mx-167 w-100 text-[21px] font-SUITE text-left not-italic
@@ -101,7 +121,8 @@ export default function signUpEmail() {
               <img src='/icons/delete.svg' />
             </button>
             <button type='button' className='ml-10 mt-3'>
-              <img src='/icons/return.svg' />
+              {/* 아이콘 변경 */}
+              <img src='/icons/return2.svg' className='w-24 h-24' />
             </button>
           </div>
           <button
@@ -135,7 +156,7 @@ export default function signUpEmail() {
 
           <div className='relative inline-flex'>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword.showPassword ? 'text' : 'password'}
               onChange={passwordChangeHandler}
               className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] border-2
@@ -147,7 +168,7 @@ export default function signUpEmail() {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-              <img src={showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              <img src={showPassword.showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
             </button>
           </div>
           {passwordIsValid ? (
@@ -160,7 +181,7 @@ export default function signUpEmail() {
 
           <div className='relative inline-flex mt-2'>
             <input
-              type={showCheckPassword ? 'text' : 'password'}
+              type={showPassword.showCheckPassword ? 'text' : 'password'}
               onChange={checkPasswordChangeHandler}
               className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] border-2
@@ -172,7 +193,7 @@ export default function signUpEmail() {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
-              <img src={showCheckPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              <img src={showPassword.showCheckPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
             </button>
           </div>
           {checkPasswordIsValid ? (
@@ -183,9 +204,12 @@ export default function signUpEmail() {
             </p>
           )}
           {/* chekBox */}
-          <div className='inline-flex  mx-24'>
+          <div className='inline-flex mx-24 box-border'>
             <button onClick={toggleCheckAgeHandler} type='button'>
-              <img src={checkAge ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'} />
+              <img
+                src={checkSquare.ageSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
+                className='w-24 h-24'
+              />
             </button>
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
@@ -197,11 +221,14 @@ export default function signUpEmail() {
 
           <div className='inline-flex mx-24'>
             <button onClick={toggleCheckAdmitHandler} type='button'>
-              <img src={checkAdmit ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'} />
+              <img
+                src={checkSquare.admitSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
+                className='w-24 h-24'
+              />
             </button>
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
-                font-SUITE text-left not-italic'
+                font-SUITE text-left not-italic box-border'
             >
               편지 알림 이메일 수신 동의 (필수)
             </p>
@@ -222,4 +249,6 @@ export default function signUpEmail() {
       </form>
     </main>
   );
-}
+};
+
+export default JoinPassword;

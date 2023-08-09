@@ -4,7 +4,11 @@ import { useState, useEffect } from 'react';
 let emailIsValid: string = 'normal';
 let authNumberIsValid: string = 'normal';
 
-export default function signUpAuth() {
+type JoinEmailProps = {
+  joinChangeHandler: () => void;
+};
+
+const JoinEmail: React.FC<JoinEmailProps> = (props) => {
   const [emailValue, setEmailValue] = useState<String>('');
   const [time, setTime] = useState<number>(180000);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
@@ -65,13 +69,7 @@ export default function signUpAuth() {
       <form onSubmit={submitHandler}>
         <div className='w-[390px] h-[844px] relative overflow-hidden bg-[#fffcf7]'>
           {/* Header */}
-          <div className='flex justify-between mt-59'>
-            <img src='/icons/logo1.svg' className='px-28' />
-            <div className='flex items-center justify-end mr-24'>
-              <img src='/icons/menu.svg' className='px-14' />
-              <img src='/icons/profile.svg' />
-            </div>
-          </div>
+
           {/* font-family */}
           <p className='mt-153 mx-167 w-100 text-[21px] font-SUITE text-left not-italic text-[#675149]'>간편가입</p>
           <p className='mt-16 text-center text-[12px] font-SUITE not-italic text-[#675149]'>
@@ -202,6 +200,7 @@ export default function signUpAuth() {
             <button
               className='flex w-342 h-50  ml-24 mt-22 justify-center items-center bg-[#675149] 
           rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7] hover:bg-[#2D2421]'
+              onClick={props.joinChangeHandler}
             >
               다음
             </button>
@@ -210,4 +209,6 @@ export default function signUpAuth() {
       </form>
     </main>
   );
-}
+};
+
+export default JoinEmail;
