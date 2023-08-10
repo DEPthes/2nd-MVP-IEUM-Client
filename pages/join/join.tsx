@@ -4,20 +4,15 @@ import JoinEmail from '@/components/pages/join/join-Email';
 import JoinPassword from '@/components/pages/join/join-Password';
 
 const Join = () => {
-  const [component, setComponent] = useState('Auth');
+  const [page, setPage] = useState<'Email' | 'Password'>('Email');
 
   const joinChangeHandler = () => {
-    setComponent('Email');
+    setPage('Password');
   };
   return (
     <div>
-      {component === 'Auth' ? (
-        <JoinEmail joinChangeHandler={joinChangeHandler} />
-      ) : component === 'Email' ? (
-        <JoinPassword />
-      ) : (
-        ''
-      )}
+      {page === 'Email' && <JoinEmail joinChangeHandler={joinChangeHandler} />}
+      {page === 'Password' && <JoinPassword />}
     </div>
   );
 };

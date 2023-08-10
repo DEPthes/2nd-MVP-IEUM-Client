@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 
-let passwordIsValid: boolean;
-let checkPasswordIsValid: boolean;
-let signupIsValid: boolean;
+import CheckSquare from '@/components/check-square';
+//얘 왜 경로 못 찾음
+import deleteIcon from './icons/delete.svg';
 
 const JoinPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState({
     showPassword: false,
     showCheckPassword: false,
   });
+
   const [checkSquare, setCheckSquare] = useState({
     ageSquare: false,
     admitSquare: false,
@@ -71,22 +72,39 @@ const JoinPassword: React.FC = () => {
     }));
   };
 
-  if (
-    (passwordValue.passwordValue.length >= 8 &&
-      passwordValue.passwordValue.length <= 12 &&
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue.passwordValue)) ||
-    passwordValue.passwordValue === ''
-  ) {
-    passwordIsValid = true;
-  } else {
-    passwordIsValid = false;
-  }
+  //password유효성 검사
+  const passwordTest = (passwordValue: string) => {
+    if (
+      (passwordValue.length >= 8 &&
+        passwordValue.length <= 12 &&
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue)) ||
+      passwordValue === ''
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-  if (passwordValue.passwordValue === passwordValue.checkPasswordValue || passwordValue.checkPasswordValue === '') {
-    checkPasswordIsValid = true;
-  } else {
-    checkPasswordIsValid = false;
-  }
+  //checkPassword 유효성 검사
+  const checkPasswordTest = (checkPasswordValue: string) => {
+    if (passwordValue.passwordValue === checkPasswordValue || checkPasswordValue === '') {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  //signUp 유효성 검사
+  const signUpTest = () => {
+    return false;
+  };
+
+  const passwordIsValid = passwordTest(passwordValue.passwordValue);
+
+  const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue);
+
+  const signUpIsValid = signUpTest();
 
   const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {};
 
@@ -205,12 +223,7 @@ const JoinPassword: React.FC = () => {
           )}
           {/* chekBox */}
           <div className='inline-flex mx-24 box-border'>
-            <button onClick={toggleCheckAgeHandler} type='button'>
-              <img
-                src={checkSquare.ageSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
-                className='w-24 h-24'
-              />
-            </button>
+            <CheckSquare toggleCheckHandler={toggleCheckAgeHandler} check={checkSquare.ageSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic'
@@ -220,12 +233,8 @@ const JoinPassword: React.FC = () => {
           </div>
 
           <div className='inline-flex mx-24'>
-            <button onClick={toggleCheckAdmitHandler} type='button'>
-              <img
-                src={checkSquare.admitSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
-                className='w-24 h-24'
-              />
-            </button>
+            <CheckSquare toggleCheckHandler={toggleCheckAdmitHandler} check={checkSquare.admitSquare} />
+
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic box-border'
@@ -240,8 +249,8 @@ const JoinPassword: React.FC = () => {
             className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
            rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
           bg-[#675149] 
-          ${signupIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
-            disabled={!signupIsValid}
+          ${signUpIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
+            disabled={!signUpIsValid}
           >
             회원가입 완료
           </button>
