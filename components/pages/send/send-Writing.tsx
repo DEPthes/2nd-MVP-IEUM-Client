@@ -1,14 +1,14 @@
-import React, { useState, TextareaHTMLAttributes } from 'react';
+import React, { useState } from 'react';
 import MailsIcon from '../../../public/icons/mails.svg';
 import Layout from '../../layouts/layout';
 import AutoResizableTextarea from '../../autoResizableTextarea';
+import { ComponentType } from '../../../pages/letter/send';
 
-interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  textareaOnChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void; //onChange를 내부적으로 사용하므로 매핑해서 써야됨
-  selectChangeHandler: () => void;
-}
+type SendProps = {
+  componentChangeHandler: (ComponentType: ComponentType) => void;
+};
 
-const SendWriting: React.FC<Props> = (props) => {
+const SendWriting: React.FC<SendProps> = ({ componentChangeHandler }) => {
   const [inputCount, setInputCount] = useState(0);
   const MAX_LENGTH = 3500;
 
@@ -18,10 +18,6 @@ const SendWriting: React.FC<Props> = (props) => {
       event.target.value = event.target.value.slice(0, MAX_LENGTH);
     }
     setInputCount(event.target.value.length);
-
-    if (props.textareaOnChange) {
-      props.textareaOnChange(event);
-    }
   };
 
   return (
@@ -52,7 +48,7 @@ const SendWriting: React.FC<Props> = (props) => {
             <button
               className='px-35 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover'
               type='button'
-              onClick={props.selectChangeHandler}
+              onClick={() => componentChangeHandler('Select')}
             >
               다음 단계
             </button>

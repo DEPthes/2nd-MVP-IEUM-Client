@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
+import { ComponentType } from '../../../pages/letter/send';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
 import Envelope1Img from '../../../public/imgs/envelope1.svg';
 import Envelope2Img from '../../../public/imgs/envelope2.svg';
@@ -7,10 +8,10 @@ import Envelope3Img from '../../../public/imgs/envelope3.svg';
 import Envelope4Img from '../../../public/imgs/envelope4.svg';
 
 type SendProps = {
-  completeChangeHandler: () => void;
+  componentChangeHandler: (ComponentType: ComponentType) => void;
 };
 
-const SendSelect: React.FC<SendProps> = (props) => {
+const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
   const [check, setCheck] = useState({
     envelope1: false,
     envelope2: false,
@@ -114,14 +115,14 @@ const SendSelect: React.FC<SendProps> = (props) => {
             <button
               className='px-15 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
-              onClick={props.completeChangeHandler}
+              onClick={() => componentChangeHandler('Complete')}
             >
               사람에게 보내기
             </button>
             <button
               className='px-20 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
-              onClick={props.completeChangeHandler}
+              onClick={() => componentChangeHandler('Complete')}
             >
               AI에게 보내기
             </button>
