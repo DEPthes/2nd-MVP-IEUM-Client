@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 
-let passwordIsValid: boolean;
-let checkPasswordIsValid: boolean;
-let signupIsValid: boolean;
+import CheckSquare from '@/components/check-square';
+import { passwordTest, checkPasswordTest } from '@/libs/join/passwordTest';
+
+import DeleteIcon from '../../../public/icons/delete.svg';
+import ReturnIcon from '../../../public/icons/return2.svg';
+
+import Eyes from '../../../public/icons/eye.svg';
+import EyesHidden from '../../../public/icons/eye-hidden.svg';
 
 const JoinPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState({
     showPassword: false,
     showCheckPassword: false,
   });
+
   const [checkSquare, setCheckSquare] = useState({
     ageSquare: false,
     admitSquare: false,
@@ -71,22 +77,16 @@ const JoinPassword: React.FC = () => {
     }));
   };
 
-  if (
-    (passwordValue.passwordValue.length >= 8 &&
-      passwordValue.passwordValue.length <= 12 &&
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue.passwordValue)) ||
-    passwordValue.passwordValue === ''
-  ) {
-    passwordIsValid = true;
-  } else {
-    passwordIsValid = false;
-  }
+  //signUp 유효성 검사
+  const signUpTest = () => {
+    return false;
+  };
 
-  if (passwordValue.passwordValue === passwordValue.checkPasswordValue || passwordValue.checkPasswordValue === '') {
-    checkPasswordIsValid = true;
-  } else {
-    checkPasswordIsValid = false;
-  }
+  const passwordIsValid = passwordTest(passwordValue.passwordValue);
+
+  const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue, passwordValue.passwordValue);
+
+  const signUpIsValid = signUpTest();
 
   const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {};
 
@@ -118,11 +118,11 @@ const JoinPassword: React.FC = () => {
               placeholder='닉네임을 입력해주세요'
             />
             <button type='button' onClick={toggleDeleteHandler} className='ml-[-75px] mt-3'>
-              <img src='/icons/delete.svg' />
+              <DeleteIcon />
             </button>
             <button type='button' className='ml-10 mt-3'>
-              {/* 아이콘 변경 */}
-              <img src='/icons/return2.svg' className='w-24 h-24' />
+              <ReturnIcon />
+              {/* <img src='/icons/return2.svg' className='w-24 h-24' /> */}
             </button>
           </div>
           <button
@@ -168,7 +168,7 @@ const JoinPassword: React.FC = () => {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-              <img src={showPassword.showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              {showPassword.showPassword ? <Eyes /> : <EyesHidden />}
             </button>
           </div>
           {passwordIsValid ? (
@@ -205,12 +205,7 @@ const JoinPassword: React.FC = () => {
           )}
           {/* chekBox */}
           <div className='inline-flex mx-24 box-border'>
-            <button onClick={toggleCheckAgeHandler} type='button'>
-              <img
-                src={checkSquare.ageSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
-                className='w-24 h-24'
-              />
-            </button>
+            <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic'
@@ -220,12 +215,7 @@ const JoinPassword: React.FC = () => {
           </div>
 
           <div className='inline-flex mx-24'>
-            <button onClick={toggleCheckAdmitHandler} type='button'>
-              <img
-                src={checkSquare.admitSquare ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
-                className='w-24 h-24'
-              />
-            </button>
+            <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic box-border'
@@ -240,8 +230,8 @@ const JoinPassword: React.FC = () => {
             className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
            rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
           bg-[#675149] 
-          ${signupIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
-            disabled={!signupIsValid}
+          ${signUpIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
+            disabled={!signUpIsValid}
           >
             회원가입 완료
           </button>

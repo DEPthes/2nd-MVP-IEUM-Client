@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import CheckSquare from '@/components/check-square';
+
+import Eyes from '../../public/icons/eye.svg';
+import EyesHidden from '../../public/icons/eye-hidden.svg';
 
 const user = {
   id: 'asdf@1234',
@@ -8,14 +12,11 @@ const user = {
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [checkLogin, setCheckLogin] = useState(false);
-  const [formValue, setFormValue] = useState({
-    idValue: '',
-    passwordValue: '',
-  });
-  const [formIsValid, setFormIsValid] = useState({
-    idIsValid: true,
-    passwordIsValid: true,
-  });
+  const [idIsValid, setIdIsValid] = useState(true);
+  const [passwordIsValid, setPasswordIsValid] = useState(true);
+
+  const idValue = useRef<HTMLInputElement | null>(null);
+  const passwordValue = useRef<HTMLInputElement | null>(null);
 
   const togglePasswordHandler = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -23,53 +24,30 @@ export default function Login() {
 
   const toggleCheckLoginHandler = () => {
     setCheckLogin((prevCheckLogin) => !prevCheckLogin);
-  };
-
-  const idChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValue((prevFormValue) => ({
-      ...prevFormValue,
-      idValue: event.target.value,
-    }));
-  };
-
-  const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValue((prevFormValue) => ({
-      ...prevFormValue,
-      passwordValue: event.target.value,
-    }));
+    console.log('test');
   };
 
   const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    //check
-    setFormIsValid({
-      idIsValid: true,
-      passwordIsValid: true,
-    });
+    const isIdValid = idValue.current?.value === user.id;
+    const isPasswordValid = passwordValue.current?.value === user.password;
 
-    //id, password Check
-    if (user.id !== formValue.idValue || user.password !== formValue.passwordValue) {
-      setFormIsValid((prevFormIsValid) => ({
-        passwordIsValid: user.password === formValue.passwordValue,
-        idIsValid: user.id === formValue.idValue,
-      }));
+    setIdIsValid(isIdValid);
+    setPasswordIsValid(isPasswordValid);
 
-      return;
+    if (isIdValid && isPasswordValid) {
+      alert('로그인 되었습니다.');
     }
-    alert('로그인 되었습니다.');
   };
 
-  let loginAble = false;
-
-  if (formValue.idValue !== '' && formValue.passwordValue !== '') {
-    loginAble = true;
-  }
+  //login 유효성 검사 (추가로 일치 여부 구현해야됨.)
+  const loginAble: boolean = idValue !== null && passwordValue !== null;
 
   return (
     <main>
       <form onSubmit={submitHandler}>
-        <div className='w-[390px] h-[844px] relative overflow-hidden bg-[#fffcf7]'>
+        <div className='w-390 h-844 relative overflow-hidden bg-[#fffcf7]'>
           {/* Header */}
 
           {/* font-family */}
@@ -77,35 +55,33 @@ export default function Login() {
 
           {/* input Id */}
           <input
-            className={`inline-flex w-342 h-50 ml-[24px] mt-[24px] pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
-              formIsValid.idIsValid ? 'bg-white border-[#675149]/30' : 'bg-[#e11900]/10 border-[#E11900]'
+            className={`inline-flex w-342 h-50 ml-24 mt-24 pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
+              idIsValid ? 'bg-white border-[#675149]/30' : 'bg-[#e11900]/10 border-[#E11900]'
             }`}
-            onChange={idChangeHandler}
+            ref={idValue}
             placeholder='아이디를 입력해주세요'
           />
-          {!formIsValid.idIsValid || !formIsValid.passwordIsValid ? (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic line-hei text-[#e11900]'>
+          {!idIsValid || !passwordIsValid ? (
+            <p className='ml-24 text-12px text-left leading-[160%] not-italic line-hei text-[#e11900]'>
               아이디 또는 비밀번호를 다시 확인해주세요.
             </p>
           ) : (
-            <p className='mt-[4px]'>&nbsp;</p>
+            <p className='mt-4'>&nbsp;</p>
           )}
 
           {/* input Password */}
           <div className='relative inline-flex'>
             <input
               type={showPassword ? 'text' : 'password'}
-              onChange={passwordChangeHandler}
-              className={`inline-flex w-342 h-50 ml-[24px] mt-[5px] pl-12 rounded-10 
+              ref={passwordValue}
+              className={`inline-flex w-342 h-50 ml-24 mt-5 pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] ${
-                formIsValid.passwordIsValid
-                  ? 'bg-white border-2 border-[#675149]/30'
-                  : 'bg-[#e11900]/10 border-2 border-[#E11900]'
+                passwordIsValid ? 'bg-white border-2 border-[#675149]/30' : 'bg-[#e11900]/10 border-2 border-[#E11900]'
               }`}
               placeholder='비밀번호를 입력해주세요'
             />
             <button type='button' className='ml-[-36px] mt-3.5' onClick={togglePasswordHandler}>
-              <img src={showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              {showPassword ? <Eyes /> : <EyesHidden />}
             </button>
           </div>
 
@@ -130,12 +106,7 @@ export default function Login() {
           <div className='flex justify-between mt-35'>
             <div className='flex px-24'>
               <div className='inline-flex'>
-                <button onClick={toggleCheckLoginHandler} type='button'>
-                  <img
-                    src={checkLogin ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'}
-                    className='w-24 h-24'
-                  />
-                </button>
+                <CheckSquare onClick={toggleCheckLoginHandler} checked={checkLogin} />
                 <p
                   className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic'
