@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import PasswordEmail from '../../components/pages/password/password-Email';
-import PasswordPassword from '../../components/pages/password/password-Password';
+import PasswordEmail from '../components/pages/password/password-Email';
+import PasswordPassword from '../components/pages/password/password-Password';
 
-const Password = () => {
+const ResetPassword = () => {
   const [component, setComponent] = useState('Auth');
 
   const passwordChangeHandler = () => {
@@ -21,4 +21,4 @@ const Password = () => {
   );
 };
 
-export default Password;
+export default ResetPassword;
