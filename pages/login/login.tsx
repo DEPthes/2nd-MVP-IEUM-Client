@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
 import CheckSquare from '@/components/check-square';
 
+import Eyes from '../../public/icons/eye.svg';
+import EyesHidden from '../../public/icons/eye-hidden.svg';
+
 const user = {
   id: 'asdf@1234',
   password: '1234',
@@ -78,7 +81,7 @@ export default function Login() {
               placeholder='비밀번호를 입력해주세요'
             />
             <button type='button' className='ml-[-36px] mt-3.5' onClick={togglePasswordHandler}>
-              <img src={showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              {showPassword ? <Eyes /> : <EyesHidden />}
             </button>
           </div>
 

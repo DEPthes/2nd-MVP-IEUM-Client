@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 
 import CheckSquare from '@/components/check-square';
 import { passwordTest, checkPasswordTest } from '@/libs/join/passwordTest';
-//얘 왜 경로 못 찾음
-// import deleteIcon from '../../public/icons/delete.svg';
+
 import DeleteIcon from '../../../public/icons/delete.svg';
+import ReturnIcon from '../../../public/icons/return2.svg';
+
+import Eyes from '../../../public/icons/eye.svg';
+import EyesHidden from '../../../public/icons/eye-hidden.svg';
 
 const JoinPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState({
@@ -118,8 +121,8 @@ const JoinPassword: React.FC = () => {
               <DeleteIcon />
             </button>
             <button type='button' className='ml-10 mt-3'>
-              {/* 아이콘 변경 */}
-              <img src='/icons/return2.svg' className='w-24 h-24' />
+              <ReturnIcon />
+              {/* <img src='/icons/return2.svg' className='w-24 h-24' /> */}
             </button>
           </div>
           <button
@@ -165,7 +168,7 @@ const JoinPassword: React.FC = () => {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-              <img src={showPassword.showPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              {showPassword.showPassword ? <Eyes /> : <EyesHidden />}
             </button>
           </div>
           {passwordIsValid ? (
