@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
-import { ComponentType } from '../../../pages/letter/send';
+import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
-import Envelope1Img from '../../../public/imgs/envelope1.svg';
-import Envelope2Img from '../../../public/imgs/envelope2.svg';
-import Envelope3Img from '../../../public/imgs/envelope3.svg';
-import Envelope4Img from '../../../public/imgs/envelope4.svg';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -31,96 +27,106 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
   return (
     <Layout>
       <main className='flex justify-center'>
-        <div className='w-390 mt-23 mx-53'>
-          <p className='text-primary text-center font-heading--md'>편지 봉투를 선택하세요</p>
-          <div className='mx-80 mt-62'>
-            <div className='w-229 h-107 mb-16 bg-[#987A6F] rounded-11 relative'>
+        <div className='mt-40 tablet:mt-56 desktop:mt-64'>
+          <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>
+            편지 봉투를 선택하세요
+          </p>
+          <div className='mx-51 mt-62 tablet:mx-335 desktop:mx-240 font-[KCC-eunyoung] leading-10 desktop:leading-16 desktop:grid desktop:grid-cols-2 gap-x-76 gap-y-96'>
+            <div
+              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+              style={{ backgroundImage: `url('/imgs/envelope1.jpg')` }}
+            >
               <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60'
+                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
                 onClick={() => togglePasswordHandler(1)}
               >
                 {check.envelope1 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100'>
+                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
                     <BigCheckIcon />
                   </div>
                 ) : (
                   ''
                 )}
-                <p className='ml-22 mt-16'>Letter from 닉네임</p>
-                <p className='ml-22'>편지 제목</p>
-                <p className='ml-179 mt-39'>2023 08 09</p>
-                <p className='ml-179'>Pm 14 : 02</p>
+                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
               </div>
-              <Envelope1Img />
             </div>
-            <div className='w-229 h-107 mb-16 bg-[#987A6F] rounded-11 relative'>
+            <div
+              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+              style={{ backgroundImage: `url('/imgs/envelope2.jpg')` }}
+            >
               <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60'
+                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
                 onClick={() => togglePasswordHandler(2)}
               >
                 {check.envelope2 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100'>
+                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
                     <BigCheckIcon />
                   </div>
                 ) : (
                   ''
                 )}
-                <p className='ml-22 mt-16'>Letter from 닉네임</p>
-                <p className='ml-22'>편지 제목</p>
-                <p className='ml-179 mt-39'>2023 08 09</p>
-                <p className='ml-179'>Pm 14 : 02</p>
+                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
               </div>
-              <Envelope2Img />
             </div>
-            <div className='w-229 h-107 mb-16 bg-[#987A6F] rounded-11 relative'>
+            <div
+              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+              style={{ backgroundImage: `url('/imgs/envelope3.jpg')` }}
+            >
               <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60'
+                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
                 onClick={() => togglePasswordHandler(3)}
               >
                 {check.envelope3 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100'>
+                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
                     <BigCheckIcon />
                   </div>
                 ) : (
                   ''
                 )}
-                <p className='ml-22 mt-16'>Letter from 닉네임</p>
-                <p className='ml-22'>편지 제목</p>
-                <p className='ml-179 mt-39'>2023 08 09</p>
-                <p className='ml-179'>Pm 14 : 02</p>
+                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
               </div>
-              <Envelope3Img />
             </div>
-            <div className='w-229 h-107 bg-[#987A6F] rounded-11 relative'>
+            <div
+              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+              style={{ backgroundImage: `url('/imgs/envelope4.jpg')` }}
+            >
               <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60'
+                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
                 onClick={() => togglePasswordHandler(4)}
               >
                 {check.envelope4 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100'>
+                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
                     <BigCheckIcon />
                   </div>
                 ) : (
                   ''
                 )}
-                <p className='ml-22 mt-16'>Letter from 닉네임</p>
-                <p className='ml-22'>편지 제목</p>
-                <p className='ml-179 mt-39'>2023 08 09</p>
-                <p className='ml-179'>Pm 14 : 02</p>
+                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
               </div>
-              <Envelope4Img />
             </div>
           </div>
           <div className='flex justify-center items-center mt-62 w-full'>
             <button
-              className='px-15 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
+              className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
               onClick={() => componentChangeHandler('Complete')}
             >
               사람에게 보내기
             </button>
             <button
-              className='px-20 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
+              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
               onClick={() => componentChangeHandler('Complete')}
             >

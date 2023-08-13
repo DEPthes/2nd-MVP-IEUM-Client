@@ -1,0 +1,11 @@
+/* 스크롤 바 */
+.scroll ::-webkit-scrollbar {
+  width: 9px;
+}
+
+.scroll ::-webkit-scrollbar-thumb {
+  background-color: #675149;
+  border-radius: 1000px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}

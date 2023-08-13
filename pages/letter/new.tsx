@@ -5,7 +5,7 @@ import SendComplete from '../../components/pages/send/send-Complete';
 
 export type ComponentType = 'Writing' | 'Select' | 'Complete';
 
-const Send = () => {
+const LetterNew = () => {
   const [component, setComponent] = useState<ComponentType>('Writing');
 
   const componentChangeHandler = (ComponentType: ComponentType) => {
@@ -21,4 +21,4 @@ const Send = () => {
   );
 };
 
-export default Send;
+export default LetterNew;

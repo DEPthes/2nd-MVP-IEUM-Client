@@ -1,8 +1,11 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../../layouts/layout';
 import CompleteImg from '../../../public/imgs/complete.svg';
 
 const SendComplete: React.FC = () => {
+  const router = useRouter();
+
   return (
     <Layout>
       <main>
@@ -15,6 +18,7 @@ const SendComplete: React.FC = () => {
           <button
             className='mt-30 px-107 py-13 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
             type='button'
+            onClick={() => router.push('/letter/all')}
           >
             우체통으로 이동하기
           </button>
