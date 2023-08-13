@@ -1,12 +1,18 @@
-type CheckSquareProps = {
-  toggleCheckHandler: () => void;
-  check: boolean;
-};
+import { HTMLAttributes } from 'react';
 
-const CheckSquare = (props: CheckSquareProps) => {
+// type CheckSquareProps = {
+//   toggleCheckHandler: () => void;
+//   checked: boolean;
+// };
+
+interface CheckSquareProps extends HTMLAttributes<HTMLButtonElement> {
+  checked: boolean;
+}
+
+const CheckSquare = ({ checked, ...props }: CheckSquareProps) => {
   return (
-    <button onClick={props.toggleCheckHandler} type='button'>
-      <img src={props.check ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'} className='w-24 h-24' />
+    <button type='button' {...props}>
+      <img src={checked ? '/icons/check-square.svg' : '/icons/uncheck-square.svg'} className='w-24 h-24' />
     </button>
   );
 };

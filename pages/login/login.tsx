@@ -21,6 +21,7 @@ export default function Login() {
 
   const toggleCheckLoginHandler = () => {
     setCheckLogin((prevCheckLogin) => !prevCheckLogin);
+    console.log('test');
   };
 
   const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
@@ -102,7 +103,7 @@ export default function Login() {
           <div className='flex justify-between mt-35'>
             <div className='flex px-24'>
               <div className='inline-flex'>
-                <CheckSquare toggleCheckHandler={toggleCheckLoginHandler} check={checkLogin} />
+                <CheckSquare onClick={toggleCheckLoginHandler} checked={checkLogin} />
                 <p
                   className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic'

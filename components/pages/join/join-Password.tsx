@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
 import CheckSquare from '@/components/check-square';
+import { passwordTest, checkPasswordTest } from '@/libs/join/passwordTest';
 //얘 왜 경로 못 찾음
-import deleteIcon from './icons/delete.svg';
+// import deleteIcon from '../../public/icons/delete.svg';
+import DeleteIcon from '../../../public/icons/delete.svg';
 
 const JoinPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState({
@@ -72,29 +74,6 @@ const JoinPassword: React.FC = () => {
     }));
   };
 
-  //password유효성 검사
-  const passwordTest = (passwordValue: string) => {
-    if (
-      (passwordValue.length >= 8 &&
-        passwordValue.length <= 12 &&
-        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(passwordValue)) ||
-      passwordValue === ''
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  //checkPassword 유효성 검사
-  const checkPasswordTest = (checkPasswordValue: string) => {
-    if (passwordValue.passwordValue === checkPasswordValue || checkPasswordValue === '') {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   //signUp 유효성 검사
   const signUpTest = () => {
     return false;
@@ -102,7 +81,7 @@ const JoinPassword: React.FC = () => {
 
   const passwordIsValid = passwordTest(passwordValue.passwordValue);
 
-  const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue);
+  const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue, passwordValue.passwordValue);
 
   const signUpIsValid = signUpTest();
 
@@ -136,7 +115,7 @@ const JoinPassword: React.FC = () => {
               placeholder='닉네임을 입력해주세요'
             />
             <button type='button' onClick={toggleDeleteHandler} className='ml-[-75px] mt-3'>
-              <img src='/icons/delete.svg' />
+              <DeleteIcon />
             </button>
             <button type='button' className='ml-10 mt-3'>
               {/* 아이콘 변경 */}
@@ -223,7 +202,7 @@ const JoinPassword: React.FC = () => {
           )}
           {/* chekBox */}
           <div className='inline-flex mx-24 box-border'>
-            <CheckSquare toggleCheckHandler={toggleCheckAgeHandler} check={checkSquare.ageSquare} />
+            <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic'
@@ -233,8 +212,7 @@ const JoinPassword: React.FC = () => {
           </div>
 
           <div className='inline-flex mx-24'>
-            <CheckSquare toggleCheckHandler={toggleCheckAdmitHandler} check={checkSquare.admitSquare} />
-
+            <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-SUITE text-left not-italic box-border'
