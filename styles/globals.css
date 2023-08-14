@@ -15,9 +15,18 @@ html {
 }
 
 body {
+  @apply bg-tertiary;
 }
 
 /* 모달창 띄울 때 스크롤 방지 */
 .modal-open {
   overflow: hidden;
+}
+
+/* 폰트 */
+@font-face {
+  font-family: 'KCC-eunyoung';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/KCC-eunyoung-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }

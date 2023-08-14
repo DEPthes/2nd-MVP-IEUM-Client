@@ -9,7 +9,7 @@ export default function AlertView() {
   const {
     alert: {
       show,
-      alertOptions: { alertViewTitle, alertViewDesc, alertActions, closeWithClickBackdrop },
+      alertOptions: { title, actions, closeWithClickBackdrop },
     },
     closeAlert,
   } = useAlert();
@@ -18,14 +18,13 @@ export default function AlertView() {
     <>
       {show && (
         <BackDrop onBackdropClick={closeWithClickBackdrop ? closeAlert : undefined}>
-          <ModalView className='relative w-full max-w-450 shadow-neumorphism p-16 mx-20 box-border bg-white rounded-8'>
+          <ModalView className='relative flex flex-col items-center justify-between box-border bg-tertiary rounded-10 w-314 h-213 px-24 py-40 desktop:w-372 desktop:h-236 desktop:px-22 desktop:py-52'>
             {/* <button onClick={closeAlert} className='absolute top-16 right-16'>
               <CancleIcon width='16' height='16' />
             </button> */}
-            <div className={'font-semibold text-18'}>{alertViewTitle}</div>
-            {alertViewDesc && <div className='mt-15 text-14'>{alertViewDesc}</div>}
-            <div className='mt-28 flex justify-end items-end gap-10'>
-              {alertActions.map((action, i) => (
+            <div className={'p-4 text-primary font-label--md desktop:font-heading--md'}>{title}</div>
+            <div className=' flex justify-center items-center gap-10 w-full desktop:gap-7'>
+              {actions.map((action, i) => (
                 <AlertAction key={i} {...action} closeAlert={closeAlert} />
               ))}
             </div>
