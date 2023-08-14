@@ -4,13 +4,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import ProfileIcon from '../../public/icons/profile.svg';
 import Hamburger from '../hamburger';
-import useIeumMediaQuery from '@/hooks/useIeumMediaQuery';
+import useIeumMediaQuery from '@/hooks/custom/useIeumMediaQuery';
 
 const Header = () => {
   const router = useRouter();
   const user = true;
   const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
-  console.log(isDesktop, isTablet, isMobile);
 
   return (
     <nav className='fixed w-full h-78 flex justify-between items-center z-header px-28 desktop:px-218'>
