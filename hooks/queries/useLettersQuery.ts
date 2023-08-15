@@ -1,6 +1,7 @@
-import { LetterType, getLetters } from '@/apis/getLetters';
+import { LetterType, LettersResponse, getLetters } from '@/apis/getLetters';
 import { useQuery } from 'react-query';
 import useApiError from '../custom/useApiError';
+import { withVerify } from '@/apis/withVerify';
 
 export const LETTERS_QUERY_KEY = 'lettersQuery';
 export default function useLettersQuery(type: LetterType, accessToken: string) {
@@ -11,7 +12,7 @@ export default function useLettersQuery(type: LetterType, accessToken: string) {
     isError,
   } = useQuery({
     queryKey: [LETTERS_QUERY_KEY],
-    queryFn: () => getLetters(type, accessToken),
+    queryFn: () => withVerify(() => getLetters(type, accessToken)),
     select: (res) => res.data.information,
     onError: handlerError,
   });

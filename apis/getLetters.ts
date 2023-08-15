@@ -1,6 +1,6 @@
 import ieumAxios from './ieumAxios';
 
-type LettersResponse = {
+export type LettersResponse = {
   check: boolean;
   information: {
     letterId: number;

@@ -5,7 +5,6 @@
 // 2. hook에서 http status key로 정의한 handler
 // 3. 어디에서도 정의되지 않은 에러를 처리하는 handler
 
-import useAlert from '@/recoil/alert/useAlert';
 import { AxiosError } from 'axios';
 
 const defaultHandlers: { common: () => void; default: () => void; [key: number]: () => void } = {
@@ -13,16 +12,19 @@ const defaultHandlers: { common: () => void; default: () => void; [key: number]:
   default: () => {}, // 어디에서도 정의되지 않은 에러를 처리
   401: () => {
     console.log('인증 에러');
-  }, // 401 인증 에러
+  },
 };
 
 export default function useApiError(handlers?: { [key: number]: () => void }) {
   const handlerError = (error: AxiosError) => {
     const status = error.response?.status;
+
+    // status 타입 가드
     if (typeof status !== 'number') {
       defaultHandlers.default();
       return;
     }
+
     switch (true) {
       // 우선 순위 1. 컴포넌트에서 http status key로 재정의한 handler
       case handlers && status in handlers:
