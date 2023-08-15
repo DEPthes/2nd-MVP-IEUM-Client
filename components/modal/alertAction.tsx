@@ -1,15 +1,8 @@
+import { AlertActionOptions } from '@/recoil/alert/atom';
 import { cls } from '@/utils/cls';
 import React from 'react';
 
-export type AlertActionStyle = 'primary' | 'tertiary';
-
-export interface AlertActionOptions {
-  title: string;
-  style: AlertActionStyle;
-  handler: (() => void) | null;
-}
-
-interface AlertActionProps extends AlertActionOptions {
+export interface AlertActionProps extends AlertActionOptions {
   closeAlert: () => void;
 }
 
