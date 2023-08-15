@@ -1,8 +1,13 @@
-import { AlertActionOptions } from '@/components/modal/alertAction';
 import { atom } from 'recoil';
 
-export type AlertOptions = {
+export type AlertActionStyle = 'primary' | 'tertiary';
+export type AlertActionOptions = {
   title: string;
+  style: AlertActionStyle;
+  handler: (() => void) | null;
+};
+export type AlertOptions = {
+  title: string | React.ReactNode;
   actions: AlertActionOptions[];
   closeWithClickBackdrop?: boolean;
 };
