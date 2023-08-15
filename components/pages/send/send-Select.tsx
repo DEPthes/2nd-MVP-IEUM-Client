@@ -8,8 +8,9 @@ type SendProps = {
 };
 
 const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
+  const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
-    envelope1: false,
+    envelope1: true,
     envelope2: false,
     envelope3: false,
     envelope4: false,
@@ -22,6 +23,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
       envelope3: num === 3,
       envelope4: num === 4,
     });
+    setEnvelopType(num);
   };
 
   return (
@@ -117,7 +119,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
               </div>
             </div>
           </div>
-          <div className='flex justify-center items-center mt-62 w-full'>
+          <div className='flex justify-center items-center mt-62 mb-34 w-full'>
             <button
               className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
