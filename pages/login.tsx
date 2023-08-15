@@ -7,6 +7,7 @@ import Header from '../components/layouts/header';
 import CheckSquare from '@/components/check-square';
 import Eyes from '../public/icons/eye.svg';
 import EyesHidden from '../public/icons/eye-hidden.svg';
+import { useRouter } from 'next/router';
 
 // import useLoginQuery from '@/hooks/queries/useLoginQuery';
 
@@ -16,6 +17,7 @@ const user = {
 };
 
 export default function Login() {
+  const router = useRouter();
   const newLoginMutation = useMutation(postLogin);
   const [showPassword, setShowPassword] = useState(false);
   const [checkLogin, setCheckLogin] = useState(false);
@@ -36,7 +38,7 @@ export default function Login() {
       setIsValid(true);
       //acess_token 저장
       authToken.setToken(access_token);
-      console.log(access_token);
+      router.push('/');
     } else {
       setIsValid(false);
     }
@@ -57,7 +59,7 @@ export default function Login() {
         { email, password },
         {
           onSuccess: (response) => {
-            successHandler(response.data.check, response.data.information.access_token);
+            successHandler(response.data.check, response.data.information.accessToken);
           },
           onError: failHandler,
         },

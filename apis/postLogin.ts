@@ -3,8 +3,8 @@ import ieumAxios from './ieumAxios';
 type LoginResponse = {
   check: boolean;
   information: {
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
+    refreshToken: string;
   };
 };
 

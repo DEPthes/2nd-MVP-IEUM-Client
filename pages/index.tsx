@@ -1,3 +1,4 @@
+import { authToken } from '@/class/authToken';
 import Layout from '@/components/layouts/layout';
 import useLettersQuery from '@/hooks/queries/useLettersQuery';
 import useAlert from '@/recoil/alert/useAlert';
