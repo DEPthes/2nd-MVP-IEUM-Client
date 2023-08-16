@@ -1,18 +1,57 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import ProfileIcon from '../../public/icons/profile.svg';
 import Hamburger from '../hamburger';
 import useIeumMediaQuery from '@/hooks/custom/useIeumMediaQuery';
+import useUser from '@/hooks/queries/useUser';
+import useAlert from '@/recoil/alert/useAlert';
 
 const Header = () => {
   const router = useRouter();
-  const user = true;
+  const { user } = useUser();
+  const { showAlert } = useAlert();
   const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
+  const [showProfileIconMenu, setShowProfileIconMenu] = useState(false);
+
+  //TODO: 로그아웃
+  function handleLogout() {}
+  //TODO: 계정 삭제
+  function handleDeleteUser() {}
+
+  function showLogoutAlert() {
+    showAlert({
+      title: '로그아웃하시겠어요?',
+      actions: [
+        { title: '네', style: 'tertiary', handler: handleLogout },
+        { title: '아니요', style: 'primary', handler: null },
+      ],
+    });
+  }
+
+  function handleClickProfileIcon(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    if (user) {
+      e.stopPropagation();
+      setShowHamburgerMenu(false);
+      setShowProfileIconMenu((prev) => !prev);
+    } else {
+      router.push('/login');
+    }
+  }
+
+  useEffect(() => {
+    function closeIconMenus() {
+      setShowHamburgerMenu(false);
+      setShowProfileIconMenu(false);
+    }
+    document.body.addEventListener('click', closeIconMenus);
+    return () => document.body.removeEventListener('click', closeIconMenus);
+  });
 
   return (
-    <nav className='fixed w-full h-78 flex justify-between items-center z-header px-28 desktop:px-218'>
+    <nav className='fixed w-full h-78 flex justify-between items-center z-header bg-tertiary px-28 desktop:px-218'>
       {/* 헤더 왼쪽 부분 */}
       {(isMobile || isTablet) && (
         <Link href={'/'} className=' relative w-63 h-42'>
@@ -43,17 +82,35 @@ const Header = () => {
       {/* 헤더 오른쪽 부분 */}
       <div className='flex justify-center items-center gap-14'>
         {(isMobile || isTablet) && (
-          <button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowProfileIconMenu(false);
+              setShowHamburgerMenu((prev) => !prev);
+            }}
+          >
             <Hamburger className='w-24' />
           </button>
         )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
+        <button onClick={handleClickProfileIcon}>
           <ProfileIcon width='32' height='32' />
         </button>
+        {showHamburgerMenu && (
+          <div className=' absolute bg-tertiary top-78 right-71 w-71'>
+            <button onClick={() => router.push('/letter/new')} className=' py-4 px-8 text-primary font-label--md'>
+              편지작성
+            </button>
+            <button className=' py-4 px-8 text-primary font-label--md'>우체통</button>
+          </div>
+        )}
+        {showProfileIconMenu && (
+          <div className=' absolute bg-tertiary top-78 right-0 w-71'>
+            <button onClick={showLogoutAlert} className=' py-4 px-8 text-primary font-label--md'>
+              로그아웃
+            </button>
+            <button className=' py-4 px-8 text-primary font-label--md'>계정삭제</button>
+          </div>
+        )}
       </div>
     </nav>
   );

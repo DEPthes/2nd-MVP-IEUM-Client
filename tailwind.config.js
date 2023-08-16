@@ -24,6 +24,8 @@ module.exports = {
         negative: '#E11900',
         hover: '#2D2421',
         letter: '#987A6F',
+        letter_paper: '#F0E4D1',
+        letter_bg: '#F6F0E7',
         letter_hover: '#786056',
         text_primary: '#000000',
         text_secondary: '#6B6B6B',
