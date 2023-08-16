@@ -5,61 +5,90 @@ import Layout from '../../layouts/layout';
 import AutoResizableTextarea from '../../autoResizableTextarea';
 import { ComponentType } from '../../../pages/letter/new';
 import useAlert from '../../../recoil/alert/useAlert';
-import BackDrop from '../../modal/backdrop';
-import ModalView from '../../modal/modalView';
-import RecordIcon from '../../../public/icons/record.svg';
-import CircleIcon from '../../../public/icons/cirlce-circle.svg';
-import overScroll from '../../../styles/overScroll.module.css';
-
-const Data = [
-  {
-    id: 1,
-    title: '편지제목1',
-    date: '2023.08.07',
-  },
-  {
-    id: 2,
-    title: '편지제목2',
-    date: '2023.08.07',
-  },
-  {
-    id: 3,
-    title: '편지제목3',
-    date: '2023.08.07',
-  },
-  {
-    id: 4,
-    title: '편지제목4',
-    date: '2023.08.07',
-  },
-];
+import SendTemp from './send-Temp';
+import { postTemp } from '@/apis/postTemp';
+import { useMutation } from 'react-query';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
+  newtitle: (title: string) => void;
+  newcontents: (title: string) => void;
 };
 
-const SendWriting: React.FC<SendProps> = ({ componentChangeHandler }) => {
-  const MAX_LENGTH_TITLE = 10; //편지 제목 글자수 제한
+type LoadType = {
+  id: number;
+  title: string;
+  contents: string;
+  envelopType: number;
+  letterType: string;
+  senderId: number;
+  receiverId: number | null;
+  read: boolean;
+};
+
+const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, newcontents }) => {
+  const MAX_LENGTH_TITLE = 28; //편지 제목 글자수 제한
   const MAX_LENGTH = 3500; //편지 내용 글자수 제한
   const { showAlert } = useAlert();
   const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [contents, setContents] = useState('');
   const [inputCount, setInputCount] = useState(0);
   const [show, setShow] = useState(false);
-  const [selectedButtonId, setSelectedButtonId] = useState<number | null>(null);
 
-  //편지 제목 글자수 제한
+  const letter = {
+    title: title,
+    contents: contents,
+  };
+
+  const newTempMutation = useMutation(postTemp);
+
+  const handleSendButtonClick = () => {
+    newtitle(title);
+    newcontents(contents);
+    componentChangeHandler('Select');
+  };
+
+  //임시저장 POST
+  const newTempHandler = () => {
+    if (title.length > 0 && contents.length > 0) {
+      newTempMutation.mutate(
+        { letter },
+        {
+          onSuccess: () => {
+            showAlert({
+              title: '임시저장이 완료되었어요!',
+              actions: [
+                { title: '편지 계속 쓰기', style: 'primary', handler: null },
+                { title: '홈으로 돌아가기', style: 'tertiary', handler: () => router.push('/') },
+              ],
+            });
+          },
+          onError: () => {
+            console.log('newTempHandler 에러');
+          },
+        },
+      );
+    }
+  };
+
+  //편지 제목 글자수 제한 & 제목 저장
   const onInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > MAX_LENGTH_TITLE) {
       event.target.value = event.target.value.slice(0, MAX_LENGTH_TITLE);
     }
+    const target = event.target.value;
+    setTitle(target);
   };
 
-  //편지 내용 글자수 계산
+  //편지 내용 글자수 계산 & 내용 저장
   const onTextareaHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value.length > MAX_LENGTH) {
       event.target.value = event.target.value.slice(0, MAX_LENGTH);
     }
     setInputCount(event.target.value.length);
+    const target = event.target.value;
+    setContents(target);
   };
 
   //임시저장된 편지 모달창 띄우기
@@ -67,12 +96,14 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler }) => {
     setShow(true);
   };
 
-  //임시저장 하나만 선택
-  const handleButtonClicks = (id: number | null) => {
-    setSelectedButtonId(id);
+  //임시저장 불러오기
+  const handleTempLoadChange = (newLoad: LoadType) => {
+    setTitle(newLoad.title);
+    setContents(newLoad.contents);
   };
 
   return (
+    //<ProtectedLayout>
     <Layout>
       <main className='flex justify-center'>
         <form className='w-334 mt-40 mx-24 tablet:w-900 tablet:mt-56 tablet:mx-32 desktop:w-[1280px] desktop:mt-64 desktop:mx-64'>
@@ -81,46 +112,37 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler }) => {
             className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
             type='text'
             placeholder='편지 제목을 입력하세요.'
+            minLength={1}
             maxLength={MAX_LENGTH_TITLE}
+            value={title}
             onChange={onInputHandler}
           />
           <AutoResizableTextarea
             className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
             placeholder='편지 내용을 입력하세요.'
+            minLength={1}
             maxLength={MAX_LENGTH}
             onInput={onTextareaHandler}
+            value={contents}
             style={{ minHeight: '456px' }}
           />
-          <span>{inputCount}자/3500자</span>
-          <div className='flex justify-center items-center mt-56 w-full'>
+          <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
+            {inputCount}자/3500자
+          </span>
+          <div className='flex justify-center items-center mt-40 mb-34 w-full tablet:mt-56'>
             <button
               className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
               type='button'
-              onClick={() =>
-                showAlert({
-                  title: '임시저장이 완료되었어요!',
-                  actions: [
-                    { title: '편지 계속 쓰기', style: 'primary', handler: null },
-                    { title: '홈으로 돌아가기', style: 'tertiary', handler: () => router.push('/') },
-                  ],
-                })
-              }
+              disabled={!(title.length > 0 && contents.length > 0)}
+              onClick={newTempHandler}
             >
               임시 저장
             </button>
             <button
-              className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover'
+              className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover hover:border-hover disabled:bg-[#707070] disabled:border-[#707070]'
               type='button'
-              onClick={() => componentChangeHandler('Select')}
-              /*
-              showAlert({
-                    title: '적절하지 못한 문구가 포함되어 있어요.\n편지 발송을 원한다면 문구 수정이 필요해요.',
-                    actions: [
-                      { title: '수정하기', style: 'primary', handler: null },
-                      { title: '임시저장하기', style: 'tertiary', handler: null },
-                    ],
-                  })
-              */
+              disabled={!(title.length > 0 && contents.length > 0)}
+              onClick={handleSendButtonClick}
             >
               다음 단계
             </button>
@@ -130,39 +152,9 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler }) => {
           </div>
         </form>
       </main>
-      {show && (
-        <BackDrop>
-          <ModalView className='relative flex flex-col items-center justify-between box-border bg-tertiary rounded-10 w-329 px-12 py-24 desktop:w-375 desktop:px-24 desktop:py-40'>
-            <div className='text-primary font-label--md desktop:font-heading--md'>임시저장된 편지</div>
-            <div className={overScroll.scroll}>
-              <div className='mt-24 w-305 h-120 bg-[#F0E4D1] overflow-auto desktop:w-327 desktop:h-120 desktop:mt-48'>
-                {Data.map((data) => (
-                  <div key={data.id} className='flex items-center flex-row px-12 py-8'>
-                    <button className='mr-9' onClick={() => handleButtonClicks(data.id)}>
-                      {selectedButtonId === data.id ? <RecordIcon /> : <CircleIcon />}
-                    </button>
-                    <div className='text-primary font-heading--sm'>{data.title}</div>
-                    <div className='ml-auto text-primary font-label--sm'>{data.date}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className='flex justify-center items-center w-full mt-24 desktop:mt-48'>
-              <button className='w-130 h-40 gap-4 rounded-10 bg-primary text-tertiary font-label--md mr-45 desktop:w-160 desktop:h-40 desktop:mr-8'>
-                불러오기
-              </button>
-              <button
-                className='w-130 h-40 gap-4 rounded-10 border-primary border-1 text-primary font-label--md desktop:w-160 desktop:h-40'
-                type='button'
-                onClick={() => setShow(false)}
-              >
-                닫기
-              </button>
-            </div>
-          </ModalView>
-        </BackDrop>
-      )}
+      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
     </Layout>
+    //</ProtectedLayout>
   );
 };
 
