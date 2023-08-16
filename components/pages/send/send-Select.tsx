@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
 import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
+import ProtectedLayout from '@/components/layouts/ProtectedLayout';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
+  newtitle: string;
+  newcontents: string;
 };
 
-const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
+const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, newtitle, newcontents }) => {
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -26,7 +29,12 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
     setEnvelopType(num);
   };
 
+  const newLetterHandler = () => {
+    componentChangeHandler('Complete');
+  };
+
   return (
+    //<ProtectedLayout>
     <Layout>
       <main className='flex justify-center'>
         <div className='mt-40 tablet:mt-56 desktop:mt-64'>
@@ -123,7 +131,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
             <button
               className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
-              onClick={() => componentChangeHandler('Complete')}
+              onClick={newLetterHandler}
             >
               사람에게 보내기
             </button>
@@ -138,6 +146,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler }) => {
         </div>
       </main>
     </Layout>
+    //</ProtectedLayout>
   );
 };
 

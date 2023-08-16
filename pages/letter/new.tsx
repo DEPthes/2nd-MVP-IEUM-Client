@@ -7,6 +7,8 @@ export type ComponentType = 'Writing' | 'Select' | 'Complete';
 
 const LetterNew = () => {
   const [component, setComponent] = useState<ComponentType>('Writing');
+  const [title, setTitle] = useState('');
+  const [contents, setContents] = useState('');
 
   const componentChangeHandler = (ComponentType: ComponentType) => {
     setComponent(ComponentType);
@@ -14,8 +16,12 @@ const LetterNew = () => {
 
   return (
     <div>
-      {component === 'Writing' && <SendWriting componentChangeHandler={componentChangeHandler} />}
-      {component === 'Select' && <SendSelect componentChangeHandler={componentChangeHandler} />}
+      {component === 'Writing' && (
+        <SendWriting componentChangeHandler={componentChangeHandler} newtitle={setTitle} newcontents={setContents} />
+      )}
+      {component === 'Select' && (
+        <SendSelect componentChangeHandler={componentChangeHandler} newtitle={title} newcontents={contents} />
+      )}
       {component === 'Complete' && <SendComplete />}
     </div>
   );
