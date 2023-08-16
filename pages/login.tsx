@@ -1,8 +1,15 @@
 import React, { useState, useRef } from 'react';
-import CheckSquare from '@/components/check-square';
+import { useMutation } from 'react-query';
+import { postLogin } from '@/apis/postLogin';
+import { authToken } from '@/class/authToken';
 
-import Eyes from '../../public/icons/eye.svg';
-import EyesHidden from '../../public/icons/eye-hidden.svg';
+import Header from '../components/layouts/header';
+import CheckSquare from '@/components/check-square';
+import Eyes from '../public/icons/eye.svg';
+import EyesHidden from '../public/icons/eye-hidden.svg';
+import { useRouter } from 'next/router';
+
+// import useLoginQuery from '@/hooks/queries/useLoginQuery';
 
 const user = {
   id: 'asdf@1234',
@@ -10,11 +17,11 @@ const user = {
 };
 
 export default function Login() {
+  const router = useRouter();
+  const newLoginMutation = useMutation(postLogin);
   const [showPassword, setShowPassword] = useState(false);
   const [checkLogin, setCheckLogin] = useState(false);
-  const [idIsValid, setIdIsValid] = useState(true);
-  const [passwordIsValid, setPasswordIsValid] = useState(true);
-
+  const [IsValid, setIsValid] = useState(true);
   const idValue = useRef<HTMLInputElement | null>(null);
   const passwordValue = useRef<HTMLInputElement | null>(null);
 
@@ -24,20 +31,39 @@ export default function Login() {
 
   const toggleCheckLoginHandler = () => {
     setCheckLogin((prevCheckLogin) => !prevCheckLogin);
-    console.log('test');
   };
 
-  const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {
+  const successHandler = (check: boolean, access_token: string) => {
+    if (check) {
+      setIsValid(true);
+      //acess_token 저장
+      authToken.setToken(access_token);
+      router.push('/');
+    } else {
+      setIsValid(false);
+    }
+  };
+
+  const failHandler = () => {
+    setIsValid(false);
+  };
+
+  const submitHandler = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const isIdValid = idValue.current?.value === user.id;
-    const isPasswordValid = passwordValue.current?.value === user.password;
+    if (idValue.current && passwordValue.current) {
+      const email = idValue.current.value;
+      const password = passwordValue.current.value;
 
-    setIdIsValid(isIdValid);
-    setPasswordIsValid(isPasswordValid);
-
-    if (isIdValid && isPasswordValid) {
-      alert('로그인 되었습니다.');
+      newLoginMutation.mutate(
+        { email, password },
+        {
+          onSuccess: (response) => {
+            successHandler(response.data.check, response.data.information.accessToken);
+          },
+          onError: failHandler,
+        },
+      );
     }
   };
 
@@ -49,35 +75,25 @@ export default function Login() {
       <form onSubmit={submitHandler}>
         <div className='w-390 h-844 relative overflow-hidden bg-[#fffcf7]'>
           {/* Header */}
-
+          {/* <Header /> */}
           {/* font-family */}
           <p className='mt-145 mx-167 text-[21px] font-SUITE text-left not-italic text-[#675149]'>로그인</p>
 
           {/* input Id */}
           <input
-            className={`inline-flex w-342 h-50 ml-24 mt-24 pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
-              idIsValid ? 'bg-white border-[#675149]/30' : 'bg-[#e11900]/10 border-[#E11900]'
-            }`}
+            className='inline-flex w-342 h-50 ml-24 mt-24 pl-12 rounded-10 border-2 focus:outline-none 
+            focus:border-[#707070] bg-white border-[#675149]/30'
             ref={idValue}
             placeholder='아이디를 입력해주세요'
           />
-          {!idIsValid || !passwordIsValid ? (
-            <p className='ml-24 text-12px text-left leading-[160%] not-italic line-hei text-[#e11900]'>
-              아이디 또는 비밀번호를 다시 확인해주세요.
-            </p>
-          ) : (
-            <p className='mt-4'>&nbsp;</p>
-          )}
 
           {/* input Password */}
-          <div className='relative inline-flex'>
+          <div className='relative inline-flex mt-20'>
             <input
               type={showPassword ? 'text' : 'password'}
               ref={passwordValue}
-              className={`inline-flex w-342 h-50 ml-24 mt-5 pl-12 rounded-10 
-              focus:outline-none focus:border-[#707070] ${
-                passwordIsValid ? 'bg-white border-2 border-[#675149]/30' : 'bg-[#e11900]/10 border-2 border-[#E11900]'
-              }`}
+              className='inline-flex w-342 h-50 ml-24 mt-5 pl-12 rounded-10 
+              focus:outline-none focus:border-[#707070] bg-white border-2 border-[#675149]/30'
               placeholder='비밀번호를 입력해주세요'
             />
             <button type='button' className='ml-[-36px] mt-3.5' onClick={togglePasswordHandler}>
@@ -85,9 +101,17 @@ export default function Login() {
             </button>
           </div>
 
+          {!IsValid ? (
+            <p className='ml-24 text-12px text-left leading-[160%] not-italic line-hei text-[#e11900]'>
+              아이디 또는 비밀번호를 다시 확인해주세요.
+            </p>
+          ) : (
+            <p className='mt-1'>&nbsp;</p>
+          )}
+
           {/* Button */}
           <button
-            className={`flex w-342 h-50 m-24 mt-51 justify-center items-center 
+            className={`flex w-342 h-50 m-24 mt-31 justify-center items-center 
            rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
           ${loginAble ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
             disabled={!loginAble}

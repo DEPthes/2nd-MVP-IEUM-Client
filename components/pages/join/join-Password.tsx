@@ -193,7 +193,7 @@ const JoinPassword: React.FC = () => {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
-              <img src={showPassword.showCheckPassword ? '/icons/eye.svg' : '/icons/eye-hidden.svg'}></img>
+              {showPassword.showCheckPassword ? <Eyes /> : <EyesHidden />}
             </button>
           </div>
           {checkPasswordIsValid ? (
