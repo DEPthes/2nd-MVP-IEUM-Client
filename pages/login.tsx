@@ -11,11 +11,6 @@ import { useRouter } from 'next/router';
 
 // import useLoginQuery from '@/hooks/queries/useLoginQuery';
 
-const user = {
-  id: 'asdf@1234',
-  password: '1234',
-};
-
 export default function Login() {
   const router = useRouter();
   const newLoginMutation = useMutation(postLogin);
@@ -31,6 +26,10 @@ export default function Login() {
 
   const toggleCheckLoginHandler = () => {
     setCheckLogin((prevCheckLogin) => !prevCheckLogin);
+  };
+
+  const togglejoinHandler = () => {
+    router.push('/join');
   };
 
   const successHandler = (check: boolean, access_token: string) => {
@@ -123,6 +122,7 @@ export default function Login() {
             className='flex w-342 h-50 m-24 justify-center items-center bg-[#675149] 
             rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7] 
             hover:bg-[#2D2421]'
+            onClick={togglejoinHandler}
           >
             간편가입
           </button>
