@@ -9,7 +9,7 @@ import SendTemp from './response-Temp';
 import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
-import ProtectedLayout from '@/components/layouts/onlyUser';
+import Loading from '../../../public/icons/loading2.svg';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -57,7 +57,12 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
             componentChangeHandler('Select');
           } else if (response.data.information.prohibition === 1) {
             showAlert({
-              title: '적절하지 못한 문구가 포함되어 있어요.\n편지 발송을 원한다면 문구 수정이 필요해요.',
+              title: (
+                <div className='flex flex-col items-center'>
+                  <span>적절하지 못한 문구가 포함되어 있어요.</span>
+                  <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
+                </div>
+              ),
               actions: [
                 { title: '수정하기', style: 'primary', handler: null },
                 { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
@@ -143,9 +148,13 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
   };
 
   return (
-    <ProtectedLayout>
-      <Layout>
-        <main className='flex justify-center'>
+    <Layout onlyUser>
+      <main className='flex justify-center'>
+        {newCheckMutation.isLoading ? (
+          <div className='mt-150'>
+            <Loading />
+          </div>
+        ) : (
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
             <input
@@ -191,10 +200,10 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               </button>
             </div>
           </form>
-        </main>
-        {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
-      </Layout>
-    </ProtectedLayout>
+        )}
+      </main>
+      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
+    </Layout>
   );
 };
 

@@ -10,7 +10,6 @@ import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
 import Loading from '../../../public/icons/loading2.svg';
-import ProtectedLayout from '@/components/layouts/onlyUser';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -57,7 +56,12 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
             componentChangeHandler('Select');
           } else if (response.data.information.prohibition === 1) {
             showAlert({
-              title: '적절하지 못한 문구가 포함되어 있어요.\n편지 발송을 원한다면 문구 수정이 필요해요.',
+              title: (
+                <div className='flex flex-col items-center'>
+                  <span>적절하지 못한 문구가 포함되어 있어요.</span>
+                  <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
+                </div>
+              ),
               actions: [
                 { title: '수정하기', style: 'primary', handler: null },
                 { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
@@ -143,64 +147,62 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   };
 
   return (
-    <ProtectedLayout>
-      <Layout>
-        <main className='flex justify-center'>
-          {newCheckMutation.isLoading ? (
-            <div className='mt-150'>
-              <Loading />
+    <Layout onlyUser>
+      <main className='flex justify-center'>
+        {newCheckMutation.isLoading ? (
+          <div className='mt-150'>
+            <Loading />
+          </div>
+        ) : (
+          <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
+            <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
+            <input
+              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
+              type='text'
+              placeholder='편지 제목을 입력하세요.'
+              minLength={1}
+              maxLength={MAX_LENGTH_TITLE}
+              value={title}
+              onChange={onInputHandler}
+            />
+            <AutoResizableTextarea
+              className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
+              placeholder='편지 내용을 입력하세요.'
+              minLength={1}
+              maxLength={MAX_LENGTH}
+              onInput={onTextareaHandler}
+              value={contents}
+              style={{ minHeight: '456px' }}
+            />
+            <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
+              {inputCount}자/3500자
+            </span>
+            <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
+              <button
+                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
+                type='button'
+                disabled={!(title.length > 0 && contents.length > 0)}
+                onClick={newTempHandler}
+              >
+                임시 저장
+              </button>
+              <button
+                className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover hover:border-hover disabled:bg-[#707070] disabled:border-[#707070]'
+                type='button'
+                disabled={!(title.length > 0 && contents.length > 0)}
+                onClick={handleSendButtonClick}
+              >
+                다음 단계
+              </button>
+              <button type='button' onClick={handleButtonClick}>
+                <MailsIcon />
+              </button>
             </div>
-          ) : (
-            <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
-              <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
-              <input
-                className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
-                type='text'
-                placeholder='편지 제목을 입력하세요.'
-                minLength={1}
-                maxLength={MAX_LENGTH_TITLE}
-                value={title}
-                onChange={onInputHandler}
-              />
-              <AutoResizableTextarea
-                className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
-                placeholder='편지 내용을 입력하세요.'
-                minLength={1}
-                maxLength={MAX_LENGTH}
-                onInput={onTextareaHandler}
-                value={contents}
-                style={{ minHeight: '456px' }}
-              />
-              <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
-                {inputCount}자/3500자
-              </span>
-              <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
-                <button
-                  className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
-                  type='button'
-                  disabled={!(title.length > 0 && contents.length > 0)}
-                  onClick={newTempHandler}
-                >
-                  임시 저장
-                </button>
-                <button
-                  className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover hover:border-hover disabled:bg-[#707070] disabled:border-[#707070]'
-                  type='button'
-                  disabled={!(title.length > 0 && contents.length > 0)}
-                  onClick={handleSendButtonClick}
-                >
-                  다음 단계
-                </button>
-                <button type='button' onClick={handleButtonClick}>
-                  <MailsIcon />
-                </button>
-              </div>
-            </form>
-          )}
-        </main>
-        {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
-      </Layout>
-    </ProtectedLayout>
+          </form>
+        )}
+      </main>
+      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
+    </Layout>
   );
 };
 
