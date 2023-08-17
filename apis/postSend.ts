@@ -1,7 +1,7 @@
 import ieumAxios from './ieumAxios';
 import { authToken } from '@/class/authToken';
 
-type TempResponse = {
+type SendResponse = {
   check: boolean;
   information: {
     id: number;
@@ -15,19 +15,32 @@ type TempResponse = {
   };
 };
 
-export async function postTemp({
-  originalLetterId,
+export async function postSend({
   title,
   contents,
+  envelopType,
+  originalLetterId,
+  letterType,
+  letterId,
 }: {
-  originalLetterId: number | null;
   title: string;
   contents: string;
+  envelopType: number;
+  originalLetterId: number | null;
+  letterType: string | undefined;
+  letterId: number | undefined;
 }) {
   const accessToken = authToken.getToken();
-  return await ieumAxios.post<TempResponse>(
-    '/api/letter/temp',
-    { originalLetterId, title, contents },
+  return await ieumAxios.post<SendResponse>(
+    '/api/letter/send',
+    {
+      title,
+      contents,
+      envelopType,
+      originalLetterId,
+      letterType,
+      letterId,
+    },
     { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` } },
   );
 }

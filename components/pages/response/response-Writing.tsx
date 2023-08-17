@@ -5,7 +5,7 @@ import Layout from '../../layouts/layout';
 import AutoResizableTextarea from '../../autoResizableTextarea';
 import { ComponentType } from '../../../pages/letter/new';
 import useAlert from '../../../recoil/alert/useAlert';
-import SendTemp from './send-Temp';
+import SendTemp from './response-Temp';
 import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
@@ -16,6 +16,7 @@ type SendProps = {
   newtitle: (title: string) => void;
   newcontents: (title: string) => void;
   newload: (load: LoadType | undefined) => void;
+  selectId: number;
 };
 
 type LoadType = {
@@ -29,7 +30,7 @@ type LoadType = {
   read: boolean;
 };
 
-const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, newcontents, newload }) => {
+const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, newcontents, newload, selectId }) => {
   const MAX_LENGTH_TITLE = 28; //편지 제목 글자수 제한
   const MAX_LENGTH = 3500; //편지 내용 글자수 제한
   const { showAlert } = useAlert();
@@ -42,7 +43,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
-  //다음 단계 버튼
+  //답장 다음 단계 버튼
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
@@ -83,10 +84,10 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
     );
   };
 
-  //임시저장 버튼
+  //답장 임시저장 버튼
   const newTempHandler = () => {
     newTempMutation.mutate(
-      { originalLetterId: null, title, contents },
+      { originalLetterId: selectId, title, contents },
       {
         onSuccess: () => {
           showAlert({
@@ -206,4 +207,4 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   );
 };
 
-export default SendWriting;
+export default ResponseWriting;

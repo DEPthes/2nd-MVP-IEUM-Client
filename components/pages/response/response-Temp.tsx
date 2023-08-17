@@ -4,7 +4,7 @@ import ModalView from '../../modal/modalView';
 import RecordIcon from '../../../public/icons/record.svg';
 import CircleIcon from '../../../public/icons/cirlce-circle.svg';
 import overScroll from '../../../styles/overScroll.module.css';
-import useTempsQuery from '@/hooks/queries/useTempsQuery';
+import useTempsReplyQuery from '@/hooks/queries/useTempsReplyQuery';
 import useTempQuery from '@/hooks/queries/useTempQuery';
 
 type SendProps = {
@@ -23,9 +23,9 @@ type LoadType = {
   read: boolean;
 };
 
-const SendTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
+const ResponseTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
   const [selectedButtonId, setSelectedButtonId] = useState<number>(0);
-  const { temps } = useTempsQuery();
+  const { temps } = useTempsReplyQuery();
   const { temp } = useTempQuery(selectedButtonId);
   const [load, setLoad] = useState<LoadType>();
 
@@ -95,4 +95,4 @@ const SendTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
   );
 };
 
-export default SendTemp;
+export default ResponseTemp;

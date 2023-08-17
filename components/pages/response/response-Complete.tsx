@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../layouts/layout';
 import CompleteImg from '../../../public/imgs/complete.svg';
 
-const SendComplete: React.FC = () => {
+const ResponseComplete: React.FC = () => {
   const router = useRouter();
 
   return (
@@ -28,4 +28,4 @@ const SendComplete: React.FC = () => {
   );
 };
 
-export default SendComplete;
+export default ResponseComplete;

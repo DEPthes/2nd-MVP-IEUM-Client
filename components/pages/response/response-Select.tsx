@@ -4,13 +4,14 @@ import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
 import { useMutation } from 'react-query';
 import { postSend } from '@/apis/postSend';
-import { postSendGpt } from '@/apis/postSendGpt';
+import { postSendGptReply } from '@/apis/postSendGptReply';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
   title: string;
   contents: string;
   load?: LoadType;
+  selectId: number;
 };
 
 type LoadType = {
@@ -24,7 +25,7 @@ type LoadType = {
   read: boolean;
 };
 
-const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load }) => {
+const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load, selectId }) => {
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -43,38 +44,35 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
     setEnvelopType(num);
   };
 
-  //편지 사람에게 보내기
+  //편지답장 발송하기
   const newSendMutation = useMutation(postSend);
+  //const newSendGptReplyMutation = useMutation(postSendGptReply);
   const newSendHandler = () => {
     newSendMutation.mutate(
-      { title, contents, envelopType, originalLetterId: null, letterId: load?.id, letterType: load?.letterType },
+      { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
       {
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
         onError: () => {
           alert('버튼 다시 눌러주세요!');
-          console.log('newSendHandler 에러');
+          console.log('newSendMutation 에러');
         },
       },
     );
-  };
-
-  //편지 GPT에게 보내기
-  const newSendGptMutation = useMutation(postSendGpt);
-  const newSendGptHandler = () => {
-    newSendGptMutation.mutate(
-      { title, contents, envelopType },
-      {
-        onSuccess: () => {
-          componentChangeHandler('Complete');
-        },
-        onError: () => {
-          alert('버튼 다시 눌러주세요!');
-          console.log('newSendGptHandler 에러');
-        },
-      },
-    );
+    // newSendGptReplyMutation.mutate(
+    //   { title, contents, envelopType },
+    //   {
+    //     onSuccess: () => {
+    //       componentChangeHandler('Complete');
+    //     },
+    //     onError: () => {
+    //       alert('버튼 다시 눌러주세요!');
+    //       console.log('newLetterGptReplyHandler 에러');
+    //     },
+    //   },
+    // );
+    //이 부분 수정 필요!
   };
 
   return (
@@ -172,18 +170,11 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
           </div>
           <div className='flex justify-center items-center mt-62 w-full'>
             <button
-              className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
+              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
               type='button'
               onClick={newSendHandler}
             >
-              사람에게 보내기
-            </button>
-            <button
-              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
-              type='button'
-              onClick={newSendGptHandler}
-            >
-              AI에게 보내기
+              발송하기
             </button>
           </div>
         </div>
@@ -192,4 +183,4 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
   );
 };
 
-export default SendSelect;
+export default ResponseSelect;
