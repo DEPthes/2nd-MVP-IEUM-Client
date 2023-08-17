@@ -64,7 +64,9 @@ const SendTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
                 <button className='mr-9' onClick={() => handleButtonClicks(data.letterId)}>
                   {selectedButtonId === data.letterId ? <RecordIcon /> : <CircleIcon />}
                 </button>
-                <div className='text-primary font-heading--sm'>{data.title}</div>
+                <div className='text-primary font-heading--sm'>
+                  {data.title.length > 16 ? data.title.substring(0, 15) + '...' : data.title}
+                </div>
                 <div className='ml-auto text-primary font-label--sm'>
                   {data.modifiedAt.substring(0, 10).replaceAll('-', '.')}
                 </div>
