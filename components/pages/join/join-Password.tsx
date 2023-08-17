@@ -7,6 +7,7 @@ import DeleteIcon from '../../../public/icons/delete.svg';
 import ReturnIcon from '../../../public/icons/return2.svg';
 import EyesIcon from '../../../public/icons/eye.svg';
 import EyesHiddenIcon from '../../../public/icons/eye-hidden.svg';
+import LoadingIcon from '../../../public/icons/loading.svg';
 
 import { getNicknameDuplicated } from '@/apis/getNicknameDuplicated';
 import { getNickname } from '@/apis/getNickname';
@@ -35,12 +36,14 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     admitSquare: false,
   });
 
-  const [checkNickname, setCheckNickname] = useState('');
+  const [checkNickname, setCheckNickname] = useState<'' | 'inputNickName' | 'positive' | 'duplicated'>('');
 
   const [passwordValue, setPasswordValue] = useState({
     passwordValue: '',
     checkPasswordValue: '',
   });
+
+  const [isFetch, setIsFetch] = useState<boolean>(false);
 
   //초기 닉네임 설정
   const initNicknames = [
@@ -104,7 +107,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     if (response.data.information.available) {
       setCheckNickname('positive');
     } else {
-      setCheckNickname('dublicated');
+      setCheckNickname('duplicated');
     }
   };
 
@@ -127,17 +130,16 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     try {
       // 저장된 배열이 0일 때만 API 호출
       if (nicknames.length === 0) {
+        setIsFetch(true);
         const response = await getNickname();
         setNicknames(response.data.information.nickname);
-        console.log(nicknames);
       }
-
+      setIsFetch(false);
       setNickname(nicknames[0]);
       setNicknames((prevNicknames) => prevNicknames.slice(1));
-      console.log(nicknames);
     } catch (error) {
       // 서버에서 500 오류가 발생한 경우
-      console.error('An error occurred:', error);
+      setIsFetch(false);
       alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     }
   }
@@ -170,6 +172,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   const failHandler = () => {
     console.log('sign-up Error');
   };
+
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -193,13 +196,13 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
           {/* font-family */}
           <p
-            className='mt-153 mx-167 w-100 text-[21px] font-SUITE text-left not-italic
+            className='mt-153 mx-167 w-100 text-[21px] font-heading--lg text-left not-italic
           text-[#675149]'
           >
             간편가입
           </p>
           <p
-            className='mt-24 mx-24 w-100 text-[16px] font-SUITE text-left not-italic 
+            className='mt-24 mx-24 w-100 text-[16px] font-heading--md text-left not-italic 
           text-[#675149]'
           >
             닉네임
@@ -217,13 +220,19 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
             <button type='button' onClick={toggleDeleteHandler} className='ml-[-75px] mt-3'>
               <DeleteIcon />
             </button>
-            <button type='button' onClick={changeNicknameHandler} className='ml-10 mt-3'>
-              <ReturnIcon />
-            </button>
+            {!isFetch ? (
+              <button type='button' onClick={changeNicknameHandler} className='ml-10 mt-3'>
+                <ReturnIcon />
+              </button>
+            ) : (
+              <div className='ml-7 mt-8'>
+                <LoadingIcon />
+              </div>
+            )}
           </div>
           <button
             className='flex w-342 h-50 mx-24 mt-16 justify-center items-center 
-           rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
+           rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
           bg-[#675149] hover:bg-[#2D2421]'
             type='button'
             onClick={duplicationCheckHandler}
@@ -236,7 +245,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
               한글, 영문 관계없이 3~10자로 입력해주세요
             </p>
-          ) : checkNickname === 'dublicated' ? (
+          ) : checkNickname === 'duplicated' ? (
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
           ) : checkNickname === 'positive' ? (
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
@@ -246,7 +255,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
           {/* input password */}
           <p
-            className='mx-24 mt-5 w-100 text-[16px] font-SUITE text-left not-italic 
+            className='mx-24 mt-5 w-100 text-[16px] font-heading--md text-left not-italic 
           text-[#675149]'
           >
             비밀번호
@@ -306,7 +315,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
             <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
-                font-SUITE text-left not-italic'
+                font-paragraph--sm text-left not-italic'
             >
               만 14세 이상입니다(필수)
             </p>
@@ -316,7 +325,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
             <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
             <p
               className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
-                font-SUITE text-left not-italic box-border'
+                font-paragraph--sm text-left not-italic box-border'
             >
               편지 알림 이메일 수신 동의 (필수)
             </p>
@@ -326,7 +335,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
           {/* 활성화 처리 해야됨 */}
           <button
             className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
-           rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
+           rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
           bg-[#675149] 
           ${signUpIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
             disabled={!signUpIsValid}
