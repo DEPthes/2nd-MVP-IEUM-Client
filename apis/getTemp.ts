@@ -1,5 +1,4 @@
 import ieumAxios from './ieumAxios';
-import { authToken } from '@/class/authToken';
 
 type TempsResponse = {
   check: boolean;
@@ -15,10 +14,8 @@ type TempsResponse = {
   };
 };
 
-export async function getTemp(letterId: number) {
-  const accessToken = authToken.getToken();
+export async function getTemp(letterId: number, accessToken: string | null) {
   return await ieumAxios.get<TempsResponse>(`/api/letter/temp/${letterId}`, {
-    headers: { 'Content-Type': 'application/json', accessToken },
-    params: letterId,
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
   });
 }

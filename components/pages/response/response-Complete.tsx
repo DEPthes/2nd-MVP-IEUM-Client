@@ -4,7 +4,7 @@ import Layout from '../../layouts/layout';
 import CompleteImg from '../../../public/imgs/complete.svg';
 import ProtectedLayout from '@/components/layouts/ProtectedLayout';
 
-const SendComplete: React.FC = () => {
+const ResponseComplete: React.FC = () => {
   const router = useRouter();
 
   return (
@@ -31,4 +31,4 @@ const SendComplete: React.FC = () => {
   );
 };
 
-export default SendComplete;
+export default ResponseComplete;
