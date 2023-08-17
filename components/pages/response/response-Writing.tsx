@@ -9,7 +9,7 @@ import SendTemp from './response-Temp';
 import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
-//import ProtectedLayout from '@/components/layouts/ProtectedLayout';
+import ProtectedLayout from '@/components/layouts/onlyUser';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -143,58 +143,58 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
   };
 
   return (
-    //<ProtectedLayout>
-    <Layout>
-      <main className='flex justify-center'>
-        <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
-          <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
-          <input
-            className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
-            type='text'
-            placeholder='편지 제목을 입력하세요.'
-            minLength={1}
-            maxLength={MAX_LENGTH_TITLE}
-            value={title}
-            onChange={onInputHandler}
-          />
-          <AutoResizableTextarea
-            className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
-            placeholder='편지 내용을 입력하세요.'
-            minLength={1}
-            maxLength={MAX_LENGTH}
-            onInput={onTextareaHandler}
-            value={contents}
-            style={{ minHeight: '456px' }}
-          />
-          <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
-            {inputCount}자/3500자
-          </span>
-          <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
-            <button
-              className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
-              type='button'
-              disabled={!(title.length > 0 && contents.length > 0)}
-              onClick={newTempHandler}
-            >
-              임시 저장
-            </button>
-            <button
-              className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover hover:border-hover disabled:bg-[#707070] disabled:border-[#707070]'
-              type='button'
-              disabled={!(title.length > 0 && contents.length > 0)}
-              onClick={handleSendButtonClick}
-            >
-              다음 단계
-            </button>
-            <button type='button' onClick={handleButtonClick}>
-              <MailsIcon />
-            </button>
-          </div>
-        </form>
-      </main>
-      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
-    </Layout>
-    //</ProtectedLayout>
+    <ProtectedLayout>
+      <Layout>
+        <main className='flex justify-center'>
+          <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
+            <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
+            <input
+              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
+              type='text'
+              placeholder='편지 제목을 입력하세요.'
+              minLength={1}
+              maxLength={MAX_LENGTH_TITLE}
+              value={title}
+              onChange={onInputHandler}
+            />
+            <AutoResizableTextarea
+              className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
+              placeholder='편지 내용을 입력하세요.'
+              minLength={1}
+              maxLength={MAX_LENGTH}
+              onInput={onTextareaHandler}
+              value={contents}
+              style={{ minHeight: '456px' }}
+            />
+            <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
+              {inputCount}자/3500자
+            </span>
+            <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
+              <button
+                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
+                type='button'
+                disabled={!(title.length > 0 && contents.length > 0)}
+                onClick={newTempHandler}
+              >
+                임시 저장
+              </button>
+              <button
+                className='w-130 py-6 mr-17 justify-center items-center border-primary rounded-10 border-1 text-secondary bg-primary gap-4 font-label--md hover:bg-hover hover:border-hover disabled:bg-[#707070] disabled:border-[#707070]'
+                type='button'
+                disabled={!(title.length > 0 && contents.length > 0)}
+                onClick={handleSendButtonClick}
+              >
+                다음 단계
+              </button>
+              <button type='button' onClick={handleButtonClick}>
+                <MailsIcon />
+              </button>
+            </div>
+          </form>
+        </main>
+        {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
+      </Layout>
+    </ProtectedLayout>
   );
 };
 
