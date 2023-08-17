@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
 import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
-import ProtectedLayout from '@/components/layouts/ProtectedLayout';
+import ProtectedLayout from '@/components/layouts/onlyUser';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
