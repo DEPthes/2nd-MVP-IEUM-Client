@@ -1,10 +1,11 @@
-import axios from 'axios';
+import ieumAxios from './ieumAxios';
 
 type UserResponse = {
   id: string;
-  nickname: string;
 };
 
 export async function getUser(accessToken: string) {
-  return axios.get<UserResponse>('/api/user');
+  return ieumAxios.get<UserResponse>('/api/user/verify', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 }
