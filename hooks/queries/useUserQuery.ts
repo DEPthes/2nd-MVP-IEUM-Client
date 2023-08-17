@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import useApiError from '../custom/useApiError';
 
 export const USER_QUERY_KEY = 'userQuery';
-export default function useUser(onError?: () => void) {
+export default function useUserQuery(onError?: () => void) {
   const accessToken = authToken.getToken();
   const {
     data: user,
