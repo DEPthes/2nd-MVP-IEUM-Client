@@ -2,7 +2,6 @@ import { getUser } from '@/apis/getUser';
 import { withVerify } from '@/apis/withVerify';
 import { authToken } from '@/class/authToken';
 import { useQuery } from 'react-query';
-import useApiError from '../custom/useApiError';
 
 export const USER_QUERY_KEY = 'userQuery';
 export default function useUserQuery(onError?: () => void) {
