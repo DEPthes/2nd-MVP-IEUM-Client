@@ -5,12 +5,12 @@ import { useRouter } from 'next/router';
 import ProfileIcon from '../../public/icons/profile.svg';
 import Hamburger from '../hamburger';
 import useIeumMediaQuery from '@/hooks/custom/useIeumMediaQuery';
-import useUser from '@/hooks/queries/useUser';
 import useAlert from '@/recoil/alert/useAlert';
+import useUserQuery from '@/hooks/queries/useUserQuery';
 
 const Header = () => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user } = useUserQuery();
   const { showAlert } = useAlert();
   const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
@@ -70,10 +70,10 @@ const Header = () => {
           <Link href={'/'} className=' font-label--md text-primary'>
             사용 방법
           </Link>
-          <Link href={'/'} className=' font-label--md text-primary'>
+          <Link href={'/letter/all'} className=' font-label--md text-primary'>
             우체통
           </Link>
-          <Link href={'/'} className=' font-label--md text-primary'>
+          <Link href={'/letter/new'} className=' font-label--md text-primary'>
             편지 쓰기
           </Link>
         </div>

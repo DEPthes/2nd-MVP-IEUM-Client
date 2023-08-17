@@ -11,9 +11,9 @@ export type LettersResponse = {
 };
 export type LetterType = 'read' | 'unread';
 
-export async function getLetters(type: LetterType, accessToken: string) {
-  const url = type === 'read' ? '/api/mail/read' : '/api/mailbox';
+export async function getLetters(type: LetterType, accessToken: string | null) {
+  const url = type === 'read' ? '/api/mailbox/read' : '/api/mailbox';
   return await ieumAxios.get<LettersResponse>(url, {
-    headers: { 'Content-Type': 'application/json', accessToken },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
   });
 }
