@@ -1,33 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Layout from '../../layouts/layout';
+import React, { useState, useEffect } from 'react';
 import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
 import { useMutation } from 'react-query';
 import useApiError from '@/hooks/custom/useApiError';
 import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
 import { AxiosError } from 'axios';
+import { cls } from '@/utils/cls';
 
 type PasswordEmailProps = {
   moveNextPage: () => void;
-  passwordChangeHandler: React.Dispatch<React.SetStateAction<string>>;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordChangeHandler }) => {
+const DEFAULT_TIMER_TIME = 10000 * 60 * 3; // 타이머 초기 값 -> 3분
+
+const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail }) => {
   const [emailValue, setEmailValue] = useState<string>('');
   const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
-  const [time, setTime] = useState<number>(180000);
+  const [time, setTime] = useState<number>(DEFAULT_TIMER_TIME);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
-  const [sendAuthNumber, setSendAuthNumber] = useState<boolean>(false);
+  const [AuthNumberSended, setAuthNumberSended] = useState<boolean>(false); // 인증번호 발송되었는지
+  const [authNumber, setAuthNumber] = useState('');
   const [authNumberIsValid, setAuthNumberIsValid] = useState<'normal' | 'timeOver' | 'positive' | 'notIsValid'>(
     'normal',
   );
-  const authNumberValue = useRef<HTMLInputElement>(null);
   const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
   const newCheckAuthNumberMutation = useMutation(deleteAuthNumber);
+
+  // 이메일 input 활성화 여부 - 타이머가 시작되거나 인증번호 입력에 성공하면 비활성화
+  const isEmailFieldActive = !timerStarted && authNumberIsValid !== 'positive';
+
+  // 이메일 인증하기 버튼 활성화 여부 - isEmailFieldActive && 이메일이 제대로 입력되었을 때
+  const isEmailBtnActive = isEmailFieldActive && emailIsValid === 'positive';
+
+  // 인증번호 확인 input 활성화 여부 - 인증번호가 전송되지 않았거나 시간 초과되었을 때나 인증번호 인증에 성공했다면 비활성화
+  const isAuthNumberFieldActive =
+    AuthNumberSended && authNumberIsValid !== 'timeOver' && authNumberIsValid !== 'positive';
+
+  // 인증번호 확인 버튼 활성화 여부 - isAuthNumberFieldActive && 인증번호 필드에 값이 들어왔을 때
+  const isAuthNumberBtnActive = isAuthNumberFieldActive && authNumber.length > 0;
 
   const toggleNextHandler = () => {
     // "다음" 버튼 클릭 시 호출되는 함수
     moveNextPage();
-    passwordChangeHandler(emailValue); // 입력된 이메일 값을 joinChangeHandler로 전달
+    setEmail(emailValue); // 입력된 이메일 값을 joinChangeHandler로 전달
   };
 
   //Email 실시간 유효성 검사
@@ -73,25 +88,25 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordCha
 
   //resetTimer
   const resetTimer = () => {
-    setTime(180000);
+    setTime(DEFAULT_TIMER_TIME);
     setAuthNumberIsValid('normal');
   };
 
   //인증코드 전송
   const sendAuthNumberHandler = () => {
     //타이머 시작 로직
-    setSendAuthNumber(true);
+    setAuthNumberSended(true);
     resetTimer();
     setTimerStarted(true);
-    //인증 번호 전송
-    const email = emailValue;
-    //실패 처리 따로 지정 여부
-    newSendAuthNumberMutation.mutate({ email });
+
+    // TODO:실패 처리 따로 지정 여부
+    newSendAuthNumberMutation.mutate({ email: emailValue });
   };
 
   const checkAuthNumberSuccessHandler = (check: boolean) => {
     if (check) {
       setAuthNumberIsValid('positive');
+      setTimerStarted(false);
     }
   };
 
@@ -102,18 +117,15 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordCha
 
   //인증번호 확인
   const checkAuthNumberHandler = async () => {
-    if (authNumberValue.current) {
-      const authNumber = authNumberValue.current.value;
-      newCheckAuthNumberMutation.mutate(
-        { authNumber },
-        {
-          onSuccess: (response) => {
-            checkAuthNumberSuccessHandler(response.data.check);
-          },
-          onError: (err) => handlerError(err as AxiosError),
+    newCheckAuthNumberMutation.mutate(
+      { authNumber },
+      {
+        onSuccess: (response) => {
+          checkAuthNumberSuccessHandler(response.data.check);
         },
-      );
-    }
+        onError: (err) => handlerError(err as AxiosError),
+      },
+    );
   };
 
   const submitHandler = () => {};
@@ -131,6 +143,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordCha
               : ''
           }`}
           type='email'
+          disabled={!isEmailFieldActive}
           placeholder='이메일을 입력해주세요'
           onChange={emailChangeHandler}
         />
@@ -143,17 +156,15 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordCha
         )}
         <button
           className={`w-full py-13 justify-center rounded-10 text-tertiary font-label--md ${
-            emailIsValid === 'positive' && (!timerStarted || time <= 0)
-              ? ' bg-[#675149] hover:bg-[#2D2421]'
-              : 'bg-[#707070]'
+            isEmailBtnActive ? ' bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'
           }`}
           type='button'
           onClick={sendAuthNumberHandler}
-          disabled={emailIsValid !== 'positive' || timerStarted} //타이머가 동작 중이거나 이메일이 유효하지 않을 때 비활성화
+          disabled={!isEmailBtnActive} //타이머가 동작 중이거나 이메일이 유효하지 않을 때 비활성화
         >
           이메일 인증하기
         </button>
-        {sendAuthNumber ? (
+        {AuthNumberSended ? (
           <p className='font-paragraph--sm text-text_primary'>이메일로 인증번호가 발송되었어요!</p>
         ) : (
           <p className='mb-43'></p>
@@ -172,14 +183,20 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, passwordCha
                   ? 'bg-positive/10 border-positive focus:border-positive'
                   : ''
               }`}
-            ref={authNumberValue}
+            value={authNumber}
+            onChange={(e) => setAuthNumber(e.target.value)}
             type='text'
+            disabled={!isAuthNumberFieldActive}
             placeholder='인증번호를 입력해주세요'
           />
           <div className='absolute top-16 right-69 font-paragraph--sm'>{formattedTime(time)}</div>
           <button
-            className='absolute top-12 right-12 px-12 py-6 rounded-10 bg-primary/30 text-text_secondary font-label--sm hover:bg-border_focus hover:text-white'
+            className={cls(
+              'absolute top-12 right-12 px-12 py-6 rounded-10 bg-primary/30 text-text_secondary font-label--sm',
+              isAuthNumberBtnActive ? 'hover:bg-border_focus hover:text-white' : '',
+            )}
             type='button'
+            disabled={!isAuthNumberBtnActive}
             onClick={checkAuthNumberHandler}
           >
             확인

@@ -10,13 +10,8 @@ const ResetPassword = () => {
 
   return (
     <Layout onlyAccess='notUser'>
-      {component === 'Auth' ? (
-        <PasswordEmail moveNextPage={() => setComponent('Email')} passwordChangeHandler={setEmail} />
-      ) : component === 'Email' ? (
-        <PasswordPassword email={email} />
-      ) : (
-        ''
-      )}
+      {component === 'Auth' && <PasswordEmail moveNextPage={() => setComponent('Email')} setEmail={setEmail} />}
+      {component === 'Email' && <PasswordPassword email={email} />}
     </Layout>
   );
 };
