@@ -37,12 +37,12 @@ export default function Home() {
       <main className='flex flex-col items-center'>
         <section ref={section1} className=' bg-letter_bg w-full h-full py-8 px-4 mb-24'>
           <div className='flex flex-col items-center border-dashed border-1 border-black px-26 pt-65 pb-34'>
-            <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} />
+            <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} priority />
             <h1 className='block font-heading--md text-hover mb-64 desktop:font-heading--lg'>
-              이:음에서는 이렇게 소통해요!
+              이:음은 랜덤 익명 편지 서비스에요.
             </h1>
             <h4 className='block font-label--md text-hover text-center px-22 desktop:font-label--lg'>
-              {'이:음은 랜덤 익명 편지 서비스에요.\n자신의 감정을 글로 적는 과정에서 해소가 이루어지기도 하고'}
+              {'자신의 감정을 글로 적는 과정에서 해소가 이루어지기도 하고'}
             </h4>
             <h4 className='block font-label--md text-hover text-center mb-64 desktop:font-label--lg'>
               {'익명의 누군가와 편지를 주고 받으며 예상치 못한 사람에게 예상치 못한 답변을 받기도 하죠.'}
@@ -56,7 +56,7 @@ export default function Home() {
           </div>
         </section>
         <section ref={section2} className=' bg-letter_bg w-full h-full py-8 px-4'>
-          <div className='flex flex-col items-center border-dashed border-1 border-black px-15 pt-26 pb-4'>
+          <div className='flex flex-col items-center border-dashed border-1 border-black px-15 py-26'>
             <h1 className=' font-heading--md text-hover mb-36 desktop:font-heading--lg'>
               이:음에서는 이렇게 소통해요!
             </h1>

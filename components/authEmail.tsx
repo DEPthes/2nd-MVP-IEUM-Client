@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
-import { useMutation } from 'react-query';
-import useApiError from '@/hooks/custom/useApiError';
 import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
-import { AxiosError } from 'axios';
+import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
+import useApiError from '@/hooks/custom/useApiError';
 import { cls } from '@/utils/cls';
+import { AxiosError } from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 
-type PasswordEmailProps = {
+type Props = {
+  title: React.ReactNode;
   moveNextPage: () => void;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const DEFAULT_TIMER_TIME = 1000 * 60 * 3; // 타이머 초기 값 -> 3분
 
-const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail }) => {
+export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
+  // 이메일 입력값
   const [emailValue, setEmailValue] = useState<string>('');
-  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
+
+  // 이메일 유효성 검사 여부
+  // normal - 기본값 | notIsValid - 형식 오류 | positive - 통과 | - 중복
+  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive'>('normal');
   const [time, setTime] = useState<number>(DEFAULT_TIMER_TIME);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [AuthNumberSended, setAuthNumberSended] = useState<boolean>(false); // 인증번호 발송되었는지
@@ -133,9 +138,9 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
   return (
     <main className='flex justify-center'>
       <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
-        <h1 className='text-primary text-center font-heading--lg'>비밀번호 재설정</h1>
+        {title}
         <input
-          className={`w-full mt-24 px-12 py-15 rounded-10 border-2 focus:border-[#707070] outline-none placeholder-text_secondary gap-127 font-paragraph--sm ${
+          className={`w-full px-12 py-15 rounded-10 border-2 focus:border-[#707070] outline-none placeholder-text_secondary placeholder:font-paragraph--sm gap-127 font-paragraph--sm ${
             emailIsValid === 'normal'
               ? 'bg-white border-primary/30'
               : emailIsValid === 'notIsValid'
@@ -147,9 +152,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
           placeholder='이메일을 입력해주세요'
           onChange={emailChangeHandler}
         />
-        {emailIsValid === 'normal' ? (
-          <p className='mt-19'></p>
-        ) : emailIsValid === 'notIsValid' ? (
+        {emailIsValid === 'notIsValid' ? (
           <p className='font-paragraph--sm text-negative'>이메일을 다시 확인해주세요</p>
         ) : (
           <p className='mt-19'></p>
@@ -171,7 +174,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
         )}
         <div className='relative mt-24'>
           <input
-            className={`w-full px-12 py-15 rounded-10 border-2 outline-none placeholder-text_secondary gap-127 font-paragraph--sm'
+            className={`w-full px-12 py-15 rounded-10 border-2 outline-none placeholder-text_secondary placeholder:font-paragraph--sm gap-127 font-paragraph--sm'
               ${
                 authNumberIsValid === 'normal'
                   ? 'bg-white border-primary/30 focus:border-[#707070]'
@@ -225,6 +228,4 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
       </form>
     </main>
   );
-};
-
-export default PasswordEmail;
+}

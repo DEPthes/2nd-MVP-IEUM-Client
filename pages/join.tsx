@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
-
-import Header from '../components/layouts/header';
-import JoinEmail from '@/components/pages/join/join-Email';
 import JoinPassword from '@/components/pages/join/join-Password';
 import Layout from '@/components/layouts/layout';
+import AuthEmail from '@/components/authEmail';
 
 const Join = () => {
-  const [page, setPage] = useState<'Email' | 'Password'>('Email');
+  const [page, setPage] = useState<'Email' | 'Password'>('Password');
   const [email, setEmail] = useState<string>('');
-
-  const joinChangeHandler = (email: string) => {
-    setPage('Password');
-    setEmail(email);
-  };
 
   return (
     <Layout onlyAccess='notUser'>
-      <div className='flex flex-col items-center'>
-        {page === 'Email' && <JoinEmail joinChangeHandler={joinChangeHandler} />}
-        {page === 'Password' && <JoinPassword email={email} />}
-      </div>
+      {page === 'Email' && (
+        <AuthEmail
+          title={
+            <>
+              <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
+              <h4 className='text-primary text-center font-label--sm'>로그인 시 사용할 이메일을 입력해주세요.</h4>
+              <h4 className='text-primary text-center font-label--sm mb-24'>
+                이메일은 회원가입 후 변경하실 수 없으니 신중하게 입력해주세요.
+              </h4>
+            </>
+          }
+          moveNextPage={() => setPage('Password')}
+          setEmail={setEmail}
+        />
+      )}
+      {page === 'Password' && <JoinPassword email={email} />}
     </Layout>
   );
 };

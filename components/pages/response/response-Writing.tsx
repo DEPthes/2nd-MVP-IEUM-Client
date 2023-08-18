@@ -176,6 +176,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               minLength={1}
               maxLength={MAX_LENGTH_TITLE}
               value={title}
+              spellCheck={false}
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
@@ -185,6 +186,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               maxLength={MAX_LENGTH}
               onInput={onTextareaHandler}
               value={contents}
+              spellCheck={false}
               style={{ minHeight: '456px' }}
             />
             <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>

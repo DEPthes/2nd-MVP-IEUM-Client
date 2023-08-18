@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { logout } from '@/apis/logout';
 import { deleteUser } from '@/apis/deleteUser';
 import { iconMenuDisabledUrls } from '@/libs/iconMenuDisabledUrls';
+import { authToken } from '@/class/authToken';
 
 function Header() {
   const router = useRouter();
@@ -31,7 +32,12 @@ function Header() {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
-        window.location.href = '/';
+        authToken.deleteToken();
+        if (router.pathname === '/') {
+          window.location.reload();
+        } else {
+          window.location.href = '/';
+        }
       },
     });
   }
@@ -40,6 +46,7 @@ function Header() {
     deleteUserMutation.mutate(undefined, {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
+        authToken.deleteToken();
         if (router.pathname === '/') {
           window.location.reload();
         } else {
@@ -108,15 +115,15 @@ function Header() {
     <nav className='fixed w-full h-78 flex justify-between items-center z-header bg-tertiary px-28 desktop:px-218'>
       {/* 헤더 왼쪽 부분 */}
       {(isMobile || isTablet) && (
-        <Link href={'/'} className=' relative w-63 h-42'>
-          <Image src={'/imgs/logo1.png'} alt='logo' layout='fill' objectFit='cover' />
+        <Link href={'/'}>
+          <Image src={'/imgs/logo1.png'} alt='logo' width={63} height={42} priority />
         </Link>
       )}
 
       {isDesktop && (
         <div className='flex items-center gap-40'>
-          <Link href={'/'} className=' relative w-63 h-42'>
-            <Image src={'/imgs/logo1.png'} alt='logo' layout='fill' objectFit='cover' />
+          <Link href={'/'}>
+            <Image src={'/imgs/logo1.png'} alt='logo' width={63} height={42} priority />
           </Link>
           <Link href={{ pathname: '/', hash: 'section1' }} className=' font-label--md text-primary'>
             서비스 소개

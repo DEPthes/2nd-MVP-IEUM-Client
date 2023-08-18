@@ -210,164 +210,152 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   return (
-    <main>
-      <form onSubmit={submitHandler}>
-        <div className='w-[390px] h-[844px] relative overflow-hidden bg-[#fffcf7]'>
-          {/* Header */}
+    <main className='h-full flex flex-col justify-center items-center'>
+      <h1 className='font-heading--lg mb-24'>간편가입</h1>
+      <form className='w-342' onSubmit={submitHandler}>
+        {/* Header */}
 
-          {/* font-family */}
-          <p
-            className='mt-153 mx-167 w-100 text-[21px] font-heading--lg text-left not-italic
-          text-[#675149]'
-          >
-            간편가입
-          </p>
-          <p
-            className='mt-24 mx-24 w-100 text-[16px] font-heading--md text-left not-italic 
-          text-[#675149]'
-          >
-            닉네임
-          </p>
+        {/* font-family */}
 
-          {/* input nickname */}
-          <div className='relative inline-flex'>
-            <input
-              className='inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
-              bg-white border-[#675149]/30'
-              placeholder='닉네임을 입력해주세요'
-              value={nickname}
-              onChange={setNicknameHandler}
-            />
-            <button type='button' onClick={toggleDeleteHandler} className='ml-[-75px] mt-3'>
-              <DeleteIcon />
+        <h4 className='font-heading--md text-primary'>닉네임</h4>
+
+        {/* input nickname */}
+        <div className='relative flex items-center'>
+          <input
+            className='w-full h-50 px-12 text-text_primary font-paragraph--sm rounded-10 border-2 border-border_transparent focus:outline-none focus:border-border_focus bg-white placeholder:text-text_secondary'
+            placeholder='닉네임을 입력해주세요'
+            value={nickname}
+            onChange={setNicknameHandler}
+          />
+          <button type='button' onClick={toggleDeleteHandler} className=' absolute right-50'>
+            <DeleteIcon />
+          </button>
+
+          {!isFetch ? (
+            <button type='button' onClick={changeNicknameHandler}>
+              <ReturnIcon className='absolute top-13 right-13' />
             </button>
-            {!isFetch ? (
-              <button type='button' onClick={changeNicknameHandler} className='ml-10 mt-3'>
-                <ReturnIcon />
-              </button>
-            ) : (
-              <div className='ml-7 mt-8'>
-                <LoadingIcon />
-              </div>
-            )}
-          </div>
-          <button
-            className='flex w-342 h-50 mx-24 mt-16 justify-center items-center 
+          ) : (
+            <LoadingIcon width='40' height='40' className='absolute top-5 right-5' />
+          )}
+        </div>
+
+        <button
+          className='flex w-342 h-50 mx-24 mt-16 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
           bg-[#675149] hover:bg-[#2D2421]'
-            type='button'
-            onClick={duplicationCheckHandler}
-          >
-            중복체크
-          </button>
-          {checkNickname === '' ? (
-            <p className='mt-[4px]'>&nbsp;</p>
-          ) : checkNickname === 'inputNickName' ? (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
-              한글, 영문 관계없이 3~10자로 입력해주세요
-            </p>
-          ) : checkNickname === 'duplicated' ? (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
-          ) : checkNickname === 'positive' ? (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
-          ) : checkNickname === 'error' ? (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
-              AI가 닉네임 추천에 실패했어요. 버튼을 다시 눌러주세요
-            </p>
-          ) : (
-            ''
-          )}
-
-          {/* input password */}
-          <p
-            className='mx-24 mt-5 w-100 text-[16px] font-heading--md text-left not-italic 
-          text-[#675149]'
-          >
-            비밀번호
+          type='button'
+          onClick={duplicationCheckHandler}
+        >
+          중복체크
+        </button>
+        {checkNickname === '' ? (
+          <p className='mt-[4px]'>&nbsp;</p>
+        ) : checkNickname === 'inputNickName' ? (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
+            한글, 영문 관계없이 3~10자로 입력해주세요
           </p>
+        ) : checkNickname === 'duplicated' ? (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
+        ) : checkNickname === 'positive' ? (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
+        ) : checkNickname === 'error' ? (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
+            AI가 닉네임 추천에 실패했어요. 버튼을 다시 눌러주세요
+          </p>
+        ) : (
+          ''
+        )}
 
-          <div className='relative inline-flex'>
-            <input
-              type={showPassword.showPassword ? 'text' : 'password'}
-              onChange={passwordChangeHandler}
-              className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
+        {/* input password */}
+        <p
+          className='mx-24 mt-5 w-100 text-[16px] font-heading--md text-left not-italic 
+          text-[#675149]'
+        >
+          비밀번호
+        </p>
+
+        <div className='relative inline-flex'>
+          <input
+            type={showPassword.showPassword ? 'text' : 'password'}
+            onChange={passwordChangeHandler}
+            className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] border-2
               ${
                 passwordIsValid
                   ? 'bg-white border-2 border-[#675149]/30'
                   : 'bg-[#e11900]/10 border-[#E11900] focus:border-[#E11900]'
               }`}
-              placeholder='비밀번호를 입력'
-            />
-            <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-              {showPassword.showPassword ? <EyesIcon /> : <EyesHiddenIcon />}
-            </button>
-          </div>
-          {passwordIsValid ? (
-            <p className='mt-[4px]'>&nbsp;</p>
-          ) : (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
-              영문, 숫자, 특수문자(!/@/^) 를 모두 포함한 8~12자로 입력해주세요
-            </p>
-          )}
+            placeholder='비밀번호를 입력'
+          />
+          <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
+            {showPassword.showPassword ? <EyesIcon /> : <EyesHiddenIcon />}
+          </button>
+        </div>
+        {passwordIsValid ? (
+          <p className='mt-[4px]'>&nbsp;</p>
+        ) : (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
+            영문, 숫자, 특수문자(!/@/^) 를 모두 포함한 8~12자로 입력해주세요
+          </p>
+        )}
 
-          <div className='relative inline-flex mt-2'>
-            <input
-              type={showPassword.showCheckPassword ? 'text' : 'password'}
-              onChange={checkPasswordChangeHandler}
-              className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
+        <div className='relative inline-flex mt-2'>
+          <input
+            type={showPassword.showCheckPassword ? 'text' : 'password'}
+            onChange={checkPasswordChangeHandler}
+            className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
               focus:outline-none focus:border-[#707070] border-2
               ${
                 checkPasswordIsValid
                   ? 'bg-white border-2 border-[#675149]/30'
                   : 'bg-[#e11900]/10 border-[#E11900] focus:border-[#E11900]'
               }`}
-              placeholder='비밀번호를 입력'
-            />
-            <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
-              {showPassword.showCheckPassword ? <EyesIcon /> : <EyesHiddenIcon />}
-            </button>
-          </div>
-          {checkPasswordIsValid ? (
-            <p className='mt-[4px]'>&nbsp;</p>
-          ) : (
-            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
-              비밀번호를 다시 확인해주세요
-            </p>
-          )}
-          {/* chekBox */}
-          <div className='inline-flex mx-24 box-border'>
-            <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
-            <p
-              className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
+            placeholder='비밀번호를 입력'
+          />
+          <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
+            {showPassword.showCheckPassword ? <EyesIcon /> : <EyesHiddenIcon />}
+          </button>
+        </div>
+        {checkPasswordIsValid ? (
+          <p className='mt-[4px]'>&nbsp;</p>
+        ) : (
+          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
+            비밀번호를 다시 확인해주세요
+          </p>
+        )}
+        {/* chekBox */}
+        <div className='inline-flex mx-24 box-border'>
+          <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
+          <p
+            className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-paragraph--sm text-left not-italic'
-            >
-              만 14세 이상입니다(필수)
-            </p>
-          </div>
+          >
+            만 14세 이상입니다(필수)
+          </p>
+        </div>
 
-          <div className='inline-flex mx-24'>
-            <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
-            <p
-              className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
+        <div className='inline-flex mx-24'>
+          <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
+          <p
+            className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
                 font-paragraph--sm text-left not-italic box-border'
-            >
-              편지 알림 이메일 수신 동의 (필수)
-            </p>
-          </div>
+          >
+            편지 알림 이메일 수신 동의 (필수)
+          </p>
+        </div>
 
-          {/* sign up */}
-          {/* 활성화 처리 해야됨 */}
-          <button
-            className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
+        {/* sign up */}
+        {/* 활성화 처리 해야됨 */}
+        <button
+          className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
           bg-[#675149] 
           ${signUpIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
-            disabled={!signUpIsValid}
-          >
-            회원가입 완료
-          </button>
-        </div>
+          disabled={!signUpIsValid}
+        >
+          회원가입 완료
+        </button>
       </form>
     </main>
   );
