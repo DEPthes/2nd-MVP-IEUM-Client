@@ -210,9 +210,9 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   return (
-    <main className='h-full flex flex-col justify-center items-center'>
-      <h1 className='font-heading--lg mb-24'>간편가입</h1>
-      <form className='w-342' onSubmit={submitHandler}>
+    <main className='flex flex-col justify-center items-center'>
+      <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+        <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
         {/* Header */}
 
         {/* font-family */}

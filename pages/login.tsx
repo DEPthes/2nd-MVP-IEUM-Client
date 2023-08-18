@@ -80,9 +80,9 @@ export default function Login() {
   };
   return (
     <Layout>
-      <main className='h-full flex flex-col justify-center items-center'>
-        <h1 className='font-heading--lg text-primary mb-24'>로그인</h1>
-        <form onSubmit={submitHandler} className='w-342'>
+      <main className='flex justify-center'>
+        <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+          <h1 className='font-heading--lg text-primary mb-24 text-center'>로그인</h1>
           {/* input Id */}
           <div className='relative flex items-center'>
             <input
