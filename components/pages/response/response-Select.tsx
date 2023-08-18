@@ -8,6 +8,7 @@ import { postSendGptReply } from '@/apis/postSendGptReply';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -30,6 +31,8 @@ type LoadType = {
 
 const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load, selectId }) => {
   const { showAlert } = useAlert();
+  const router = useRouter();
+  console.log(router.query.name);
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -68,24 +71,27 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
   const newSendMutation = useMutation(postSend);
   const newSendGptReplyMutation = useMutation(postSendGptReply);
   const newSendHandler = () => {
-    newSendMutation.mutate(
-      { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
-      {
-        onSuccess: () => {
-          componentChangeHandler('Complete');
+    if (name === null) {
+      newSendGptReplyMutation.mutate(
+        { title, contents, envelopType },
+        {
+          onSuccess: () => {
+            componentChangeHandler('Complete');
+          },
+          onError: (err) => handlerSendError(err as AxiosError),
         },
-        onError: (err) => handlerSendError(err as AxiosError),
-      },
-    );
-    newSendGptReplyMutation.mutate(
-      { title, contents, envelopType },
-      {
-        onSuccess: () => {
-          componentChangeHandler('Complete');
+      );
+    } else {
+      newSendMutation.mutate(
+        { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
+        {
+          onSuccess: () => {
+            componentChangeHandler('Complete');
+          },
+          onError: (err) => handlerSendError(err as AxiosError),
         },
-        onError: (err) => handlerSendError(err as AxiosError),
-      },
-    );
+      );
+    }
   };
 
   return (
