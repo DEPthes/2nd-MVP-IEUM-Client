@@ -5,8 +5,22 @@ import SendComplete from '../../components/pages/send/send-Complete';
 
 export type ComponentType = 'Writing' | 'Select' | 'Complete';
 
+type LoadType = {
+  id: number;
+  title: string;
+  contents: string;
+  envelopType: number;
+  letterType: string;
+  senderId: number;
+  receiverId: number | null;
+  read: boolean;
+};
+
 const LetterNew = () => {
   const [component, setComponent] = useState<ComponentType>('Writing');
+  const [title, setTitle] = useState('');
+  const [contents, setContents] = useState('');
+  const [load, setLoad] = useState<LoadType>();
 
   const componentChangeHandler = (ComponentType: ComponentType) => {
     setComponent(ComponentType);
@@ -14,8 +28,17 @@ const LetterNew = () => {
 
   return (
     <div>
-      {component === 'Writing' && <SendWriting componentChangeHandler={componentChangeHandler} />}
-      {component === 'Select' && <SendSelect componentChangeHandler={componentChangeHandler} />}
+      {component === 'Writing' && (
+        <SendWriting
+          componentChangeHandler={componentChangeHandler}
+          newtitle={setTitle}
+          newcontents={setContents}
+          newload={setLoad}
+        />
+      )}
+      {component === 'Select' && (
+        <SendSelect componentChangeHandler={componentChangeHandler} title={title} contents={contents} load={load} />
+      )}
       {component === 'Complete' && <SendComplete />}
     </div>
   );

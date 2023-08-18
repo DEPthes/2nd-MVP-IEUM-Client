@@ -1,5 +1,5 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { getAccessToken } from './getAccessToken';
+import { refreshAccessToken } from './refreshAccessToken';
 import { authToken } from '@/class/authToken';
 
 // api 요청에서 401에러가 났을 때 토큰 재발급 후 재실행 로직을 수행하는 함수
@@ -18,7 +18,7 @@ export async function withVerify<T>(
 
     // 3. 401 에러라면 accessToken 재발급 요청
     try {
-      const response = await getAccessToken();
+      const response = await refreshAccessToken();
       authToken.setToken(response.data.accessToken);
       return await apiFn();
     } catch {

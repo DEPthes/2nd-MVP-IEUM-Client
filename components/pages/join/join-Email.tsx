@@ -1,34 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useMutation } from 'react-query';
+
+import { getEmailDuplicated } from '@/apis/getEmailDuplicated';
+import useEmailDuplicated from '@/hooks/queries/useEmailDuplicated';
+import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
+import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
 
 //얘네 useState로 바꿈 ??
-let emailIsValid: string = 'normal';
-let authNumberIsValid: string = 'normal';
 
 type JoinEmailProps = {
-  joinChangeHandler: () => void;
+  joinChangeHandler: (email: string) => void;
 };
 
-const JoinEmail: React.FC<JoinEmailProps> = (props) => {
-  const [emailValue, setEmailValue] = useState<String>('');
+const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
+  const [emailIsValid, setEmailIsValid] = useState<string>('normal');
+  const [emailValue, setEmailValue] = useState<string>('');
   const [time, setTime] = useState<number>(180000);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
+  const [authNumberIsValid, setAuthNumberIsValid] = useState<string>('normal');
   const [sendAuthNumber, setSendAuthNumber] = useState<boolean>(false);
+  const authNumberValue = useRef<HTMLInputElement | null>(null);
 
-  const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailValue(event.target.value);
+  const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
+  const newCheckAuthNumberMutation = useMutation(deleteAuthNumber);
+
+  // const email: string = emailValue;
+  // const { EmailDuplicated } = useEmailDuplicated(email);
+
+  const toggleNextHandler = () => {
+    // "다음" 버튼 클릭 시 호출되는 함수
+    joinChangeHandler(emailValue); // 입력된 이메일 값을 joinChangeHandler로 전달
   };
 
-  //email 유효성 검사 => positive, duplicated 추가 예정
-  if (emailValue.includes('@') || emailValue === '') {
-    emailIsValid = 'normal';
-  } else {
-    emailIsValid = 'notIsValid';
-  }
+  //Email 실시간 유효성 검사
+  const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmailValue = event.target.value;
+    setEmailValue(newEmailValue);
 
-  //authNumber 유효성 검사
-  if (time === 0) {
-    authNumberIsValid = 'timeOver';
-  }
+    if (newEmailValue.includes('@') || newEmailValue === '') {
+      setEmailIsValid('normal');
+    } else {
+      setEmailIsValid('notIsValid');
+    }
+  };
 
   //timer
   const formattedTime = (time: number) => {
@@ -37,6 +51,7 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
     return `${minutes}:${seconds}`;
   };
 
+  //timer 로직
   useEffect(() => {
     if (timerStarted) {
       const timer = setInterval(() => {
@@ -45,6 +60,8 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
 
       if (time <= 0) {
         clearInterval(timer);
+        setAuthNumberIsValid('timeOver');
+        setTimerStarted(false);
         console.log('타이머가 종료되었습니다.');
       }
 
@@ -54,12 +71,58 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
     }
   }, [time, timerStarted]);
 
-  //이거 reset 추가해야되나요
+  //resetTimer
+  const resetTimer = () => {
+    setTime(180000);
+    setAuthNumberIsValid('normal');
+  };
+
+  //인증코드 전송
   const sendAuthNumberHandler = () => {
-    //positive 제약
-    if (emailIsValid === 'positive') {
-      setSendAuthNumber(true);
-      setTimerStarted(true);
+    //타이머 시작 로직
+    setSendAuthNumber(true);
+    resetTimer();
+    setTimerStarted(true);
+    //인증 번호 전송
+    const email = emailValue;
+    //실패 처리 따로 지정 여부
+    newSendAuthNumberMutation.mutate({ email });
+  };
+
+  //이메일 중복 확인
+  const emailCheckHandler = async (email: string) => {
+    //오류 떔에 일단 useQuery안 쓰고 바로 get했음. 차후 필요시 수정.
+    const response = await getEmailDuplicated(email);
+    if (response.data.information.available) {
+      setEmailIsValid('positive');
+    } else {
+      setEmailIsValid('duplicated');
+    }
+  };
+
+  const checkAuthNumberSuccessHandler = (check: boolean) => {
+    if (check) {
+      setAuthNumberIsValid('positive');
+    }
+  };
+
+  const AuthNumberFailedHandler = () => {
+    setAuthNumberIsValid('notIsValid');
+  };
+
+  //인증번호 확인
+  const checkAuthNumberHandler = async () => {
+    if (authNumberValue.current) {
+      const authNumber = authNumberValue.current.value;
+      newCheckAuthNumberMutation.mutate(
+        { authNumber },
+        {
+          onSuccess: (response) => {
+            checkAuthNumberSuccessHandler(response.data.check);
+          },
+          onError: AuthNumberFailedHandler,
+        },
+      );
     }
   };
 
@@ -82,7 +145,6 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
           {/* Input Email */}
           <div>
             <div className='relative inline-flex'>
-              {/* 얘네 왜 border 색 안 먹음 */}
               <input
                 className={`inline-flex w-342 h-50 ml-[24px] mt-[24px] pl-12 rounded-10
               focus:outline-none focus:border-[#707070] border-2 ${
@@ -102,6 +164,7 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
               <button
                 type='button'
                 className='ml-[-75px] mt-34 w-66 h-30 rounded-[10px] bg-[#675149]/30 hover:bg-[#675149]'
+                onClick={() => emailCheckHandler(emailValue)}
               >
                 중복체크
               </button>
@@ -132,9 +195,13 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
               type='button'
               className={`flex w-342 h-50  ml-24 mt-15 justify-center items-center  
             rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
-              ${emailIsValid === 'positive' ? ' bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
+              ${
+                emailIsValid === 'positive' && (!timerStarted || time <= 0)
+                  ? ' bg-[#675149] hover:bg-[#2D2421]'
+                  : 'bg-[#707070]'
+              }`}
               onClick={sendAuthNumberHandler}
-              disabled={emailIsValid !== 'positive'}
+              disabled={emailIsValid !== 'positive' || timerStarted} //타이머가 동작 중이거나 이메일이 유효하지 않을 때 비활성화
             >
               이메일로 인증하기
             </button>
@@ -162,6 +229,7 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
                   ? 'bg-[#048848]/10 border-[#048848] focus:border-[#048848]'
                   : ''
               }`}
+              ref={authNumberValue}
               placeholder='인증번호를 입력해주세요'
             />
 
@@ -169,6 +237,7 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
             <button
               type='button'
               className='ml-[-55px] mt-10 w-45 h-30 rounded-[10px]  bg-[#675149]/30 hover:bg-[#675149]'
+              onClick={checkAuthNumberHandler}
             >
               확인
             </button>
@@ -196,11 +265,11 @@ const JoinEmail: React.FC<JoinEmailProps> = (props) => {
 
           {/* next button */}
           {/* 활성화 개념 1: disable, 2: x */}
-          {authNumberIsValid === 'normal' && (
+          {authNumberIsValid === 'positive' && (
             <button
               className='flex w-342 h-50  ml-24 mt-22 justify-center items-center bg-[#675149] 
           rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7] hover:bg-[#2D2421]'
-              onClick={props.joinChangeHandler}
+              onClick={toggleNextHandler}
             >
               다음
             </button>

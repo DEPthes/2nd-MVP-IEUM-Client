@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CheckSquare from '@/components/check-square';
 import { passwordTest, checkPasswordTest } from '@/libs/join/passwordTest';
 
 import DeleteIcon from '../../../public/icons/delete.svg';
 import ReturnIcon from '../../../public/icons/return2.svg';
+import EyesIcon from '../../../public/icons/eye.svg';
+import EyesHiddenIcon from '../../../public/icons/eye-hidden.svg';
 
-import Eyes from '../../../public/icons/eye.svg';
-import EyesHidden from '../../../public/icons/eye-hidden.svg';
+import { getNicknameDuplicated } from '@/apis/getNicknameDuplicated';
+import { getNickname } from '@/apis/getNickname';
+import { useRouter } from 'next/router';
+import { useMutation } from 'react-query';
+import { postSignUp } from '@/apis/postSignUp';
 
-const JoinPassword: React.FC = () => {
+type JoinPasswordType = {
+  email: string;
+};
+
+const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
+  const router = useRouter();
+  const newSignUpMutation = useMutation(postSignUp);
+  const [nickname, setNickname] = useState<string>('');
+  //API로부터 받아온 닉네임들 저장하는 배열
+  const [nicknames, setNicknames] = useState<string[]>([]);
+
   const [showPassword, setShowPassword] = useState({
     showPassword: false,
     showCheckPassword: false,
@@ -26,6 +41,30 @@ const JoinPassword: React.FC = () => {
     passwordValue: '',
     checkPasswordValue: '',
   });
+
+  //초기 닉네임 설정
+  const initNicknames = [
+    '혁명적인설탕',
+    '고요한오리',
+    '긍정적인다람쥐',
+    '꾸준한호랑이',
+    '센스있는팬더',
+    '빛나는별',
+    '신비로운달',
+    '환상적인바람',
+    '푸른바다',
+    '자유로운새',
+  ];
+
+  //초기 닉네임 중 랜덤 닉네임 1개 선택 로직
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * initNicknames.length);
+    setNickname(initNicknames[randomIndex]);
+  }, []);
+
+  const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+  };
 
   const togglePasswordHandler = () => {
     setShowPassword((prevShowPassword) => ({
@@ -56,11 +95,17 @@ const JoinPassword: React.FC = () => {
   };
 
   const toggleDeleteHandler = () => {
+    setNickname('');
     setCheckNickname('inputNickName');
   };
 
-  const duplicationCheckHandler = () => {
-    setCheckNickname('dublicated');
+  const duplicationCheckHandler = async () => {
+    const response = await getNicknameDuplicated(nickname!);
+    if (response.data.information.available) {
+      setCheckNickname('positive');
+    } else {
+      setCheckNickname('dublicated');
+    }
   };
 
   const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,9 +122,35 @@ const JoinPassword: React.FC = () => {
     }));
   };
 
+  //GPT닉네임 바꾸는 함수
+  async function changeNicknameHandler() {
+    try {
+      // 저장된 배열이 0일 때만 API 호출
+      if (nicknames.length === 0) {
+        const response = await getNickname();
+        setNicknames(response.data.information.nickname);
+        console.log(nicknames);
+      }
+
+      setNickname(nicknames[0]);
+      setNicknames((prevNicknames) => prevNicknames.slice(1));
+      console.log(nicknames);
+    } catch (error) {
+      // 서버에서 500 오류가 발생한 경우
+      console.error('An error occurred:', error);
+      alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  }
+
   //signUp 유효성 검사
   const signUpTest = () => {
-    return false;
+    return (
+      checkNickname === 'positive' &&
+      passwordIsValid &&
+      checkPasswordIsValid &&
+      checkSquare.admitSquare &&
+      checkSquare.ageSquare
+    );
   };
 
   const passwordIsValid = passwordTest(passwordValue.passwordValue);
@@ -88,7 +159,31 @@ const JoinPassword: React.FC = () => {
 
   const signUpIsValid = signUpTest();
 
-  const submitHandler = (event: React.ChangeEvent<HTMLFormElement>) => {};
+  const successHandler = (check: boolean) => {
+    console.log(check);
+    if (check) {
+      router.push('/');
+      console.log('sign-up');
+    }
+  };
+
+  const failHandler = () => {
+    console.log('sign-up Error');
+  };
+  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const password = passwordValue.passwordValue;
+    newSignUpMutation.mutate(
+      { nickname, email, password },
+      {
+        onSuccess: (response) => {
+          successHandler(response.data.check);
+        },
+        onError: failHandler,
+      },
+    );
+  };
 
   return (
     <main>
@@ -116,13 +211,14 @@ const JoinPassword: React.FC = () => {
               className='inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 border-2 focus:outline-none focus:border-[#707070] ${
               bg-white border-[#675149]/30'
               placeholder='닉네임을 입력해주세요'
+              value={nickname}
+              onChange={setNicknameHandler}
             />
             <button type='button' onClick={toggleDeleteHandler} className='ml-[-75px] mt-3'>
               <DeleteIcon />
             </button>
-            <button type='button' className='ml-10 mt-3'>
+            <button type='button' onClick={changeNicknameHandler} className='ml-10 mt-3'>
               <ReturnIcon />
-              {/* <img src='/icons/return2.svg' className='w-24 h-24' /> */}
             </button>
           </div>
           <button
@@ -142,6 +238,8 @@ const JoinPassword: React.FC = () => {
             </p>
           ) : checkNickname === 'dublicated' ? (
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
+          ) : checkNickname === 'positive' ? (
+            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
           ) : (
             ''
           )}
@@ -168,7 +266,7 @@ const JoinPassword: React.FC = () => {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-              {showPassword.showPassword ? <Eyes /> : <EyesHidden />}
+              {showPassword.showPassword ? <EyesIcon /> : <EyesHiddenIcon />}
             </button>
           </div>
           {passwordIsValid ? (
@@ -193,7 +291,7 @@ const JoinPassword: React.FC = () => {
               placeholder='비밀번호를 입력'
             />
             <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
-              {showPassword.showCheckPassword ? <Eyes /> : <EyesHidden />}
+              {showPassword.showCheckPassword ? <EyesIcon /> : <EyesHiddenIcon />}
             </button>
           </div>
           {checkPasswordIsValid ? (
