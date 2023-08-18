@@ -10,7 +10,6 @@ import useUserQuery, { USER_QUERY_KEY } from '@/hooks/queries/useUserQuery';
 import { useMutation, useQueryClient } from 'react-query';
 import { logout } from '@/apis/logout';
 import { deleteUser } from '@/apis/deleteUser';
-import { authToken } from '@/class/authToken';
 
 function Header() {
   const router = useRouter();
