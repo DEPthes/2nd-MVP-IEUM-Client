@@ -108,7 +108,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
   };
 
   return (
-    <Layout onlyUser>
+    <Layout onlyAccess='user'>
       <main className='flex justify-center'>
         <div>
           <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>

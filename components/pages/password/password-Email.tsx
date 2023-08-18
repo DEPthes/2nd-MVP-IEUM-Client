@@ -5,11 +5,11 @@ let emailIsValid: string = 'normal';
 let authNumberIsValid: string = 'normal';
 
 type PasswordEmailProps = {
-  passwordChangeHandler: () => void;
+  moveNextPage: () => void;
 };
 
-const PasswordEmail: React.FC<PasswordEmailProps> = (props) => {
-  const [emailValue, setEmailValue] = useState<String>('');
+const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage }) => {
+  const [emailValue, setEmailValue] = useState<string>('');
   const [time, setTime] = useState<number>(180000);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [sendAuthNumber, setSendAuthNumber] = useState<boolean>(false);
@@ -143,7 +143,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = (props) => {
             <button
               className='w-full py-13 mt-24 justify-center bg-primary rounded-10 text-tertiary font-label--md hover:bg-hover'
               type='button'
-              onClick={props.passwordChangeHandler}
+              onClick={moveNextPage}
             >
               다음
             </button>
