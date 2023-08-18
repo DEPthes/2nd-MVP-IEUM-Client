@@ -4,6 +4,7 @@ import { authToken } from '@/class/authToken';
 export type LettersResponse = {
   check: boolean;
   information: {
+    envelopType: number;
     letterId: number;
     senderNickname: string;
     title: string;
