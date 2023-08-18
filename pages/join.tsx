@@ -5,7 +5,7 @@ import JoinEmail from '@/components/pages/join/join-Email';
 import JoinPassword from '@/components/pages/join/join-Password';
 
 const Join = () => {
-  const [page, setPage] = useState<'Email' | 'Password'>('Password');
+  const [page, setPage] = useState<'Email' | 'Password'>('Email');
   const [email, setEmail] = useState<string>('');
 
   const joinChangeHandler = (email: string) => {
