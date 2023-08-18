@@ -10,6 +10,8 @@ import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
 import Loading from '../../../public/icons/loading2.svg';
+import useApiError from '@/hooks/custom/useApiError';
+import { AxiosError } from 'axios';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -43,6 +45,42 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
+  const { handlerError: handlerCheckError } = useApiError({
+    400: () => {
+      showAlert({
+        title: (
+          <div className='flex flex-col items-center'>
+            <span>적절하지 못한 문구가 포함되어 있어요.</span>
+            <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
+          </div>
+        ),
+        actions: [
+          { title: '수정하기', style: 'primary', handler: null },
+          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+        ],
+      });
+    },
+    500: () =>
+      showAlert({
+        title: '다시 작성해주세요',
+        actions: [
+          { title: '수정하기', style: 'primary', handler: null },
+          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+        ],
+      }),
+  });
+
+  const { handlerError: handlerTempError } = useApiError({
+    500: () =>
+      showAlert({
+        title: '임시저장을 실패했습니다.',
+        actions: [
+          { title: '수정하기', style: 'primary', handler: null },
+          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+        ],
+      }),
+  });
+
   //답장 다음 단계 버튼
   const handleSendButtonClick = () => {
     newtitle(title);
@@ -51,35 +89,11 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
     newCheckMutation.mutate(
       { title, contents },
       {
-        onSuccess: (response) => {
-          if (response.data.information.prohibition === 0) {
-            newload(load);
-            componentChangeHandler('Select');
-          } else if (response.data.information.prohibition === 1) {
-            showAlert({
-              title: (
-                <div className='flex flex-col items-center'>
-                  <span>적절하지 못한 문구가 포함되어 있어요.</span>
-                  <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
-                </div>
-              ),
-              actions: [
-                { title: '수정하기', style: 'primary', handler: null },
-                { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-              ],
-            });
-          }
+        onSuccess: () => {
+          newload(load);
+          componentChangeHandler('Select');
         },
-        onError: () => {
-          showAlert({
-            title: '다시 작성해주세요',
-            actions: [
-              { title: '수정하기', style: 'primary', handler: null },
-              { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-            ],
-          });
-          console.log('newCheckMutation 에러');
-        },
+        onError: (err) => handlerCheckError(err as AxiosError),
       },
     );
   };
@@ -98,10 +112,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
             ],
           });
         },
-        onError: () => {
-          alert('버튼 다시 눌러주세요!');
-          console.log('newTempHandler 에러');
-        },
+        onError: (err) => handlerTempError(err as AxiosError),
       },
     );
   };
@@ -159,7 +170,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
             <input
-              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md'
+              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover font-letter--title'
               type='text'
               placeholder='편지 제목을 입력하세요.'
               minLength={1}
@@ -168,7 +179,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
-              className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none placeholder-text_secondary bg-tertiary font-paragraph--md resize-none'
+              className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-letter--content'
               placeholder='편지 내용을 입력하세요.'
               minLength={1}
               maxLength={MAX_LENGTH}
