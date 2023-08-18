@@ -1,3 +1,4 @@
+import { authToken } from '@/class/authToken';
 import ieumAxios from './ieumAxios';
 
 type UserResponse = {
@@ -7,8 +8,8 @@ type UserResponse = {
   };
 };
 
-export async function getUser(accessToken: string) {
+export async function getUser() {
   return ieumAxios.get<UserResponse>('/api/user/verify', {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${authToken.getToken()}` },
   });
 }
