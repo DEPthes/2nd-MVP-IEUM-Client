@@ -1,7 +1,10 @@
 import ieumAxios from './ieumAxios';
 
 type UserResponse = {
-  id: string;
+  check: boolean;
+  information: {
+    id: number;
+  };
 };
 
 export async function getUser(accessToken: string) {
