@@ -172,14 +172,14 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
           </div>
           <div className='flex justify-center items-center mt-62 w-full'>
             <button
-              className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
+              className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
               type='button'
               onClick={newSendHandler}
             >
               사람에게 보내기
             </button>
             <button
-              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:text-hover'
+              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
               type='button'
               onClick={newSendGptHandler}
             >
