@@ -17,6 +17,8 @@ import { postSignUp } from '@/apis/postSignUp';
 import useApiError from '@/hooks/custom/useApiError';
 import { AxiosError } from 'axios';
 
+import animation from '../../../styles/loading.module.css';
+
 type JoinPasswordType = {
   email: string;
 };
@@ -47,6 +49,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
   const [isFetch, setIsFetch] = useState<boolean>(false);
 
+  const [isDuplicatedCheckAble, setIsDuplicatedCheckAble] = useState(false);
+
   //초기 닉네임 설정
   const initNicknames = [
     '혁명적인설탕',
@@ -74,6 +78,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
   const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
+    setIsDuplicatedCheckAble(true);
+    setCheckNickname('inputNickName');
   };
 
   const togglePasswordHandler = () => {
@@ -105,6 +111,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   const toggleDeleteHandler = () => {
+    setIsDuplicatedCheckAble(true);
     setNickname('');
     setCheckNickname('inputNickName');
   };
@@ -135,13 +142,17 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   //에러 처리
   const { handlerError } = useApiError({
     // 닉네임 GPT오류
-    500: () => setCheckNickname('error'),
+    500: () => {
+      setCheckNickname('error');
+      setIsDuplicatedCheckAble(true);
+    },
     // 회원가입 체크
     400: () => console.log('sign-up error'),
   });
 
   //GPT닉네임 바꾸는 함수
   async function changeNicknameHandler() {
+    setIsDuplicatedCheckAble(false);
     try {
       // 저장된 배열이 0일 때만 API 호출
       if (nicknames.length === 0) {
@@ -233,19 +244,22 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
           {!isFetch ? (
             <button type='button' onClick={changeNicknameHandler}>
-              <ReturnIcon className='absolute top-13 right-15' />
+              <ReturnIcon className='absolute top-13 right-15 transform scale-x-[-1]' />
             </button>
           ) : (
-            <LoadingIcon width='40' height='40' className='absolute bottom-[-3px] right-0' />
+            <div className={`absolute bottom-[-3px] right-0 ${animation.rotateLeftAnimation}`}>
+              <LoadingIcon width='40' height='40' className='w-full h-full object-cover' />
+            </div>
           )}
         </div>
 
         <button
-          className='relative flex w-full h-50 mt-16 justify-center items-center 
+          className={`relative flex w-full h-50 mt-16 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
-          bg-[#675149] hover:bg-[#2D2421]'
+           ${isDuplicatedCheckAble && nickname !== '' ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
           type='button'
           onClick={duplicationCheckHandler}
+          disabled={!isDuplicatedCheckAble || nickname === ''}
         >
           중복체크
         </button>
@@ -253,7 +267,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         {checkNickname === '' ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : checkNickname === 'inputNickName' ? (
-          <p className='w-full text-[12px] text-left leading-[160%] not-italic '>
+          <p className='w-full text-[12px] text-left leading-[160%] not-italic text-[#048848] '>
             한글, 영문 관계없이 3~10자로 입력해주세요
           </p>
         ) : checkNickname === 'duplicated' ? (
@@ -300,7 +314,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         {passwordIsValid ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
+          <p className='text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
             영문, 숫자, 특수문자(!/@/^) 를 모두 포함한 8~12자로 입력해주세요
           </p>
         )}
@@ -329,9 +343,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         {checkPasswordIsValid ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
-            비밀번호를 다시 확인해주세요
-          </p>
+          <p className='text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>비밀번호를 다시 확인해주세요</p>
         )}
 
         {/* chekBox */}

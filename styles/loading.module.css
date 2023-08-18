@@ -1,0 +1,13 @@
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg); /* 왼쪽으로 회전하도록 음수 각도 설정 */
+  }
+}
+
+.rotateLeftAnimation {
+  animation: rotate 1s linear infinite;
+  transform-origin: 12px 12px;
+}
