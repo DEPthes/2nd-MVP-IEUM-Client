@@ -7,16 +7,18 @@ import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
 import useApiError from '@/hooks/custom/useApiError';
 import { AxiosError } from 'axios';
 
-//얘네 useState로 바꿈 ??
+// 이거 안쓰는 코드인데 일단 혹시 모르니 남겨두겠음
 
 type JoinEmailProps = {
   joinChangeHandler: (email: string) => void;
 };
 
+const DEFAULT_TIMER_TIME = 10000 * 60 * 3; // 타이머 초기 값 -> 3분
+
 const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
   const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
   const [emailValue, setEmailValue] = useState<string>('');
-  const [time, setTime] = useState<number>(180000);
+  const [time, setTime] = useState<number>(DEFAULT_TIMER_TIME);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [authNumberIsValid, setAuthNumberIsValid] = useState<'normal' | 'timeOver' | 'positive' | 'notIsValid'>(
     'normal',
@@ -76,7 +78,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
 
   //resetTimer
   const resetTimer = () => {
-    setTime(180000);
+    setTime(DEFAULT_TIMER_TIME);
     setAuthNumberIsValid('normal');
   };
 
