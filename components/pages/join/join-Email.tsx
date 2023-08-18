@@ -4,6 +4,8 @@ import { useMutation } from 'react-query';
 import { getEmailDuplicated } from '@/apis/getEmailDuplicated';
 import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
 import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
+import useApiError from '@/hooks/custom/useApiError';
+import { AxiosError } from 'axios';
 
 //얘네 useState로 바꿈 ??
 
@@ -107,9 +109,10 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
     }
   };
 
-  const AuthNumberFailedHandler = () => {
-    setAuthNumberIsValid('notIsValid');
-  };
+  //에러처리 => 인증번호가 일치하지 않을 경우
+  const { handlerError } = useApiError({
+    400: () => setAuthNumberIsValid('notIsValid'),
+  });
 
   //인증번호 확인
   const checkAuthNumberHandler = async () => {
@@ -121,7 +124,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
           onSuccess: (response) => {
             checkAuthNumberSuccessHandler(response.data.check);
           },
-          onError: AuthNumberFailedHandler,
+          onError: (err) => handlerError(err as AxiosError),
         },
       );
     }

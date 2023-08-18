@@ -65,6 +65,10 @@ export default function Login() {
     }
   };
 
+  const toggleForgetPasswordHandler = () => {
+    router.push('/reset-password');
+  };
+
   //login 유효성 검사 (추가로 일치 여부 구현해야됨.)
   const loginAble: boolean = idValue !== null && passwordValue !== null;
 
@@ -142,6 +146,7 @@ export default function Login() {
               type='button'
               className='px-24 ml-4 text-[#675149] rounded-10 text-[12px] 
               font-paragraph--sm text-left not-italic '
+              onClick={toggleForgetPasswordHandler}
             >
               비밀번호를 잊으셨나요?
             </button>

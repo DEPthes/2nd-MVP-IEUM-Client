@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 
   // svg 사용할 때 <Icon /> 처럼 사용하기 위함
   webpack: (config) => {

@@ -14,6 +14,8 @@ import { getNickname } from '@/apis/getNickname';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { postSignUp } from '@/apis/postSignUp';
+import useApiError from '@/hooks/custom/useApiError';
+import { AxiosError } from 'axios';
 
 type JoinPasswordType = {
   email: string;
@@ -36,7 +38,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     admitSquare: false,
   });
 
-  const [checkNickname, setCheckNickname] = useState<'' | 'inputNickName' | 'positive' | 'duplicated'>('');
+  const [checkNickname, setCheckNickname] = useState<'' | 'inputNickName' | 'positive' | 'duplicated' | 'error'>('');
 
   const [passwordValue, setPasswordValue] = useState({
     passwordValue: '',
@@ -59,11 +61,16 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     '자유로운새',
   ];
 
-  //초기 닉네임 중 랜덤 닉네임 1개 선택 로직
+  // 초기 닉네임 중 랜덤 닉네임 1개 선택 로직
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * initNicknames.length);
-    setNickname(initNicknames[randomIndex]);
-  }, []);
+    const getRandomNickname = () => {
+      const randomIndex = Math.floor(Math.random() * initNicknames.length);
+      return initNicknames[randomIndex];
+    };
+    setNickname(getRandomNickname());
+
+    // changeNicknameHandler();
+  }, []); // 빈 배열을 의존성 배열로 사용
 
   const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -125,6 +132,14 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     }));
   };
 
+  //에러 처리
+  const { handlerError } = useApiError({
+    // 닉네임 GPT오류
+    500: () => setCheckNickname('error'),
+    // 회원가입 체크
+    400: () => console.log('sign-up error'),
+  });
+
   //GPT닉네임 바꾸는 함수
   async function changeNicknameHandler() {
     try {
@@ -136,11 +151,19 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
       }
       setIsFetch(false);
       setNickname(nicknames[0]);
+
+      //GPT가 빈 배열을 가져오는 경우
+      if (nicknames.length === 0) {
+        setCheckNickname('error');
+      } else {
+        setCheckNickname('');
+      }
+
       setNicknames((prevNicknames) => prevNicknames.slice(1));
     } catch (error) {
       // 서버에서 500 오류가 발생한 경우
       setIsFetch(false);
-      alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      handlerError(error as AxiosError);
     }
   }
 
@@ -169,9 +192,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     }
   };
 
-  const failHandler = () => {
-    console.log('sign-up Error');
-  };
+  //에러처리 => 인증번호가 일치하지 않을 경우
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -183,7 +204,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         onSuccess: (response) => {
           successHandler(response.data.check);
         },
-        onError: failHandler,
+        onError: (err) => handlerError(err as AxiosError),
       },
     );
   };
@@ -249,6 +270,10 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
           ) : checkNickname === 'positive' ? (
             <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
+          ) : checkNickname === 'error' ? (
+            <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
+              AI가 닉네임 추천에 실패했어요. 버튼을 다시 눌러주세요
+            </p>
           ) : (
             ''
           )}
