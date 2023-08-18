@@ -10,6 +10,7 @@ import useUserQuery, { USER_QUERY_KEY } from '@/hooks/queries/useUserQuery';
 import { useMutation, useQueryClient } from 'react-query';
 import { logout } from '@/apis/logout';
 import { deleteUser } from '@/apis/deleteUser';
+import { iconMenuDisabledUrls } from '@/libs/iconMenuDisabledUrls';
 
 function Header() {
   const router = useRouter();
@@ -21,6 +22,9 @@ function Header() {
   const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showProfileIconMenu, setShowProfileIconMenu] = useState(false);
+
+  // 아이콘 메뉴 활성화 여부
+  const isIconMenuAbled = !iconMenuDisabledUrls.includes(router.pathname);
 
   // 로그아웃
   function handleLogout() {
@@ -70,7 +74,18 @@ function Header() {
     });
   }
 
+  // 상단 햄버거 아이콘 눌렀을 때
+  function handleClickHamburgerIcon(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.stopPropagation();
+    if (isIconMenuAbled) {
+      setShowProfileIconMenu(false);
+      setShowHamburgerMenu((prev) => !prev);
+    }
+  }
+
+  // 상단 사람 아이콘 눌렀을 때
   function handleClickProfileIcon(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    if (!isIconMenuAbled) return;
     if (user) {
       e.stopPropagation();
       setShowHamburgerMenu(false);
@@ -121,17 +136,11 @@ function Header() {
       {/* 헤더 오른쪽 부분 */}
       <div className='flex justify-center items-center gap-14'>
         {(isMobile || isTablet) && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowProfileIconMenu(false);
-              setShowHamburgerMenu((prev) => !prev);
-            }}
-          >
+          <button onClick={handleClickHamburgerIcon} className={isIconMenuAbled ? 'cursor-pointer' : 'cursor-default'}>
             <Hamburger className='w-24' />
           </button>
         )}
-        <button onClick={handleClickProfileIcon}>
+        <button onClick={handleClickProfileIcon} className={isIconMenuAbled ? 'cursor-pointer' : 'cursor-default'}>
           <ProfileIcon width='32' height='32' />
         </button>
         {showHamburgerMenu && (

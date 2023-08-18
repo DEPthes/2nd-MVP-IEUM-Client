@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Header from '../components/layouts/header';
 import JoinEmail from '@/components/pages/join/join-Email';
 import JoinPassword from '@/components/pages/join/join-Password';
+import Layout from '@/components/layouts/layout';
 
 const Join = () => {
   const [page, setPage] = useState<'Email' | 'Password'>('Email');
@@ -12,14 +13,14 @@ const Join = () => {
     setPage('Password');
     setEmail(email);
   };
+
   return (
-    <main>
-      <Header />
-      <div className='flex flex-col items-center desktop:py-64 tablet:py-56'>
+    <Layout onlyAccess='notUser'>
+      <div className='flex flex-col items-center'>
         {page === 'Email' && <JoinEmail joinChangeHandler={joinChangeHandler} />}
         {page === 'Password' && <JoinPassword email={email} />}
       </div>
-    </main>
+    </Layout>
   );
 };
 
