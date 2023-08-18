@@ -6,15 +6,17 @@ export type LettersResponse = {
   information: {
     letterId: number;
     senderNickname: string;
+    contents: string;
     title: string;
-    modifiedAt: string;
-  }[];
+    envelopType: number;
+    read: boolean;
+  };
 };
-export type LetterType = 'read' | 'unread';
-export async function getLetters(type: LetterType) {
+
+// api 요청 보내는 함수1
+export async function getLetterContent(id: number) {
   const accessToken = authToken.getToken();
-  const url = type === 'read' ? '/api/mail/read' : '/api/mailbox';
-  return await ieumAxios.get<LettersResponse>(url, {
+  return await ieumAxios.get<LettersResponse>(`/api/mailbox/${id}`, {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
   });
 }
