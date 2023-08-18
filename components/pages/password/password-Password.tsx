@@ -7,6 +7,7 @@ import { patchResetPassword } from '@/apis/patchResetPassword';
 import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import useApiError from '@/hooks/custom/useApiError';
+import { useRouter } from 'next/router';
 
 let passwordIsValid: string;
 let checkPasswordIsValid: string;
@@ -16,6 +17,7 @@ type PasswordPasswordProps = {
 };
 
 const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState({
     showPassword: false,
     showCheckPassword: false,
@@ -85,9 +87,9 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
   }
 
   const changePasswordHandler = () => {
-    const { passwordValue: newPassword, checkPasswordValue: reNewPassword } = passwordValue;
+    const { passwordValue: newPassword, checkPasswordValue: renewPassword } = passwordValue;
     newChangePasswordMutation.mutate(
-      { email, newPassword, reNewPassword: newPassword },
+      { email, newPassword, renewPassword },
       {
         onSuccess: () =>
           showAlert({
@@ -98,12 +100,12 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
               </div>
             ),
             actions: [
-              { title: '예', style: 'primary', handler: null },
-              { title: '아니오', style: 'tertiary', handler: null },
+              { title: '예', style: 'primary', handler: () => router.push('/login') },
+              { title: '아니오', style: 'tertiary', handler: () => router.push('/') },
             ],
           }),
-        // onError: (err) => handleChangePasswordError(err as AxiosError),
-        onError: console.log,
+
+        onError: (err) => handleChangePasswordError(err as AxiosError),
       },
     );
   };
