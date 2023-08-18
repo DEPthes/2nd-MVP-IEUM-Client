@@ -55,14 +55,14 @@ const Header = () => {
       {/* 헤더 왼쪽 부분 */}
       {(isMobile || isTablet) && (
         <Link href={'/'} className=' relative w-63 h-42'>
-          <Image src={'/imgs/logo1.jpg'} alt='logo' layout='fill' objectFit='cover' />
+          <Image src={'/imgs/logo1.png'} alt='logo' layout='fill' objectFit='cover' />
         </Link>
       )}
 
       {isDesktop && (
         <div className='flex items-center gap-40'>
           <Link href={'/'} className=' relative w-63 h-42'>
-            <Image src={'/imgs/logo1.jpg'} alt='logo' layout='fill' objectFit='cover' />
+            <Image src={'/imgs/logo1.png'} alt='logo' layout='fill' objectFit='cover' />
           </Link>
           <Link href={'/'} className=' font-label--md text-primary'>
             서비스 소개

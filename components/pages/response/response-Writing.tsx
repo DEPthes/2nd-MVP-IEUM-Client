@@ -151,7 +151,8 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
     <Layout onlyUser>
       <main className='flex justify-center'>
         {newCheckMutation.isLoading ? (
-          <div className='mt-150'>
+          <div className='mt-160'>
+            <div className='font-heading--lg text-primary'>AI가 편지 내용을 검사하고 있어요!</div>
             <Loading />
           </div>
         ) : (
@@ -175,12 +176,12 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               value={contents}
               style={{ minHeight: '456px' }}
             />
-            <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
+            <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>
               {inputCount}자/3500자
             </span>
             <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
               <button
-                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
+                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:bg-white disabled:bg-[#707070] disabled:border-[#707070] disabled:text-tertiary'
                 type='button'
                 disabled={!(title.length > 0 && contents.length > 0)}
                 onClick={newTempHandler}
