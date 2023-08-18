@@ -72,7 +72,7 @@ export default function All() {
                     letterType === 'read' ? 'text-tertiary bg-primary' : 'text-primary bg-tertiary'
                   }`}
                 >
-                  읽음 편지
+                  읽은 편지
                 </button>
               </div>
               <div className='flex flex-col gap-24 items-center'>{mailBoxs}</div>
