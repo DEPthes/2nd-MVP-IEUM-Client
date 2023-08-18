@@ -7,7 +7,8 @@ import React, { useEffect } from 'react';
 // letter/:id
 // letter/new
 // letter/all
-function makeErrorMsg(pathname: string) {
+// letter/[id]/response
+function getErrorMsg(pathname: string) {
   ///letter/new
   if (pathname === '/letter/new' || pathname === '/letter/[id]/response') {
     return '로그인하고 편지를 작성해보세요!';
@@ -24,11 +25,10 @@ export default function OnlyUser({ children }: { children: React.ReactNode }) {
   const { user, isLoading, isError } = useUserQuery();
   const { showAlert } = useAlert();
   const router = useRouter();
-  console.log(router.pathname);
   useEffect(() => {
     if (isError) {
       showAlert({
-        title: makeErrorMsg(router.pathname),
+        title: getErrorMsg(router.pathname),
         actions: [
           { title: '로그인하기', style: 'primary', handler: () => router.replace('/login') },
           { title: '닫기', style: 'tertiary', handler: () => router.replace('/') },

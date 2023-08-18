@@ -27,11 +27,7 @@ function Header() {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
-        if (router.pathname === '/') {
-          window.location.reload();
-        } else {
-          window.location.href = '/';
-        }
+        window.location.href = '/';
       },
     });
   }
