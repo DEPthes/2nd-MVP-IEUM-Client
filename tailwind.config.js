@@ -30,6 +30,7 @@ module.exports = {
         text_primary: '#000000',
         text_secondary: '#6B6B6B',
         text_tertiary: '#FFFFFF',
+        border_transparent: 'rgba(103,81,73,0.3)',
         border_focus: '#675149',
       },
       borderWidth: px0_10,
