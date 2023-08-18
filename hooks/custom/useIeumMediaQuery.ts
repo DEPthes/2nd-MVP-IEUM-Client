@@ -5,7 +5,7 @@ import useMediaQuery from './useMediaQuery';
 export default function useIeumMediaQuery() {
   const isDesktop = useMediaQuery({ minWidth: 1136 });
   const isTablet = useMediaQuery({ minWidth: 600, maxWidth: 1135 });
-  const isMobile = !isDesktop && !isTablet;
+  const isMobile = useMediaQuery({ maxWidth: 599 });
 
   return { isDesktop, isTablet, isMobile };
 }
