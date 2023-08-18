@@ -37,7 +37,7 @@ export default function Home() {
       <main className='flex flex-col items-center'>
         <section ref={section1} className=' bg-letter_bg w-full h-full py-8 px-4 mb-24'>
           <div className='flex flex-col items-center border-dashed border-1 border-black px-26 pt-65 pb-34'>
-            <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} />
+            <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} priority />
             <h1 className='block font-heading--md text-hover mb-64 desktop:font-heading--lg'>
               이:음은 랜덤 익명 편지 서비스에요.
             </h1>
