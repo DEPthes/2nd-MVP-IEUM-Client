@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import PasswordEmail from '../components/pages/password/password-Email';
 import PasswordPassword from '../components/pages/password/password-Password';
 import OnlyNotUser from '@/components/layouts/onlyNotUser';
+import Layout from '@/components/layouts/layout';
 
 const ResetPassword = () => {
   const [component, setComponent] = useState('Auth');
+  const [email, setEmail] = useState<string>('');
+
   return (
-    <OnlyNotUser>
+    <Layout onlyAccess='notUser'>
       {component === 'Auth' ? (
-        <PasswordEmail moveNextPage={() => setComponent('Email')} />
+        <PasswordEmail moveNextPage={() => setComponent('Email')} passwordChangeHandler={setEmail} />
       ) : component === 'Email' ? (
-        <PasswordPassword />
+        <PasswordPassword email={email} />
       ) : (
         ''
       )}
-    </OnlyNotUser>
+    </Layout>
   );
 };
 
