@@ -8,8 +8,7 @@ import CheckSquare from '@/components/check-square';
 import Eyes from '../public/icons/eye.svg';
 import EyesHidden from '../public/icons/eye-hidden.svg';
 import { useRouter } from 'next/router';
-
-// import useLoginQuery from '@/hooks/queries/useLoginQuery';
+import useApiError from '@/hooks/custom/useApiError';
 
 export default function Login() {
   const router = useRouter();
@@ -17,8 +16,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [checkLogin, setCheckLogin] = useState(false);
   const [IsValid, setIsValid] = useState(true);
-  const idValue = useRef<HTMLInputElement | null>(null);
-  const passwordValue = useRef<HTMLInputElement | null>(null);
+  const idValue = useRef<HTMLInputElement>(null);
+  const passwordValue = useRef<HTMLInputElement>(null);
 
   const togglePasswordHandler = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -66,17 +65,21 @@ export default function Login() {
     }
   };
 
+  const toggleForgetPasswordHandler = () => {
+    router.push('/reset-password');
+  };
+
   //login 유효성 검사 (추가로 일치 여부 구현해야됨.)
   const loginAble: boolean = idValue !== null && passwordValue !== null;
 
   return (
     <main>
-      <form onSubmit={submitHandler}>
+      {/* Header */}
+      <Header />
+      <form onSubmit={submitHandler} className='flex flex-col items-center justify-center desktop:py-64 tablet:py-56'>
         <div className='w-390 h-844 relative overflow-hidden bg-[#fffcf7]'>
-          {/* Header */}
-          {/* <Header /> */}
           {/* font-family */}
-          <p className='mt-145 mx-167 text-[21px] font-SUITE text-left not-italic text-[#675149]'>로그인</p>
+          <p className='mt-145 mx-167 text-[21px] font-heading--lg text-left not-italic text-[#675149]'>로그인</p>
 
           {/* input Id */}
           <input
@@ -110,8 +113,8 @@ export default function Login() {
 
           {/* Button */}
           <button
-            className={`flex w-342 h-50 m-24 mt-31 justify-center items-center 
-           rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
+            className={`flex w-342 h-50 m-24 mt-31 justify-center items-center font-label--md
+           rounded-10 text-[16px] text-left not-italic text-[#FFFCF7]
           ${loginAble ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
             disabled={!loginAble}
           >
@@ -120,7 +123,7 @@ export default function Login() {
           <button
             type='button'
             className='flex w-342 h-50 m-24 justify-center items-center bg-[#675149] 
-            rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7] 
+            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7] 
             hover:bg-[#2D2421]'
             onClick={togglejoinHandler}
           >
@@ -133,7 +136,7 @@ export default function Login() {
                 <CheckSquare onClick={toggleCheckLoginHandler} checked={checkLogin} />
                 <p
                   className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
-                font-SUITE text-left not-italic'
+                font-paragraph--sm text-left not-italic'
                 >
                   로그인 상태 유지
                 </p>
@@ -142,7 +145,8 @@ export default function Login() {
             <button
               type='button'
               className='px-24 ml-4 text-[#675149] rounded-10 text-[12px] 
-              font-SUITE text-left not-italic '
+              font-paragraph--sm text-left not-italic '
+              onClick={toggleForgetPasswordHandler}
             >
               비밀번호를 잊으셨나요?
             </button>
