@@ -24,5 +24,6 @@ export async function postCheck({ title, contents }: { title: string; contents: 
   );
   if (response.data.information.prohibition === 1) {
     throw new IeumError(400) as AxiosError;
-  } else return response;
+  }
+  return response;
 }
