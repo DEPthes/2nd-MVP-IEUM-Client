@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
           queries: {
             retry: 0,
             refetchOnWindowFocus: false,
-            refetchOnMount: false,
+            refetchOnMount: 'always',
             onError: (err) => handlerError(err as AxiosError),
           },
         },

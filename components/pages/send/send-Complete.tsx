@@ -7,7 +7,7 @@ const SendComplete: React.FC = () => {
   const router = useRouter();
 
   return (
-    <Layout onlyUser>
+    <Layout onlyAccess='user'>
       <main>
         <div className='mt-115 text-center'>
           <div className='flex justify-center'>
