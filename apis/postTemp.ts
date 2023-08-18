@@ -1,5 +1,7 @@
 import ieumAxios from './ieumAxios';
 import { authToken } from '@/class/authToken';
+import { IeumError } from '@/class/ieumError';
+import { AxiosError } from 'axios';
 
 type TempResponse = {
   check: boolean;
@@ -25,9 +27,12 @@ export async function postTemp({
   contents: string;
 }) {
   const accessToken = authToken.getToken();
-  return await ieumAxios.post<TempResponse>(
+  const response = await ieumAxios.post<TempResponse>(
     '/api/letter/temp',
     { originalLetterId, title, contents },
     { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` } },
   );
+  if (response.data.check === false) {
+    throw new IeumError(500) as AxiosError;
+  } else return response;
 }

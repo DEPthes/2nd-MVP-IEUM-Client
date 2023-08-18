@@ -98,7 +98,7 @@ const tokens = plugin(({ addUtilities }) => {
       'font-size': '1.2rem',
     },
     '.font-letter--title': {
-      'font-family': "'KCC-eunyoung', sans-serif'",
+      'font-family': 'KCC-eunyoung',
       'letter-spacing': '0.1',
       'font-weight': '400',
       'line-height': '160%',
@@ -106,7 +106,7 @@ const tokens = plugin(({ addUtilities }) => {
       'font-size': '1.8rem',
     },
     '.font-letter--content': {
-      'font-family': "'KCC-eunyoung', sans-serif'",
+      'font-family': 'KCC-eunyoung',
       'letter-spacing': '0.1',
       'font-weight': '400',
       'line-height': '160%',

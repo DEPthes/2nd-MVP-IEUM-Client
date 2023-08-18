@@ -5,6 +5,9 @@ import BigCheckIcon from '../../../public/icons/bigcheck.svg';
 import { useMutation } from 'react-query';
 import { postSend } from '@/apis/postSend';
 import { postSendGpt } from '@/apis/postSendGpt';
+import useApiError from '@/hooks/custom/useApiError';
+import useAlert from '../../../recoil/alert/useAlert';
+import { AxiosError } from 'axios';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -25,6 +28,7 @@ type LoadType = {
 };
 
 const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load }) => {
+  const { showAlert } = useAlert();
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -43,6 +47,38 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
     setEnvelopType(num);
   };
 
+  const { handlerError: handlerSendError } = useApiError({
+    500: () =>
+      showAlert({
+        title: (
+          <div className='flex flex-col items-center'>
+            <span>편지 보내기에 실패했습니다.</span>
+            <span>편지를 다시 보낼까요?</span>
+          </div>
+        ),
+        actions: [
+          { title: '네', style: 'primary', handler: newSendHandler },
+          { title: '아니요', style: 'tertiary', handler: null },
+        ],
+      }),
+  });
+
+  const { handlerError: handlerSendGptError } = useApiError({
+    500: () =>
+      showAlert({
+        title: (
+          <div className='flex flex-col items-center'>
+            <span>편지 보내기에 실패했습니다.</span>
+            <span>편지를 다시 보낼까요?</span>
+          </div>
+        ),
+        actions: [
+          { title: '네', style: 'primary', handler: newSendGptHandler },
+          { title: '아니요', style: 'tertiary', handler: null },
+        ],
+      }),
+  });
+
   //편지 사람에게 보내기
   const newSendMutation = useMutation(postSend);
   const newSendHandler = () => {
@@ -52,10 +88,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
-        onError: () => {
-          alert('버튼 다시 눌러주세요!');
-          console.log('newSendHandler 에러');
-        },
+        onError: (err) => handlerSendError(err as AxiosError),
       },
     );
   };
@@ -69,10 +102,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
-        onError: () => {
-          alert('버튼 다시 눌러주세요!');
-          console.log('newSendGptHandler 에러');
-        },
+        onError: (err) => handlerSendGptError(err as AxiosError),
       },
     );
   };
@@ -100,7 +130,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
                 ) : (
                   ''
                 )}
-                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
                 <p className='ml-22 desktop:ml-34'>편지 제목</p>
                 <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
                 <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
@@ -121,7 +151,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
                 ) : (
                   ''
                 )}
-                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
                 <p className='ml-22 desktop:ml-34'>편지 제목</p>
                 <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
                 <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
@@ -142,7 +172,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
                 ) : (
                   ''
                 )}
-                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
                 <p className='ml-22 desktop:ml-34'>편지 제목</p>
                 <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
                 <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
@@ -163,7 +193,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
                 ) : (
                   ''
                 )}
-                <p className='ml-24 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
                 <p className='ml-22 desktop:ml-34'>편지 제목</p>
                 <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
                 <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
