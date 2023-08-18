@@ -4,15 +4,35 @@ import useAlert from '@/recoil/alert/useAlert';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
+// letter/:id
+// letter/new
+// letter/all
+function makeErrorMsg(pathname: string) {
+  ///letter/new
+  if (pathname === '/letter/new' || pathname === '/letter/[id]/response') {
+    return '로그인하고 편지를 작성해보세요!';
+  }
+
+  // /letter/*
+  if (/^\/letter\/.*$/.test(pathname)) {
+    return '로그인하고 우체통을 확인해보세요!';
+  }
+  return '로그인 후 이용할 수 있습니다.';
+}
+
 export default function OnlyUser({ children }: { children: React.ReactNode }) {
-  const { user, isLoading, isError } = useUserQuery(authToken.getToken());
+  const { user, isLoading, isError } = useUserQuery();
   const { showAlert } = useAlert();
   const router = useRouter();
+  console.log(router.pathname);
   useEffect(() => {
     if (isError) {
       showAlert({
-        title: '로그인 다시해라',
-        actions: [{ title: '넵 죄송합니다.', style: 'primary', handler: () => router.replace('/login') }],
+        title: makeErrorMsg(router.pathname),
+        actions: [
+          { title: '로그인하기', style: 'primary', handler: () => router.replace('/login') },
+          { title: '닫기', style: 'tertiary', handler: () => router.replace('/') },
+        ],
       });
     }
   }, [isError, showAlert, router]);

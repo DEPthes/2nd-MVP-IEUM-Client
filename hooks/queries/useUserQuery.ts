@@ -5,14 +5,14 @@ import { useQuery } from 'react-query';
 import useApiError from '../custom/useApiError';
 
 export const USER_QUERY_KEY = 'userQuery';
-export default function useUserQuery(accessToken: string | null, onError?: () => void) {
+export default function useUserQuery(onError?: () => void) {
   const {
     data: user,
     isLoading,
     isError,
   } = useQuery({
     queryKey: [USER_QUERY_KEY],
-    queryFn: () => withVerify(() => getUser(accessToken || '')),
+    queryFn: () => withVerify(getUser),
     select: (res) => res.data.information,
     onError, // useUser에서의 401에러는 공통 에러 처리 로직을 따르지 않는다.
     staleTime: 1000 * 20, // 20초 동안 유효한 데이터

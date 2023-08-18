@@ -10,12 +10,11 @@ import useUserQuery, { USER_QUERY_KEY } from '@/hooks/queries/useUserQuery';
 import { useMutation, useQueryClient } from 'react-query';
 import { logout } from '@/apis/logout';
 import { deleteUser } from '@/apis/deleteUser';
-import { authToken } from '@/class/authToken';
 
 function Header() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, isError } = useUserQuery(authToken.getToken());
+  const { user, isError } = useUserQuery();
   const logoutMutation = useMutation(logout);
   const deleteUserMutation = useMutation(deleteUser);
   const { showAlert } = useAlert();
@@ -29,7 +28,7 @@ function Header() {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
         if (router.pathname === '/') {
-          router.reload();
+          window.location.reload();
         } else {
           window.location.href = '/';
         }
@@ -39,7 +38,14 @@ function Header() {
   // 계정 삭제
   function handleDeleteUser() {
     deleteUserMutation.mutate(undefined, {
-      onSuccess: () => router.push('/'),
+      onSuccess: () => {
+        queryClient.invalidateQueries(USER_QUERY_KEY);
+        if (router.pathname === '/') {
+          window.location.reload();
+        } else {
+          window.location.href = '/';
+        }
+      },
     });
   }
 
@@ -134,10 +140,12 @@ function Header() {
         </button>
         {showHamburgerMenu && (
           <div className=' absolute bg-tertiary flex flex-col top-78 right-71 '>
-            <button onClick={() => router.push('/letter/new')} className=' py-4 px-8 text-primary font-label--md'>
+            <Link href={'/letter/new'} className=' py-4 px-8 text-primary font-label--md'>
               편지작성
-            </button>
-            <button className=' py-4 px-8 text-primary font-label--md'>우체통</button>
+            </Link>
+            <Link href={'/letter/all'} className=' py-4 px-8 text-primary font-label--md'>
+              우체통
+            </Link>
           </div>
         )}
         {showProfileIconMenu && (
