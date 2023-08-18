@@ -158,7 +158,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   };
 
   return (
-    <Layout onlyUser>
+    <Layout onlyAccess='user'>
       <main className='flex justify-center'>
         {newCheckMutation.isLoading ? (
           <div className='mt-160'>

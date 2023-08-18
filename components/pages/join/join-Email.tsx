@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useMutation } from 'react-query';
 
 import { getEmailDuplicated } from '@/apis/getEmailDuplicated';
-import useEmailDuplicated from '@/hooks/queries/useEmailDuplicated';
 import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
 import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
+import useApiError from '@/hooks/custom/useApiError';
+import { AxiosError } from 'axios';
 
 //얘네 useState로 바꿈 ??
 
@@ -13,13 +14,15 @@ type JoinEmailProps = {
 };
 
 const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
-  const [emailIsValid, setEmailIsValid] = useState<string>('normal');
+  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
   const [emailValue, setEmailValue] = useState<string>('');
   const [time, setTime] = useState<number>(180000);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
-  const [authNumberIsValid, setAuthNumberIsValid] = useState<string>('normal');
+  const [authNumberIsValid, setAuthNumberIsValid] = useState<'normal' | 'timeOver' | 'positive' | 'notIsValid'>(
+    'normal',
+  );
   const [sendAuthNumber, setSendAuthNumber] = useState<boolean>(false);
-  const authNumberValue = useRef<HTMLInputElement | null>(null);
+  const authNumberValue = useRef<HTMLInputElement>(null);
 
   const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
   const newCheckAuthNumberMutation = useMutation(deleteAuthNumber);
@@ -106,9 +109,10 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
     }
   };
 
-  const AuthNumberFailedHandler = () => {
-    setAuthNumberIsValid('notIsValid');
-  };
+  //에러처리 => 인증번호가 일치하지 않을 경우
+  const { handlerError } = useApiError({
+    400: () => setAuthNumberIsValid('notIsValid'),
+  });
 
   //인증번호 확인
   const checkAuthNumberHandler = async () => {
@@ -120,7 +124,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
           onSuccess: (response) => {
             checkAuthNumberSuccessHandler(response.data.check);
           },
-          onError: AuthNumberFailedHandler,
+          onError: (err) => handlerError(err as AxiosError),
         },
       );
     }
@@ -134,11 +138,13 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
           {/* Header */}
 
           {/* font-family */}
-          <p className='mt-153 mx-167 w-100 text-[21px] font-SUITE text-left not-italic text-[#675149]'>간편가입</p>
-          <p className='mt-16 text-center text-[12px] font-SUITE not-italic text-[#675149]'>
+          <p className='mt-153 mx-167 w-100 text-[21px] font-heading--lg text-left not-italic text-[#675149]'>
+            간편가입
+          </p>
+          <p className='mt-16 text-center text-[12px] font-paragraph--sm not-italic text-[#675149]'>
             로그인 시 사용할 이메일을 입력해주세요.
           </p>
-          <p className='mx-44 w-600 text-[12px] font-SUITE not-italic text-[#675149]'>
+          <p className='mx-44 w-600 text-[12px] font-paragraph--sm not-italic text-[#675149]'>
             이메일은 회원가입 후 변경하실 수 없으니 신중하게 입력해주세요.
           </p>
 
@@ -163,7 +169,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
               />
               <button
                 type='button'
-                className='ml-[-75px] mt-34 w-66 h-30 rounded-[10px] bg-[#675149]/30 hover:bg-[#675149]'
+                className='ml-[-75px] mt-34 w-66 h-30 font-paragraph--sm rounded-[10px] bg-[#675149]/30 hover:bg-[#675149]'
                 onClick={() => emailCheckHandler(emailValue)}
               >
                 중복체크
@@ -194,7 +200,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
             <button
               type='button'
               className={`flex w-342 h-50  ml-24 mt-15 justify-center items-center  
-            rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7]
+            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
               ${
                 emailIsValid === 'positive' && (!timerStarted || time <= 0)
                   ? ' bg-[#675149] hover:bg-[#2D2421]'
@@ -236,7 +242,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
             {/* clear button */}
             <button
               type='button'
-              className='ml-[-55px] mt-10 w-45 h-30 rounded-[10px]  bg-[#675149]/30 hover:bg-[#675149]'
+              className='ml-[-55px] mt-10 w-45 h-30 rounded-[10px] font-paragraph--sm bg-[#675149]/30 hover:bg-[#675149]'
               onClick={checkAuthNumberHandler}
             >
               확인
@@ -268,7 +274,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
           {authNumberIsValid === 'positive' && (
             <button
               className='flex w-342 h-50  ml-24 mt-22 justify-center items-center bg-[#675149] 
-          rounded-10 text-[16px] font-SUITE text-left not-italic text-[#FFFCF7] hover:bg-[#2D2421]'
+          rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7] hover:bg-[#2D2421]'
               onClick={toggleNextHandler}
             >
               다음
