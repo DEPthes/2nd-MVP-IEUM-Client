@@ -10,6 +10,8 @@ import { postTemp } from '@/apis/postTemp';
 import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
 import Loading from '../../../public/icons/loading2.svg';
+import useApiError from '@/hooks/custom/useApiError';
+import { AxiosError } from 'axios';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -42,6 +44,32 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
+  const { handlerError } = useApiError({
+    400: () => {
+      console.log('냠');
+      showAlert({
+        title: (
+          <div className='flex flex-col items-center'>
+            <span>적절하지 못한 문구가 포함되어 있어요.</span>
+            <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
+          </div>
+        ),
+        actions: [
+          { title: '수정하기', style: 'primary', handler: null },
+          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+        ],
+      });
+    },
+    500: () =>
+      showAlert({
+        title: '다시 작성해주세요',
+        actions: [
+          { title: '수정하기', style: 'primary', handler: null },
+          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+        ],
+      }),
+  });
+
   //다음 단계 버튼
   const handleSendButtonClick = () => {
     newtitle(title);
@@ -50,35 +78,11 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
     newCheckMutation.mutate(
       { title, contents },
       {
-        onSuccess: (response) => {
-          if (response.data.information.prohibition === 0) {
-            newload(load);
-            componentChangeHandler('Select');
-          } else if (response.data.information.prohibition === 1) {
-            showAlert({
-              title: (
-                <div className='flex flex-col items-center'>
-                  <span>적절하지 못한 문구가 포함되어 있어요.</span>
-                  <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
-                </div>
-              ),
-              actions: [
-                { title: '수정하기', style: 'primary', handler: null },
-                { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-              ],
-            });
-          }
+        onSuccess: () => {
+          newload(load);
+          componentChangeHandler('Select');
         },
-        onError: () => {
-          showAlert({
-            title: '다시 작성해주세요',
-            actions: [
-              { title: '수정하기', style: 'primary', handler: null },
-              { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-            ],
-          });
-          console.log('newCheckMutation 에러');
-        },
+        onError: (err) => handlerError(err as AxiosError),
       },
     );
   };
@@ -150,7 +154,8 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
     <Layout onlyUser>
       <main className='flex justify-center'>
         {newCheckMutation.isLoading ? (
-          <div className='mt-150'>
+          <div className='mt-160'>
+            <div className='font-heading--lg text-primary'>AI가 편지 내용을 검사하고 있어요!</div>
             <Loading />
           </div>
         ) : (
@@ -174,12 +179,12 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               value={contents}
               style={{ minHeight: '456px' }}
             />
-            <span className='float-right font-paragraph--sm text-primary tablet:font-paragraph--md'>
+            <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>
               {inputCount}자/3500자
             </span>
             <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
               <button
-                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:text-hover'
+                className='w-130 py-6 mr-16 justify-center items-center border-primary rounded-10 border-1 text-primary bg-tertiary gap-4 font-label--md hover:bg-white disabled:bg-[#707070] disabled:border-[#707070] disabled:text-tertiary'
                 type='button'
                 disabled={!(title.length > 0 && contents.length > 0)}
                 onClick={newTempHandler}

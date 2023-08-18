@@ -81,7 +81,7 @@ const ResponseTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
             불러오기
           </button>
           <button
-            className='w-130 h-40 gap-4 rounded-10 border-primary border-1 text-primary font-label--md desktop:w-160 desktop:h-40'
+            className='w-130 h-40 gap-4 rounded-10 border-primary border-1 text-primary font-label--md hover:bg-white desktop:w-160 desktop:h-40'
             type='button'
             onClick={() => {
               setShow(false);
