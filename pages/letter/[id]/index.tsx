@@ -7,7 +7,6 @@ export default function Letters() {
   const router = useRouter();
   const letterId = Number(router.query.id);
   const { letter, isLoading } = useLetterQuery(letterId);
-
   return (
     <Layout>
       {isLoading ? (
@@ -22,8 +21,7 @@ export default function Letters() {
               {letter?.contents}
             </div>
             <div className='float-right font-label--sm mt-8 text-primary'>
-              &apos;<u>{letter?.senderNickname}</u>
-              &apos;의 편지
+              &apos;{letter?.senderNickname === null ? <u>GPT</u> : <u>{letter?.senderNickname}</u>}&apos;
             </div>
             <div className='flex justify-center items-center mt-72 w-full'>
               <button
