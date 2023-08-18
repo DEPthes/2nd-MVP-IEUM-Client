@@ -7,20 +7,35 @@ import PersonIcon from '../public/icons/person.svg';
 import AIIcon from '../public/icons/ai.svg';
 import MailboxIcon from '../public/icons/mailbox.svg';
 import SendIcon from '../public/icons/send.svg';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { scrollIntoViewWithOffset } from '@/utils/scrollIntoViewWithOffset';
+import { useRouter } from 'next/router';
 
 export default function Home() {
+  const router = useRouter();
+  const section1 = useRef<HTMLSelectElement>(null);
   const section2 = useRef<HTMLSelectElement>(null);
+  function scrollToSection1() {
+    scrollIntoViewWithOffset(section1, { top: 78 });
+  }
   function scrollToSection2() {
-    // section2.current?.scrollIntoView({ behavior: 'smooth', });
     scrollIntoViewWithOffset(section2, { top: 78 });
   }
+
+  useEffect(() => {
+    if (router.asPath === '/#section1') {
+      scrollToSection1();
+    }
+    if (router.asPath === '/#section2') {
+      scrollToSection2();
+    }
+  }, [router.asPath]);
+
   return (
     // <ProtectedLayout>
     <Layout>
       <main className='flex flex-col items-center'>
-        <section className=' bg-letter_bg w-full h-full py-8 px-4 mb-24'>
+        <section ref={section1} className=' bg-letter_bg w-full h-full py-8 px-4 mb-24'>
           <div className='flex flex-col items-center border-dashed border-1 border-black px-26 pt-65 pb-34'>
             <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} />
             <h1 className='block font-heading--md text-hover mb-64 desktop:font-heading--lg'>
@@ -109,7 +124,10 @@ export default function Home() {
                 </div>
               </div>
             </article>
-            <button className='py-8 px-22 rounded-10 bg-primary text-tertiary font-label--md hover:bg-hover active:bg-hover'>
+            <button
+              onClick={() => router.push('/letter/new')}
+              className='py-8 px-22 rounded-10 bg-primary text-tertiary font-label--md hover:bg-hover active:bg-hover'
+            >
               편지 작성하기
             </button>
           </div>

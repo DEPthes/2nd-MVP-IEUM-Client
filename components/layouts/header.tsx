@@ -6,26 +6,63 @@ import ProfileIcon from '../../public/icons/profile.svg';
 import Hamburger from '../hamburger';
 import useIeumMediaQuery from '@/hooks/custom/useIeumMediaQuery';
 import useAlert from '@/recoil/alert/useAlert';
-import useUserQuery from '@/hooks/queries/useUserQuery';
+import useUserQuery, { USER_QUERY_KEY } from '@/hooks/queries/useUserQuery';
+import { useMutation, useQueryClient } from 'react-query';
+import { logout } from '@/apis/logout';
+import { deleteUser } from '@/apis/deleteUser';
+import { authToken } from '@/class/authToken';
 
-const Header = () => {
+function Header() {
   const router = useRouter();
-  const { user } = useUserQuery();
+  const queryClient = useQueryClient();
+  const { user, isError } = useUserQuery(authToken.getToken());
+  const logoutMutation = useMutation(logout);
+  const deleteUserMutation = useMutation(deleteUser);
   const { showAlert } = useAlert();
   const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showProfileIconMenu, setShowProfileIconMenu] = useState(false);
 
-  //TODO: 로그아웃
-  function handleLogout() {}
-  //TODO: 계정 삭제
-  function handleDeleteUser() {}
+  // 로그아웃
+  function handleLogout() {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(USER_QUERY_KEY);
+        if (router.pathname === '/') {
+          router.reload();
+        } else {
+          window.location.href = '/';
+        }
+      },
+    });
+  }
+  // 계정 삭제
+  function handleDeleteUser() {
+    deleteUserMutation.mutate(undefined, {
+      onSuccess: () => router.push('/'),
+    });
+  }
 
   function showLogoutAlert() {
     showAlert({
       title: '로그아웃하시겠어요?',
       actions: [
         { title: '네', style: 'tertiary', handler: handleLogout },
+        { title: '아니요', style: 'primary', handler: null },
+      ],
+    });
+  }
+
+  function showDeleteUserAlert() {
+    showAlert({
+      title: (
+        <div className='flex flex-col items-center'>
+          <span>모든 편지 기록이 삭제돼요.</span>
+          <span>정말로 계정을 삭제하시겠어요?</span>
+        </div>
+      ),
+      actions: [
+        { title: '네', style: 'tertiary', handler: handleDeleteUser },
         { title: '아니요', style: 'primary', handler: null },
       ],
     });
@@ -64,10 +101,10 @@ const Header = () => {
           <Link href={'/'} className=' relative w-63 h-42'>
             <Image src={'/imgs/logo1.png'} alt='logo' layout='fill' objectFit='cover' />
           </Link>
-          <Link href={'/'} className=' font-label--md text-primary'>
+          <Link href={{ pathname: '/', hash: 'section1' }} className=' font-label--md text-primary'>
             서비스 소개
           </Link>
-          <Link href={'/'} className=' font-label--md text-primary'>
+          <Link href={{ pathname: '/', hash: 'section2' }} className=' font-label--md text-primary'>
             사용 방법
           </Link>
           <Link href={'/letter/all'} className=' font-label--md text-primary'>
@@ -96,7 +133,7 @@ const Header = () => {
           <ProfileIcon width='32' height='32' />
         </button>
         {showHamburgerMenu && (
-          <div className=' absolute bg-tertiary top-78 right-71 w-71'>
+          <div className=' absolute bg-tertiary flex flex-col top-78 right-71 '>
             <button onClick={() => router.push('/letter/new')} className=' py-4 px-8 text-primary font-label--md'>
               편지작성
             </button>
@@ -104,16 +141,18 @@ const Header = () => {
           </div>
         )}
         {showProfileIconMenu && (
-          <div className=' absolute bg-tertiary top-78 right-0 w-71'>
+          <div className=' absolute bg-tertiary flex flex-col top-78 right-4 desktop:right-194'>
             <button onClick={showLogoutAlert} className=' py-4 px-8 text-primary font-label--md'>
               로그아웃
             </button>
-            <button className=' py-4 px-8 text-primary font-label--md'>계정삭제</button>
+            <button onClick={showDeleteUserAlert} className=' py-4 px-8 text-primary font-label--md'>
+              계정삭제
+            </button>
           </div>
         )}
       </div>
     </nav>
   );
-};
+}
 
 export default Header;
