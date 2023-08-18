@@ -1,6 +1,5 @@
 import { getTempsReply } from '@/apis/getTempsReply';
 import { useQuery } from 'react-query';
-import useApiError from '../custom/useApiError';
 import { withVerify } from '@/apis/withVerify';
 import { authToken } from '@/class/authToken';
 
@@ -16,7 +15,6 @@ export default function useTempsReplyQuery() {
     queryKey: [TEMPS_REPLY_QUERY_KEY],
     queryFn: () => withVerify(() => getTempsReply(accessToken)),
     select: (res) => res.data.information,
-    onError: useApiError,
     refetchOnMount: 'always',
   });
   return { temps, isLoading, isError };

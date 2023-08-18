@@ -8,6 +8,7 @@ import { postSendGptReply } from '@/apis/postSendGptReply';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -30,6 +31,7 @@ type LoadType = {
 
 const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load, selectId }) => {
   const { showAlert } = useAlert();
+  const router = useRouter();
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -64,9 +66,24 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       }),
   });
 
-  //편지답장 발송하기
+  const { handlerError: handlerSendGptError } = useApiError({
+    500: () =>
+      showAlert({
+        title: (
+          <div className='flex flex-col items-center'>
+            <span>편지 보내기에 실패했습니다.</span>
+            <span>편지를 다시 보낼까요?</span>
+          </div>
+        ),
+        actions: [
+          { title: '네', style: 'primary', handler: newSendGptHandler },
+          { title: '아니요', style: 'tertiary', handler: null },
+        ],
+      }),
+  });
+
+  //편지답장 특정인에게 발송하기
   const newSendMutation = useMutation(postSend);
-  const newSendGptReplyMutation = useMutation(postSendGptReply);
   const newSendHandler = () => {
     newSendMutation.mutate(
       { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
@@ -77,13 +94,18 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
         onError: (err) => handlerSendError(err as AxiosError),
       },
     );
+  };
+
+  //편지 답장 GPT에게 발송하기
+  const newSendGptReplyMutation = useMutation(postSendGptReply);
+  const newSendGptHandler = () => {
     newSendGptReplyMutation.mutate(
       { title, contents, envelopType },
       {
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
-        onError: (err) => handlerSendError(err as AxiosError),
+        onError: (err) => handlerSendGptError(err as AxiosError),
       },
     );
   };
@@ -185,7 +207,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
             <button
               className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
               type='button'
-              onClick={newSendHandler}
+              onClick={router.query.name === null ? newSendHandler : newSendGptHandler}
             >
               발송하기
             </button>

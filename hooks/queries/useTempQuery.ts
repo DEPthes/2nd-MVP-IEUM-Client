@@ -1,6 +1,5 @@
 import { getTemp } from '@/apis/getTemp';
 import { useQuery } from 'react-query';
-import useApiError from '../custom/useApiError';
 import { withVerify } from '@/apis/withVerify';
 import { authToken } from '@/class/authToken';
 
@@ -10,14 +9,13 @@ export default function useTempQuery(letterId: number) {
   const accessToken = authToken.getToken();
   const {
     data: temp,
-    isLoading: loading,
-    isError: error,
+    isLoading,
+    isError,
   } = useQuery({
-    queryKey: [TEMP_QUERY_KEY],
+    queryKey: [TEMP_QUERY_KEY, letterId],
     queryFn: () => withVerify(() => getTemp(letterId, accessToken)),
     select: (res) => res.data.information,
-    onError: useApiError,
     enabled: letterId !== 0,
   });
-  return { temp, loading, error };
+  return { temp, isLoading, isError };
 }
