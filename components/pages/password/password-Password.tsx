@@ -113,8 +113,8 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
   //   event.preventDefault();
 
   return (
-    <main className='flex justify-center'>
-      <form className='w-342 mt-133 mx-24'>
+    <main className='flex justify-center pt-133'>
+      <form className='w-342 mx-24'>
         <p className='text-primary text-center font-heading--lg'>비밀번호 재설정</p>
         <div className='relative mt-24'>
           <input

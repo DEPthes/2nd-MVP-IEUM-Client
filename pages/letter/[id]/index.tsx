@@ -12,12 +12,12 @@ export default function Letters() {
       {isLoading ? (
         <div></div>
       ) : (
-        <main className='flex justify-center'>
+        <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
           <div className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <div className='flex items-center self-stretch w-full p-12 rounded-10 outline-none bg-letter_bg text-hover font-letter--title'>
               {letter?.title}
             </div>
-            <div className='flex items-start self-stretch w-full h-440 mt-16 py-8 px-12 rounded-10 outline-none bg-letter_bg text-hover resize-none font-letter--content'>
+            <div className='flex items-start self-stretch w-full min-h-440 mt-16 py-8 px-12 rounded-10 outline-none bg-letter_bg text-hover resize-none font-letter--content'>
               {letter?.contents}
             </div>
             <div className='float-right font-label--sm mt-8 text-primary'>

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import PasswordEmail from '../components/pages/password/password-Email';
 import PasswordPassword from '../components/pages/password/password-Password';
-import OnlyNotUser from '@/components/layouts/onlyNotUser';
 import Layout from '@/components/layouts/layout';
 import AuthEmail from '@/components/authEmail';
 

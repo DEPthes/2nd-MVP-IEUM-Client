@@ -8,7 +8,7 @@ const ResponseComplete: React.FC = () => {
 
   return (
     <Layout onlyAccess='user'>
-      <main>
+      <main className='px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <div className='mt-115 text-center'>
           <div className='flex justify-center'>
             <CompleteImg />

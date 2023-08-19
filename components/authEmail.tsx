@@ -136,8 +136,8 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
   const submitHandler = () => {};
 
   return (
-    <main className='flex justify-center'>
-      <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+    <main className='flex justify-center pt-133'>
+      <form className='w-342 mx-24' onSubmit={submitHandler}>
         {title}
         <input
           className={`w-full px-12 py-15 rounded-10 border-2 focus:border-[#707070] outline-none placeholder-text_secondary placeholder:font-paragraph--sm gap-127 font-paragraph--sm ${
