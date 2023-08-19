@@ -20,7 +20,7 @@ function Header() {
   const logoutMutation = useMutation(logout);
   const deleteUserMutation = useMutation(deleteUser);
   const { showAlert } = useAlert();
-  const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
+  const { isDesktop, isTablet, isMobile, isLoading: beforeMount } = useIeumMediaQuery();
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showProfileIconMenu, setShowProfileIconMenu] = useState(false);
 
@@ -114,7 +114,7 @@ function Header() {
   return (
     <nav className='fixed w-full h-78 flex justify-between items-center z-header bg-tertiary px-28 desktop:px-218'>
       {/* 헤더 왼쪽 부분 */}
-      {(isMobile || isTablet) && (
+      {(isMobile || isTablet || beforeMount) && (
         <Link href={'/'}>
           <Image src={'/imgs/logo1.png'} alt='logo' width={63} height={42} priority />
         </Link>
