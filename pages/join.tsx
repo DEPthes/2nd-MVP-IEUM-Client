@@ -4,7 +4,7 @@ import Layout from '@/components/layouts/layout';
 import AuthEmail from '@/components/authEmail';
 
 const Join = () => {
-  const [page, setPage] = useState<'Email' | 'Password'>('Password');
+  const [page, setPage] = useState<'Email' | 'Password'>('Email');
   const [email, setEmail] = useState<string>('');
 
   return (
