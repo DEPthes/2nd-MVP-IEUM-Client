@@ -84,18 +84,16 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
-    newload(load);
-    componentChangeHandler('Select');
-    // newCheckMutation.mutate(
-    //   { title, contents },
-    //   {
-    //     onSuccess: () => {
-    //       newload(load);
-    //       componentChangeHandler('Select');
-    //     },
-    //     onError: (err) => handlerCheckError(err as AxiosError),
-    //   },
-    // );
+    newCheckMutation.mutate(
+      { title, contents },
+      {
+        onSuccess: () => {
+          newload(load);
+          componentChangeHandler('Select');
+        },
+        onError: (err) => handlerCheckError(err as AxiosError),
+      },
+    );
   };
 
   //임시저장 버튼
@@ -186,7 +184,6 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               onInput={onTextareaHandler}
               value={contents}
               spellCheck={false}
-              style={{ minHeight: '456px' }}
             />
             <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>
               {contents.length}자/3500자
