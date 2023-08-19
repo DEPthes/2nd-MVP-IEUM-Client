@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
 import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { postSend } from '@/apis/postSend';
 import { postSendGpt } from '@/apis/postSendGpt';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
 import { AxiosError } from 'axios';
+import { LETTERS_QUERY_KEY } from '@/hooks/queries/useLettersQuery';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -109,7 +110,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
 
   return (
     <Layout onlyAccess='user'>
-      <main className='flex justify-center'>
+      <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <div>
           <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>
             편지 봉투를 선택하세요

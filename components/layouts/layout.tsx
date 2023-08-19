@@ -19,8 +19,8 @@ const Layout: React.FC<LayoutProps & HeadMetaProps> = ({
     <>
       <HeadMeta {...{ metaTitle, metaDescription }} />
       <Header />
-      <div className='pt-78 h-screen'>
-        <div className='h-full px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
+      <div className='pt-78'>
+        <div className='h-full'>
           {onlyAccess === 'user' && <OnlyUser>{children}</OnlyUser>}
           {onlyAccess === 'notUser' && <OnlyNotUser>{children}</OnlyNotUser>}
           {onlyAccess === 'all' && children}

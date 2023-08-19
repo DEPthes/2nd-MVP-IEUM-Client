@@ -34,7 +34,7 @@ export default function Home() {
   return (
     // <ProtectedLayout>
     <Layout>
-      <main className='flex flex-col items-center'>
+      <main className='flex flex-col items-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <section ref={section1} className=' bg-letter_bg w-full h-full py-8 px-4 mb-24'>
           <div className='flex flex-col items-center border-dashed border-1 border-black px-26 pt-65 pb-34'>
             <Image className='mb-64' src={'/imgs/logo2.png'} alt='logo' width={166} height={124} priority />

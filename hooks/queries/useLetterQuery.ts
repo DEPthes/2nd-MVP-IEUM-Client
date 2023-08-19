@@ -14,6 +14,7 @@ export default function useLetterQuery(id: number) {
     queryFn: () => withVerify(() => getLetterContent(id)),
     select: (res) => res.data.information,
     refetchOnMount: 'always',
+    staleTime: 1000 * 20,
   });
   return { letter, isLoading, isError };
 }

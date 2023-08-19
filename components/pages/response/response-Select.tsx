@@ -112,7 +112,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
 
   return (
     <Layout onlyAccess='user'>
-      <main className='flex justify-center'>
+      <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <div>
           <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>
             편지 봉투를 선택하세요
@@ -207,7 +207,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
             <button
               className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
               type='button'
-              onClick={router.query.name === null ? newSendHandler : newSendGptHandler}
+              onClick={router.query.name ? newSendHandler : newSendGptHandler}
             >
               발송하기
             </button>

@@ -23,10 +23,29 @@ type JoinPasswordType = {
   email: string;
 };
 
+//초기 닉네임 설정
+const initNicknames = [
+  '혁명적인설탕',
+  '고요한오리',
+  '긍정적인다람쥐',
+  '꾸준한호랑이',
+  '센스있는팬더',
+  '빛나는별',
+  '신비로운달',
+  '환상적인바람',
+  '푸른바다',
+  '자유로운새',
+];
+
+const getRandomNickname = () => {
+  const randomIndex = Math.floor(Math.random() * initNicknames.length);
+  return initNicknames[randomIndex];
+};
+
 const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   const router = useRouter();
   const newSignUpMutation = useMutation(postSignUp);
-  const [nickname, setNickname] = useState<string>('');
+  const [nickname, setNickname] = useState<string>(getRandomNickname());
   //API로부터 받아온 닉네임들 저장하는 배열
   const [nicknames, setNicknames] = useState<string[]>([]);
 
@@ -50,31 +69,6 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   const [isFetch, setIsFetch] = useState<boolean>(false);
 
   const [isDuplicatedCheckAble, setIsDuplicatedCheckAble] = useState(false);
-
-  //초기 닉네임 설정
-  const initNicknames = [
-    '혁명적인설탕',
-    '고요한오리',
-    '긍정적인다람쥐',
-    '꾸준한호랑이',
-    '센스있는팬더',
-    '빛나는별',
-    '신비로운달',
-    '환상적인바람',
-    '푸른바다',
-    '자유로운새',
-  ];
-
-  // 초기 닉네임 중 랜덤 닉네임 1개 선택 로직
-  useEffect(() => {
-    const getRandomNickname = () => {
-      const randomIndex = Math.floor(Math.random() * initNicknames.length);
-      return initNicknames[randomIndex];
-    };
-    setNickname(getRandomNickname());
-
-    // changeNicknameHandler();
-  }, []); // 빈 배열을 의존성 배열로 사용
 
   const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -221,8 +215,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   return (
-    <main className='flex flex-col justify-center items-center'>
-      <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+    <main className='flex flex-col justify-center items-center pt-133'>
+      <form className='w-342 mx-24' onSubmit={submitHandler}>
         <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
         {/* Header */}
 
