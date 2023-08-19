@@ -10,6 +10,7 @@ import useTempQuery from '@/hooks/queries/useTempQuery';
 type SendProps = {
   setShow: (x: boolean) => void;
   onLoadChange: (load: LoadType) => void;
+  letterId: number;
 };
 
 type LoadType = {
@@ -23,9 +24,9 @@ type LoadType = {
   read: boolean;
 };
 
-const ResponseTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
+const ResponseTemp: React.FC<SendProps> = ({ setShow, onLoadChange, letterId }) => {
   const [selectedButtonId, setSelectedButtonId] = useState<number>(0);
-  const { temps } = useTempsReplyQuery();
+  const { temps } = useTempsReplyQuery(letterId);
   const { temp } = useTempQuery(selectedButtonId);
   const [load, setLoad] = useState<LoadType>();
 

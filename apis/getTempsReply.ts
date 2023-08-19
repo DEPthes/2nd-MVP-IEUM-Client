@@ -9,8 +9,9 @@ type TempsResponse = {
   }[];
 };
 
-export async function getTempsReply(accessToken: string | null) {
+export async function getTempsReply(letterId: number, accessToken: string | null) {
   return await ieumAxios.get<TempsResponse>('/api/letter/temp-reply', {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+    params: { letterId },
   });
 }
