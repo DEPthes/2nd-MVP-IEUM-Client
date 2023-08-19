@@ -1,7 +1,7 @@
 import { HTMLAttributes } from 'react';
 
-import CheckSquareIcon from '../public/icons/check-square.svg';
-import UnCheckSquareIcon from '../public/icons/uncheck-square.svg';
+import CheckIcon from '../public/icons/check.svg';
+import SquareIcon from '../public/icons/square.svg';
 
 interface CheckSquareProps extends HTMLAttributes<HTMLButtonElement> {
   checked: boolean;
@@ -10,7 +10,10 @@ interface CheckSquareProps extends HTMLAttributes<HTMLButtonElement> {
 const CheckSquare = ({ checked, ...props }: CheckSquareProps) => {
   return (
     <button type='button' {...props}>
-      {checked ? <CheckSquareIcon className='w-24 h-24' /> : <UnCheckSquareIcon className='w-24 h-24' />}
+      <div className='relative flex'>
+        <SquareIcon className='w-24 h-24' />
+        {checked && <CheckIcon className='absolute top-7 left-6' />}
+      </div>
     </button>
   );
 };

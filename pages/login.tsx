@@ -5,10 +5,11 @@ import { authToken } from '@/class/authToken';
 
 import Header from '../components/layouts/header';
 import CheckSquare from '@/components/check-square';
-import Eyes from '../public/icons/eye.svg';
-import EyesHidden from '../public/icons/eye-hidden.svg';
+import EyesIcon from '../public/icons/eye.svg';
+import EyesHiddenIcon from '../public/icons/eye-hidden.svg';
 import { useRouter } from 'next/router';
 import useApiError from '@/hooks/custom/useApiError';
+import Layout from '@/components/layouts/layout';
 
 export default function Login() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function Login() {
   const [IsValid, setIsValid] = useState(true);
   const idValue = useRef<HTMLInputElement>(null);
   const passwordValue = useRef<HTMLInputElement>(null);
+  const [loginAble, setLoginAble] = useState(false);
 
   const togglePasswordHandler = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -70,50 +72,58 @@ export default function Login() {
   };
 
   //login 유효성 검사 (추가로 일치 여부 구현해야됨.)
-  const loginAble: boolean = idValue !== null && passwordValue !== null;
-
+  const checkLoginAble = () => {
+    const id = idValue.current?.value || '';
+    const password = passwordValue.current?.value || '';
+    const isLoginAble = id !== '' && password !== '';
+    setLoginAble(isLoginAble);
+  };
   return (
-    <main>
-      {/* Header */}
-      <Header />
-      <form onSubmit={submitHandler} className='flex flex-col items-center justify-center desktop:py-64 tablet:py-56'>
-        <div className='w-390 h-844 relative overflow-hidden bg-[#fffcf7]'>
-          {/* font-family */}
-          <p className='mt-145 mx-167 text-[21px] font-heading--lg text-left not-italic text-[#675149]'>로그인</p>
-
+    <Layout>
+      <main className='flex justify-center'>
+        <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+          <h1 className='font-heading--lg text-primary mb-24 text-center'>로그인</h1>
           {/* input Id */}
-          <input
-            className='inline-flex w-342 h-50 ml-24 mt-24 pl-12 rounded-10 border-2 focus:outline-none 
-            focus:border-[#707070] bg-white border-[#675149]/30'
-            ref={idValue}
-            placeholder='아이디를 입력해주세요'
-          />
+          <div className='relative flex items-center'>
+            <input
+              className='w-full h-50 px-12 text-text_primary font-paragraph--sm rounded-10 border-2
+              border-border_transparent focus:outline-none focus:border-border_focus bg-white placeholder:text-text_secondary'
+              ref={idValue}
+              onChange={checkLoginAble}
+              placeholder='아이디를 입력해주세요'
+            />
+          </div>
 
           {/* input Password */}
-          <div className='relative inline-flex mt-20'>
+          <div className='relative flex mt-25'>
             <input
               type={showPassword ? 'text' : 'password'}
               ref={passwordValue}
-              className='inline-flex w-342 h-50 ml-24 mt-5 pl-12 rounded-10 
-              focus:outline-none focus:border-[#707070] bg-white border-2 border-[#675149]/30'
+              onChange={checkLoginAble}
+              className='w-full px-12 h-50 rounded-10 text-text_primary font-paragraph--sm 
+              focus:outline-none focus:border-border_focus bg-white border-2 border-border_transparent placeholder:text-text_secondary'
               placeholder='비밀번호를 입력해주세요'
             />
-            <button type='button' className='ml-[-36px] mt-3.5' onClick={togglePasswordHandler}>
-              {showPassword ? <Eyes /> : <EyesHidden />}
+            <button type='button' onClick={togglePasswordHandler}>
+              {showPassword ? (
+                <EyesIcon className='absolute right-17 top-14 mt-3' />
+              ) : (
+                <EyesHiddenIcon className='absolute right-16 top-10 mt-3' />
+              )}
             </button>
           </div>
 
           {!IsValid ? (
-            <p className='ml-24 text-12px text-left leading-[160%] not-italic line-hei text-[#e11900]'>
+            <p className=' text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
               아이디 또는 비밀번호를 다시 확인해주세요.
             </p>
           ) : (
-            <p className='mt-1'>&nbsp;</p>
+            <p className='mt-4'>&nbsp;</p>
           )}
 
           {/* Button */}
           <button
-            className={`flex w-342 h-50 m-24 mt-31 justify-center items-center font-label--md
+            className={`flex w-342 h-50 mt-31 justify-center items-center font-label--md
            rounded-10 text-[16px] text-left not-italic text-[#FFFCF7]
           ${loginAble ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
             disabled={!loginAble}
@@ -122,7 +132,7 @@ export default function Login() {
           </button>
           <button
             type='button'
-            className='flex w-342 h-50 m-24 justify-center items-center bg-[#675149] 
+            className='flex w-342 h-50 mt-24 justify-center items-center bg-[#675149] 
             rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7] 
             hover:bg-[#2D2421]'
             onClick={togglejoinHandler}
@@ -131,11 +141,11 @@ export default function Login() {
           </button>
 
           <div className='flex justify-between mt-35'>
-            <div className='flex px-24'>
-              <div className='inline-flex'>
+            <div className='flex'>
+              <div className='inline-flex gap-10'>
                 <CheckSquare onClick={toggleCheckLoginHandler} checked={checkLogin} />
                 <p
-                  className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
+                  className='text-[#675149] mt-3 rounded-10 text-[12px] 
                 font-paragraph--sm text-left not-italic'
                 >
                   로그인 상태 유지
@@ -144,15 +154,15 @@ export default function Login() {
             </div>
             <button
               type='button'
-              className='px-24 ml-4 text-[#675149] rounded-10 text-[12px] 
+              className='text-[#675149] rounded-10 text-[12px] 
               font-paragraph--sm text-left not-italic '
               onClick={toggleForgetPasswordHandler}
             >
               비밀번호를 잊으셨나요?
             </button>
           </div>
-        </div>
-      </form>
-    </main>
+        </form>
+      </main>
+    </Layout>
   );
 }
