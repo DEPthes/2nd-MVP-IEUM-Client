@@ -31,7 +31,7 @@ export default function useApiError(handlers?: { [key: number]: () => void }) {
         actions: [{ title: '확인', style: 'primary', handler: null }],
       }),
   };
-  const handlerError = (err: unknown) => {
+  const handleError = (err: unknown) => {
     const error = err as AxiosError; // api 요청의 모든 에러를 Axios 에러로 통일
     const status = error.response?.status;
 
@@ -61,5 +61,5 @@ export default function useApiError(handlers?: { [key: number]: () => void }) {
     defaultHandlers.common();
   };
 
-  return { handlerError };
+  return { handleError };
 }

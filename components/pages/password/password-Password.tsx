@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import useApiError from '@/hooks/custom/useApiError';
 import { useRouter } from 'next/router';
+import { passwordRegex } from '@/libs/passwordRegex';
 
 let passwordIsValid: string;
 let checkPasswordIsValid: string;
@@ -28,13 +29,7 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
   });
   const { showAlert } = useAlert();
   const newChangePasswordMutation = useMutation(patchResetPassword);
-  const { handlerError: handleChangePasswordError } = useApiError({
-    400: () =>
-      showAlert({
-        title: '가입되지 않은 이메일입니다.',
-        actions: [{ title: '확인', style: 'primary', handler: null }],
-      }),
-  });
+  const { handleError: handleDefaultError } = useApiError();
 
   //새 비밀번호 입력 비밀번호 보이기&숨기기
   const togglePasswordHandler = () => {
@@ -66,12 +61,10 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
     }));
   };
 
-  //영문, 숫자, 특수문자(!/@/^)를 포함한 8자 ~ 12자
-  const regExp = /^(?=.*[a-zA-Z])(?=.*[!@^])(?=.*[0-9]).{8,12}$/;
   //비밀번호 유효성 검사
   if (passwordValue.passwordValue === '') {
     passwordIsValid = 'normal';
-  } else if (!regExp.test(passwordValue.passwordValue)) {
+  } else if (!passwordRegex.test(passwordValue.passwordValue)) {
     passwordIsValid = 'negative';
   } else {
     passwordIsValid = 'positive';
@@ -104,8 +97,7 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
               { title: '아니오', style: 'tertiary', handler: () => router.push('/') },
             ],
           }),
-
-        onError: (err) => handleChangePasswordError(err as AxiosError),
+        onError: handleDefaultError,
       },
     );
   };
