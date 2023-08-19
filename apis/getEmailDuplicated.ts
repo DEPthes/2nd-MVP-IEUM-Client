@@ -1,3 +1,4 @@
+import { IeumError } from '@/class/ieumError';
 import ieumAxios from './ieumAxios';
 
 export type EmailCheckResponse = {
