@@ -7,7 +7,7 @@ import DeleteIcon from '../../../public/icons/delete.svg';
 import ReturnIcon from '../../../public/icons/return2.svg';
 import EyesIcon from '../../../public/icons/eye.svg';
 import EyesHiddenIcon from '../../../public/icons/eye-hidden.svg';
-import LoadingIcon from '../../../public/icons/loading.svg';
+import LoadingIcon from '../../../public/icons/loading1.svg';
 
 import { getNicknameDuplicated } from '@/apis/getNicknameDuplicated';
 import { getNickname } from '@/apis/getNickname';
@@ -16,6 +16,8 @@ import { useMutation } from 'react-query';
 import { postSignUp } from '@/apis/postSignUp';
 import useApiError from '@/hooks/custom/useApiError';
 import { AxiosError } from 'axios';
+
+import animation from '../../../styles/loading.module.css';
 
 type JoinPasswordType = {
   email: string;
@@ -47,6 +49,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
   const [isFetch, setIsFetch] = useState<boolean>(false);
 
+  const [isDuplicatedCheckAble, setIsDuplicatedCheckAble] = useState(false);
+
   //초기 닉네임 설정
   const initNicknames = [
     '혁명적인설탕',
@@ -74,6 +78,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
   const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
+    setIsDuplicatedCheckAble(true);
+    setCheckNickname('inputNickName');
   };
 
   const togglePasswordHandler = () => {
@@ -105,6 +111,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   const toggleDeleteHandler = () => {
+    setIsDuplicatedCheckAble(true);
     setNickname('');
     setCheckNickname('inputNickName');
   };
@@ -135,13 +142,17 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   //에러 처리
   const { handlerError } = useApiError({
     // 닉네임 GPT오류
-    500: () => setCheckNickname('error'),
+    500: () => {
+      setCheckNickname('error');
+      setIsDuplicatedCheckAble(true);
+    },
     // 회원가입 체크
     400: () => console.log('sign-up error'),
   });
 
   //GPT닉네임 바꾸는 함수
   async function changeNicknameHandler() {
+    setIsDuplicatedCheckAble(false);
     try {
       // 저장된 배열이 0일 때만 API 호출
       if (nicknames.length === 0) {
@@ -210,9 +221,9 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   return (
-    <main className='h-full flex flex-col justify-center items-center'>
-      <h1 className='font-heading--lg mb-24'>간편가입</h1>
-      <form className='w-342' onSubmit={submitHandler}>
+    <main className='flex flex-col justify-center items-center'>
+      <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
+        <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
         {/* Header */}
 
         {/* font-family */}
@@ -233,34 +244,38 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
           {!isFetch ? (
             <button type='button' onClick={changeNicknameHandler}>
-              <ReturnIcon className='absolute top-13 right-13' />
+              <ReturnIcon className='absolute top-13 right-15 transform scale-x-[-1]' />
             </button>
           ) : (
-            <LoadingIcon width='40' height='40' className='absolute top-5 right-5' />
+            <div className={`absolute bottom-[-3px] right-0 ${animation.rotateLeftAnimation}`}>
+              <LoadingIcon width='40' height='40' className='w-full h-full object-cover' />
+            </div>
           )}
         </div>
 
         <button
-          className='flex w-342 h-50 mx-24 mt-16 justify-center items-center 
+          className={`relative flex w-full h-50 mt-16 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
-          bg-[#675149] hover:bg-[#2D2421]'
+           ${isDuplicatedCheckAble && nickname !== '' ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
           type='button'
           onClick={duplicationCheckHandler}
+          disabled={!isDuplicatedCheckAble || nickname === ''}
         >
           중복체크
         </button>
+
         {checkNickname === '' ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : checkNickname === 'inputNickName' ? (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
+          <p className='w-full text-[12px] text-left leading-[160%] not-italic text-[#048848] '>
             한글, 영문 관계없이 3~10자로 입력해주세요
           </p>
         ) : checkNickname === 'duplicated' ? (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
+          <p className='w-full text-[12px] text-left leading-[160%] not-italic '>이미 존재하는 닉네임이에요 </p>
         ) : checkNickname === 'positive' ? (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
+          <p className='w-full text-[12px] text-left leading-[160%] not-italic '>사용 가능한 닉네임이에요 </p>
         ) : checkNickname === 'error' ? (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic '>
+          <p className='w-full text-[12px] text-left leading-[160%] not-italic '>
             AI가 닉네임 추천에 실패했어요. 버튼을 다시 눌러주세요
           </p>
         ) : (
@@ -269,7 +284,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
 
         {/* input password */}
         <p
-          className='mx-24 mt-5 w-100 text-[16px] font-heading--md text-left not-italic 
+          className='w-full mt-5 text-[16px] font-heading--md text-left not-italic 
           text-[#675149]'
         >
           비밀번호
@@ -279,8 +294,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
           <input
             type={showPassword.showPassword ? 'text' : 'password'}
             onChange={passwordChangeHandler}
-            className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
-              focus:outline-none focus:border-[#707070] border-2
+            className={`inline-flex w-342 h-50 pl-12 rounded-10 
+              focus:outline-none focus:border-[#707070] border-2 placeholder:text-text_secondary text-text_primary font-paragraph--sm
               ${
                 passwordIsValid
                   ? 'bg-white border-2 border-[#675149]/30'
@@ -288,14 +303,18 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
               }`}
             placeholder='비밀번호를 입력'
           />
-          <button type='button' className='ml-[-36px] mt-3' onClick={togglePasswordHandler}>
-            {showPassword.showPassword ? <EyesIcon /> : <EyesHiddenIcon />}
+          <button type='button' onClick={togglePasswordHandler}>
+            {showPassword.showPassword ? (
+              <EyesIcon className='absolute right-17 top-14 mt-3' />
+            ) : (
+              <EyesHiddenIcon className='absolute right-16 top-10 mt-3' />
+            )}
           </button>
         </div>
         {passwordIsValid ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
+          <p className='text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
             영문, 숫자, 특수문자(!/@/^) 를 모두 포함한 8~12자로 입력해주세요
           </p>
         )}
@@ -304,8 +323,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
           <input
             type={showPassword.showCheckPassword ? 'text' : 'password'}
             onChange={checkPasswordChangeHandler}
-            className={`inline-flex w-342 h-50 ml-[24px] pl-12 rounded-10 
-              focus:outline-none focus:border-[#707070] border-2
+            className={`inline-flex w-342 h-50 pl-12 rounded-10 
+              focus:outline-none focus:border-[#707070] border-2 placeholder:text-text_secondary text-text_primary font-paragraph--sm
               ${
                 checkPasswordIsValid
                   ? 'bg-white border-2 border-[#675149]/30'
@@ -313,33 +332,36 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
               }`}
             placeholder='비밀번호를 입력'
           />
-          <button type='button' className='ml-[-36px] mt-3' onClick={toggleCheckPasswordHandler}>
-            {showPassword.showCheckPassword ? <EyesIcon /> : <EyesHiddenIcon />}
+          <button type='button' onClick={toggleCheckPasswordHandler}>
+            {showPassword.showCheckPassword ? (
+              <EyesIcon className='absolute right-17 top-14 mt-3' />
+            ) : (
+              <EyesHiddenIcon className='absolute right-16 top-10 mt-3' />
+            )}
           </button>
         </div>
         {checkPasswordIsValid ? (
           <p className='mt-[4px]'>&nbsp;</p>
         ) : (
-          <p className='ml-[24px] text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>
-            비밀번호를 다시 확인해주세요
-          </p>
+          <p className='text-[12px] text-left leading-[160%] not-italic text-[#e11900]'>비밀번호를 다시 확인해주세요</p>
         )}
+
         {/* chekBox */}
-        <div className='inline-flex mx-24 box-border'>
+        <div className='inline-flex w-full box-border gap-7'>
           <CheckSquare onClick={toggleCheckAgeHandler} checked={checkSquare.ageSquare} />
           <p
-            className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
+            className='text-[#675149] mt-3 rounded-10 text-[12px] 
                 font-paragraph--sm text-left not-italic'
           >
             만 14세 이상입니다(필수)
           </p>
         </div>
 
-        <div className='inline-flex mx-24'>
+        <div className='inline-flex w-full gap-7'>
           <CheckSquare onClick={toggleCheckAdmitHandler} checked={checkSquare.admitSquare} />
           <p
-            className='text-[#675149] ml-6 mt-3 rounded-10 text-[12px] 
-                font-paragraph--sm text-left not-italic box-border'
+            className='text-[#675149] mt-3 rounded-10 text-[12px] 
+                font-paragraph--sm text-left not-italic'
           >
             편지 알림 이메일 수신 동의 (필수)
           </p>
@@ -348,13 +370,13 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         {/* sign up */}
         {/* 활성화 처리 해야됨 */}
         <button
-          className={`flex w-342 h-50 m-24 mt-13 justify-center items-center 
+          className={`flex w-342 h-50  mt-13 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
           bg-[#675149] 
           ${signUpIsValid ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070] '}`}
           disabled={!signUpIsValid}
         >
-          회원가입 완료
+          간편가입 완료
         </button>
       </form>
     </main>
