@@ -22,7 +22,9 @@ export default function AlertView() {
             {/* <button onClick={closeAlert} className='absolute top-16 right-16'>
               <CancleIcon width='16' height='16' />
             </button> */}
-            <div className={'p-4 text-primary font-label--md desktop:font-heading--md'}>{title}</div>
+            <div className={'p-4 text-primary font-label--md desktop:font-heading--md whitespace-pre-wrap'}>
+              {title}
+            </div>
             <div className=' flex justify-center items-center gap-10 w-full desktop:gap-7'>
               {actions.map((action, i) => (
                 <AlertAction key={i} {...action} closeAlert={closeAlert} />

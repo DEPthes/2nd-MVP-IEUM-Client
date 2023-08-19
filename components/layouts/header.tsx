@@ -26,20 +26,23 @@ function Header() {
 
   // 아이콘 메뉴 활성화 여부
   const isIconMenuAbled = !iconMenuDisabledUrls.includes(router.pathname);
-
   // 로그아웃
   function handleLogout() {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(USER_QUERY_KEY);
-        authToken.deleteToken();
-        if (router.pathname === '/') {
-          window.location.reload();
-        } else {
-          window.location.href = '/';
-        }
-      },
-    });
+    // 도메인 연결 전까지는 refreshToken이 작동하지 않으므로 logout 요청 보내지 않고 새로고침만
+    // logoutMutation.mutate(undefined, {
+    //   onSuccess: () => {
+    //     queryClient.invalidateQueries(USER_QUERY_KEY);
+    //     authToken.deleteToken();
+    //     if (router.pathname === '/') {
+    //       window.location.reload();
+    //     } else {
+    //       window.location.href = '/';
+    //     }
+    //   },
+    // });
+    queryClient.invalidateQueries(USER_QUERY_KEY);
+    authToken.deleteToken();
+    window.location.href = '/';
   }
   // 계정 삭제
   function handleDeleteUser() {
@@ -47,11 +50,7 @@ function Header() {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
         authToken.deleteToken();
-        if (router.pathname === '/') {
-          window.location.reload();
-        } else {
-          window.location.href = '/';
-        }
+        window.location.href = '/';
       },
     });
   }
