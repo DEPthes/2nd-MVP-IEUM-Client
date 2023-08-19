@@ -15,7 +15,6 @@ export default function useTempsQuery() {
     queryKey: [TEMPS_QUERY_KEY],
     queryFn: () => withVerify(() => getTemps(accessToken)),
     select: (res) => res.data.information,
-    refetchOnMount: 'always',
   });
   return { temps, isLoading, isError };
 }

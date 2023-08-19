@@ -218,7 +218,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
           </form>
         )}
       </main>
-      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} />}
+      {show && <SendTemp setShow={setShow} onLoadChange={handleTempLoadChange} letterId={selectId} />}
     </Layout>
   );
 };
