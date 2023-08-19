@@ -28,7 +28,11 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
   const [authNumberIsValid, setAuthNumberIsValid] = useState<'normal' | 'timeOver' | 'positive' | 'notIsValid'>(
     'normal',
   );
+
+  // 인증번호 받아오기
   const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
+
+  // 입력한 인증번호 맞는지 체크
   const newCheckAuthNumberMutation = useMutation(deleteAuthNumber);
 
   // 이메일 input 활성화 여부 - 타이머가 시작되거나 인증번호 입력에 성공하면 비활성화

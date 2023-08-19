@@ -20,26 +20,29 @@ function Header() {
   const logoutMutation = useMutation(logout);
   const deleteUserMutation = useMutation(deleteUser);
   const { showAlert } = useAlert();
-  const { isDesktop, isTablet, isMobile } = useIeumMediaQuery();
+  const { isDesktop, isTablet, isMobile, isLoading: beforeMount } = useIeumMediaQuery();
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showProfileIconMenu, setShowProfileIconMenu] = useState(false);
 
   // 아이콘 메뉴 활성화 여부
   const isIconMenuAbled = !iconMenuDisabledUrls.includes(router.pathname);
-
   // 로그아웃
   function handleLogout() {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(USER_QUERY_KEY);
-        authToken.deleteToken();
-        if (router.pathname === '/') {
-          window.location.reload();
-        } else {
-          window.location.href = '/';
-        }
-      },
-    });
+    // 도메인 연결 전까지는 refreshToken이 작동하지 않으므로 logout 요청 보내지 않고 새로고침만
+    // logoutMutation.mutate(undefined, {
+    //   onSuccess: () => {
+    //     queryClient.invalidateQueries(USER_QUERY_KEY);
+    //     authToken.deleteToken();
+    //     if (router.pathname === '/') {
+    //       window.location.reload();
+    //     } else {
+    //       window.location.href = '/';
+    //     }
+    //   },
+    // });
+    queryClient.invalidateQueries(USER_QUERY_KEY);
+    authToken.deleteToken();
+    window.location.href = '/';
   }
   // 계정 삭제
   function handleDeleteUser() {
@@ -47,11 +50,7 @@ function Header() {
       onSuccess: () => {
         queryClient.invalidateQueries(USER_QUERY_KEY);
         authToken.deleteToken();
-        if (router.pathname === '/') {
-          window.location.reload();
-        } else {
-          window.location.href = '/';
-        }
+        window.location.href = '/';
       },
     });
   }
@@ -114,7 +113,7 @@ function Header() {
   return (
     <nav className='fixed w-full h-78 flex justify-between items-center z-header bg-tertiary px-28 desktop:px-218'>
       {/* 헤더 왼쪽 부분 */}
-      {(isMobile || isTablet) && (
+      {(isMobile || isTablet || beforeMount) && (
         <Link href={'/'}>
           <Image src={'/imgs/logo1.png'} alt='logo' width={63} height={42} priority />
         </Link>

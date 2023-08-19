@@ -84,18 +84,16 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
-    newload(load);
-    componentChangeHandler('Select');
-    // newCheckMutation.mutate(
-    //   { title, contents },
-    //   {
-    //     onSuccess: () => {
-    //       newload(load);
-    //       componentChangeHandler('Select');
-    //     },
-    //     onError: (err) => handlerCheckError(err as AxiosError),
-    //   },
-    // );
+    newCheckMutation.mutate(
+      { title, contents },
+      {
+        onSuccess: () => {
+          newload(load);
+          componentChangeHandler('Select');
+        },
+        onError: (err) => handlerCheckError(err as AxiosError),
+      },
+    );
   };
 
   //임시저장 버튼
