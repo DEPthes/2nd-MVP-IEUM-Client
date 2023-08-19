@@ -163,6 +163,11 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
             <div className='font-heading--lg text-primary'>AI가 편지 내용을 검사하고 있어요!</div>
             <Loading />
           </div>
+        ) : newTempMutation.isLoading ? (
+          <div className='mt-160'>
+            <div className='font-heading--lg text-primary'>임시저장을 하고 있어요!</div>
+            <Loading />
+          </div>
         ) : (
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
