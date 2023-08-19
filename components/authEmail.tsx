@@ -168,7 +168,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
           이메일 인증하기
         </button>
         {AuthNumberSended ? (
-          <p className='font-paragraph--sm text-text_primary'>이메일로 인증번호가 발송되었어요!</p>
+          <p className='font-paragraph--sm text-positive'>이메일로 인증번호가 발송되었어요!</p>
         ) : (
           <p className='mb-43'></p>
         )}
