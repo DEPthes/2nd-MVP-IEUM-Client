@@ -31,14 +31,14 @@ type LoadType = {
   read: boolean;
 };
 
+const MAX_LENGTH_TITLE = 28; //편지 제목 글자수 제한
+const MAX_LENGTH = 3500; //편지 내용 글자수 제한
+
 const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, newcontents, newload }) => {
-  const MAX_LENGTH_TITLE = 28; //편지 제목 글자수 제한
-  const MAX_LENGTH = 3500; //편지 내용 글자수 제한
   const { showAlert } = useAlert();
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [contents, setContents] = useState('');
-  const [inputCount, setInputCount] = useState(0);
   const [show, setShow] = useState(false);
   const [load, setLoad] = useState<LoadType>();
   const newTempMutation = useMutation(postTemp);
@@ -84,17 +84,18 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
-
-    newCheckMutation.mutate(
-      { title, contents },
-      {
-        onSuccess: () => {
-          newload(load);
-          componentChangeHandler('Select');
-        },
-        onError: (err) => handlerCheckError(err as AxiosError),
-      },
-    );
+    newload(load);
+    componentChangeHandler('Select');
+    // newCheckMutation.mutate(
+    //   { title, contents },
+    //   {
+    //     onSuccess: () => {
+    //       newload(load);
+    //       componentChangeHandler('Select');
+    //     },
+    //     onError: (err) => handlerCheckError(err as AxiosError),
+    //   },
+    // );
   };
 
   //임시저장 버튼
@@ -130,7 +131,6 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
     if (event.target.value.length > MAX_LENGTH) {
       event.target.value = event.target.value.slice(0, MAX_LENGTH);
     }
-    setInputCount(event.target.value.length);
     const target = event.target.value;
     setContents(target);
   };
@@ -159,7 +159,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
 
   return (
     <Layout onlyAccess='user'>
-      <main className='flex justify-center'>
+      <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         {newCheckMutation.isLoading ? (
           <div className='mt-160'>
             <div className='font-heading--lg text-primary'>AI가 편지 내용을 검사하고 있어요!</div>
@@ -179,7 +179,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
-              className='flex items-start self-stretch w-full h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-letter--content'
+              className='flex items-start self-stretch w-full min-h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-letter--content'
               placeholder='편지 내용을 입력하세요.'
               minLength={1}
               maxLength={MAX_LENGTH}
@@ -189,7 +189,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               style={{ minHeight: '456px' }}
             />
             <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>
-              {inputCount}자/3500자
+              {contents.length}자/3500자
             </span>
             <div className='flex justify-center items-center mt-40 w-full tablet:mt-56'>
               <button

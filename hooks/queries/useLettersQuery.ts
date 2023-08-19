@@ -2,6 +2,7 @@ import { LetterType, LettersResponse, getLetters } from '@/apis/getLetters';
 import { useQuery } from 'react-query';
 import { withVerify } from '@/apis/withVerify';
 
+// 우체통
 export const LETTERS_QUERY_KEY = 'lettersQuery';
 export default function useLettersQuery(type: LetterType) {
   const {
