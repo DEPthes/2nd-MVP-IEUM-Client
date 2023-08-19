@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../layouts/layout';
-import CompleteImg from '../../../public/imgs/complete.svg';
+import Layout from '../layouts/layout';
+import CompleteImg from '../../public/imgs/complete.svg';
 
 const ResponseComplete: React.FC = () => {
   const router = useRouter();
