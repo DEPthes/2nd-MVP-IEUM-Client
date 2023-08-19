@@ -51,7 +51,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
     setEnvelopType(num);
   };
 
-  const { handlerError: handlerSendError } = useApiError({
+  const { handleError: handlerSendError } = useApiError({
     500: () =>
       showAlert({
         title: (
@@ -67,7 +67,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       }),
   });
 
-  const { handlerError: handlerSendGptError } = useApiError({
+  const { handleError: handlerSendGptError } = useApiError({
     500: () =>
       showAlert({
         title: (

@@ -44,7 +44,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
-  const { handlerError: handlerCheckError } = useApiError({
+  const { handleError: handlerCheckError } = useApiError({
     400: () => {
       showAlert({
         title: (
@@ -69,7 +69,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
       }),
   });
 
-  const { handlerError: handlerTempError } = useApiError({
+  const { handleError: handlerTempError } = useApiError({
     500: () =>
       showAlert({
         title: '임시저장을 실패했습니다.',

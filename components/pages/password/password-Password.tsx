@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import { AxiosError } from 'axios';
 import useApiError from '@/hooks/custom/useApiError';
 import { useRouter } from 'next/router';
+import { passwordRegex } from '@/libs/passwordRegex';
 
 let passwordIsValid: string;
 let checkPasswordIsValid: string;
@@ -60,12 +61,10 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
     }));
   };
 
-  //영문, 숫자, 특수문자(!/@/^)를 포함한 8자 ~ 12자
-  const regExp = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@^])[a-zA-Z0-9!@^]{8,12}$/;
   //비밀번호 유효성 검사
   if (passwordValue.passwordValue === '') {
     passwordIsValid = 'normal';
-  } else if (!regExp.test(passwordValue.passwordValue)) {
+  } else if (!passwordRegex.test(passwordValue.passwordValue)) {
     passwordIsValid = 'negative';
   } else {
     passwordIsValid = 'positive';
