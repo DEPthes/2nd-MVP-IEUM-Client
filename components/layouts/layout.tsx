@@ -9,15 +9,10 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
-const Layout: React.FC<LayoutProps & HeadMetaProps> = ({
-  metaTitle,
-  metaDescription,
-  onlyAccess = 'all',
-  children,
-}) => {
+const Layout: React.FC<LayoutProps & HeadMetaProps> = ({ metaDescription, onlyAccess = 'all', children }) => {
   return (
     <>
-      <HeadMeta {...{ metaTitle, metaDescription }} />
+      <HeadMeta {...{ metaDescription }} />
       <Header />
       <div className='pt-78'>
         <div className='h-full'>
