@@ -93,8 +93,8 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
               </div>
             ),
             actions: [
-              { title: '예', style: 'primary', handler: () => router.push('/login') },
-              { title: '아니오', style: 'tertiary', handler: () => router.push('/') },
+              { title: '네', style: 'primary', handler: () => router.push('/login') },
+              { title: '아니요', style: 'tertiary', handler: () => router.push('/') },
             ],
           }),
         onError: handleDefaultError,
