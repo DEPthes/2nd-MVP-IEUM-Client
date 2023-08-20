@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SendWriting from '../../components/pages/send/send-Writing';
 import SendSelect from '../../components/pages/send/send-Select';
-import SendComplete from '../../components/pages/send/send-Complete';
+import LetterComplete from '../../components/pages/letter-Complete';
 
 export type ComponentType = 'Writing' | 'Select' | 'Complete';
 
@@ -39,7 +39,7 @@ const LetterNew = () => {
       {component === 'Select' && (
         <SendSelect componentChangeHandler={componentChangeHandler} title={title} contents={contents} load={load} />
       )}
-      {component === 'Complete' && <SendComplete />}
+      {component === 'Complete' && <LetterComplete />}
     </div>
   );
 };

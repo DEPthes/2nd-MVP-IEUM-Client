@@ -5,6 +5,7 @@ export default function useIeumMediaQuery() {
   const isDesktop = useMediaQuery({ minWidth: 1136 });
   const isTablet = useMediaQuery({ minWidth: 600, maxWidth: 1135.9 });
   const isMobile = useMediaQuery({ maxWidth: 599.9 });
+  const isLoading = !isDesktop && !isTablet && !isMobile;
 
-  return { isDesktop, isTablet, isMobile };
+  return { isDesktop, isTablet, isMobile, isLoading };
 }

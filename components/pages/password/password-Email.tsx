@@ -111,7 +111,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
   };
 
   //에러처리 => 인증번호가 일치하지 않을 경우
-  const { handlerError } = useApiError({
+  const { handleError } = useApiError({
     400: () => setAuthNumberIsValid('notIsValid'),
   });
 
@@ -123,7 +123,7 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
         onSuccess: (response) => {
           checkAuthNumberSuccessHandler(response.data.check);
         },
-        onError: (err) => handlerError(err as AxiosError),
+        onError: (err) => handleError(err as AxiosError),
       },
     );
   };

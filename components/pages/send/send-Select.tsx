@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Layout from '../../layouts/layout';
 import { ComponentType } from '../../../pages/letter/new';
 import BigCheckIcon from '../../../public/icons/bigcheck.svg';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { postSend } from '@/apis/postSend';
 import { postSendGpt } from '@/apis/postSendGpt';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
 import { AxiosError } from 'axios';
-import { LETTERS_QUERY_KEY } from '@/hooks/queries/useLettersQuery';
+import Loading from '../../../public/icons/loading2.svg';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -48,7 +48,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
     setEnvelopType(num);
   };
 
-  const { handlerError: handlerSendError } = useApiError({
+  const { handleError: handlerSendError } = useApiError({
     500: () =>
       showAlert({
         title: (
@@ -64,7 +64,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
       }),
   });
 
-  const { handlerError: handlerSendGptError } = useApiError({
+  const { handleError: handlerSendGptError } = useApiError({
     500: () =>
       showAlert({
         title: (
@@ -111,113 +111,120 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
   return (
     <Layout onlyAccess='user'>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
-        <div>
-          <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>
-            편지 봉투를 선택하세요
-          </p>
-          <div className='mx-51 mt-62 tablet:mx-335 font-[KCC-eunyoung] leading-10 desktop:leading-16 desktop:grid desktop:grid-cols-2 desktop:gap-x-76 desktop:gap-y-96'>
-            <div
-              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
-              style={{ backgroundImage: `url('/imgs/envelope1.jpg')` }}
-            >
+        {newSendMutation.isLoading || newSendGptMutation.isLoading ? (
+          <div className='mt-160'>
+            <div className='ml-8 font-heading--lg text-primary'>편지를 보내고 있어요!</div>
+            <Loading />
+          </div>
+        ) : (
+          <div>
+            <p className='text-primary text-center font-heading--md tablet:font-heading--lg desktop:font-heading--xl'>
+              편지 봉투를 선택하세요
+            </p>
+            <div className='mx-51 mt-62 tablet:mx-335 font-[KCC-eunyoung] leading-10 desktop:leading-16 desktop:grid desktop:grid-cols-2 desktop:gap-x-76 desktop:gap-y-96'>
               <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
-                onClick={() => togglePasswordHandler(1)}
+                className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+                style={{ backgroundImage: `url('/imgs/envelope1.jpg')` }}
               >
-                {check.envelope1 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
-                    <BigCheckIcon />
-                  </div>
-                ) : (
-                  ''
-                )}
-                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
-                <p className='ml-22 desktop:ml-34'>편지 제목</p>
-                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
-                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
+                <div
+                  className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
+                  onClick={() => togglePasswordHandler(1)}
+                >
+                  {check.envelope1 ? (
+                    <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
+                      <BigCheckIcon />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                  <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                  <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                  <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
+                </div>
+              </div>
+              <div
+                className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+                style={{ backgroundImage: `url('/imgs/envelope2.jpg')` }}
+              >
+                <div
+                  className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
+                  onClick={() => togglePasswordHandler(2)}
+                >
+                  {check.envelope2 ? (
+                    <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
+                      <BigCheckIcon />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                  <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                  <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                  <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
+                </div>
+              </div>
+              <div
+                className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+                style={{ backgroundImage: `url('/imgs/envelope3.jpg')` }}
+              >
+                <div
+                  className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
+                  onClick={() => togglePasswordHandler(3)}
+                >
+                  {check.envelope3 ? (
+                    <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
+                      <BigCheckIcon />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                  <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                  <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                  <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
+                </div>
+              </div>
+              <div
+                className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
+                style={{ backgroundImage: `url('/imgs/envelope4.jpg')` }}
+              >
+                <div
+                  className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
+                  onClick={() => togglePasswordHandler(4)}
+                >
+                  {check.envelope4 ? (
+                    <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
+                      <BigCheckIcon />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
+                  <p className='ml-22 desktop:ml-34'>편지 제목</p>
+                  <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
+                  <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
+                </div>
               </div>
             </div>
-            <div
-              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
-              style={{ backgroundImage: `url('/imgs/envelope2.jpg')` }}
-            >
-              <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
-                onClick={() => togglePasswordHandler(2)}
+            <div className='flex justify-center items-center mt-62 w-full'>
+              <button
+                className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
+                type='button'
+                onClick={newSendHandler}
               >
-                {check.envelope2 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
-                    <BigCheckIcon />
-                  </div>
-                ) : (
-                  ''
-                )}
-                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
-                <p className='ml-22 desktop:ml-34'>편지 제목</p>
-                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
-                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
-              </div>
-            </div>
-            <div
-              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
-              style={{ backgroundImage: `url('/imgs/envelope3.jpg')` }}
-            >
-              <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
-                onClick={() => togglePasswordHandler(3)}
+                사람에게 보내기
+              </button>
+              <button
+                className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
+                type='button'
+                onClick={newSendGptHandler}
               >
-                {check.envelope3 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
-                    <BigCheckIcon />
-                  </div>
-                ) : (
-                  ''
-                )}
-                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
-                <p className='ml-22 desktop:ml-34'>편지 제목</p>
-                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
-                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
-              </div>
-            </div>
-            <div
-              className='w-229 h-107 mb-16 bg-cover relative desktop:w-362 desktop:h-169 desktop:mb-0'
-              style={{ backgroundImage: `url('/imgs/envelope4.jpg')` }}
-            >
-              <div
-                className='absolute w-229 h-107 rounded-11 cursor-pointer hover:bg-[#675149]/60 desktop:w-362 desktop:h-169'
-                onClick={() => togglePasswordHandler(4)}
-              >
-                {check.envelope4 ? (
-                  <div className='absolute top-24 left-85 flex justify-center items-center w-60 h-60 bg-[#675149] rounded-100 desktop:top-55 desktop:left-150'>
-                    <BigCheckIcon />
-                  </div>
-                ) : (
-                  ''
-                )}
-                <p className='ml-22 mt-16 desktop:ml-34 desktop:mt-25'>Letter from 닉네임</p>
-                <p className='ml-22 desktop:ml-34'>편지 제목</p>
-                <p className='ml-179 mt-39 desktop:ml-282 desktop:mt-62'>2023 08 09</p>
-                <p className='ml-179 desktop:ml-282'>Pm 14 : 02</p>
-              </div>
+                AI에게 보내기
+              </button>
             </div>
           </div>
-          <div className='flex justify-center items-center mt-62 w-full'>
-            <button
-              className='w-130 py-8 mr-24 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
-              type='button'
-              onClick={newSendHandler}
-            >
-              사람에게 보내기
-            </button>
-            <button
-              className='w-130 py-8 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
-              type='button'
-              onClick={newSendGptHandler}
-            >
-              AI에게 보내기
-            </button>
-          </div>
-        </div>
+        )}
       </main>
     </Layout>
   );

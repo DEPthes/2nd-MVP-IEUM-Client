@@ -1,4 +1,3 @@
-import { authToken } from '@/class/authToken';
 import useUserQuery from '@/hooks/queries/useUserQuery';
 import useAlert from '@/recoil/alert/useAlert';
 import { useRouter } from 'next/router';

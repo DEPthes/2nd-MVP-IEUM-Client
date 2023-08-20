@@ -1,8 +1,10 @@
 import { deleteAuthNumber } from '@/apis/deleteAuthNumber';
+import { getEmailDuplicated } from '@/apis/getEmailDuplicated';
 import { postSendAuthNumber } from '@/apis/postSendAuthNumber';
 import useApiError from '@/hooks/custom/useApiError';
 import { cls } from '@/utils/cls';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 
@@ -15,12 +17,13 @@ type Props = {
 const DEFAULT_TIMER_TIME = 1000 * 60 * 3; // 타이머 초기 값 -> 3분
 
 export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
+  const router = useRouter();
   // 이메일 입력값
   const [emailValue, setEmailValue] = useState<string>('');
 
   // 이메일 유효성 검사 여부
-  // normal - 기본값 | notIsValid - 형식 오류 | positive - 통과 | - 중복
-  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive'>('normal');
+  // normal - 기본값 | notIsValid - 형식 오류 | positive - 통과 | duplicated - 중복
+  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
   const [time, setTime] = useState<number>(DEFAULT_TIMER_TIME);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [AuthNumberSended, setAuthNumberSended] = useState<boolean>(false); // 인증번호 발송되었는지
@@ -28,7 +31,14 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
   const [authNumberIsValid, setAuthNumberIsValid] = useState<'normal' | 'timeOver' | 'positive' | 'notIsValid'>(
     'normal',
   );
+
+  const checkEmailDuplicatedMutation = useMutation(getEmailDuplicated);
+  const { handleError: handleDefaultError } = useApiError();
+
+  // 인증번호 받아오기
   const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
+
+  // 입력한 인증번호 맞는지 체크
   const newCheckAuthNumberMutation = useMutation(deleteAuthNumber);
 
   // 이메일 input 활성화 여부 - 타이머가 시작되거나 인증번호 입력에 성공하면 비활성화
@@ -97,8 +107,20 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
     setAuthNumberIsValid('normal');
   };
 
-  //인증코드 전송
-  const sendAuthNumberHandler = () => {
+  // 이메일 인증하기 버튼 클릭했을 때
+  const sendAuthNumberHandler = async () => {
+    // 비밀번호 재설정 페이지는 이메일 중복 검사를 추가로 수행한다.
+    // 이메일이 중복되어야 기존 회원임을 인증함
+
+    if (router.pathname === '/reset-password') {
+      const response = await getEmailDuplicated(emailValue);
+      const isUser = !response.data.information.available;
+      if (!isUser) {
+        setEmailIsValid('duplicated');
+        return;
+      }
+    }
+
     //타이머 시작 로직
     setAuthNumberSended(true);
     resetTimer();
@@ -116,7 +138,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
   };
 
   //에러처리 => 인증번호가 일치하지 않을 경우
-  const { handlerError } = useApiError({
+  const { handleError } = useApiError({
     400: () => setAuthNumberIsValid('notIsValid'),
   });
 
@@ -128,7 +150,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
         onSuccess: (response) => {
           checkAuthNumberSuccessHandler(response.data.check);
         },
-        onError: (err) => handlerError(err as AxiosError),
+        onError: (err) => handleError(err as AxiosError),
       },
     );
   };
@@ -143,7 +165,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
           className={`w-full px-12 py-15 rounded-10 border-2 focus:border-[#707070] outline-none placeholder-text_secondary placeholder:font-paragraph--sm gap-127 font-paragraph--sm ${
             emailIsValid === 'normal'
               ? 'bg-white border-primary/30'
-              : emailIsValid === 'notIsValid'
+              : emailIsValid === 'notIsValid' || emailIsValid === 'duplicated'
               ? 'bg-negative/10 border-negative focus:border-negative'
               : ''
           }`}
@@ -152,7 +174,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
           placeholder='이메일을 입력해주세요'
           onChange={emailChangeHandler}
         />
-        {emailIsValid === 'notIsValid' ? (
+        {emailIsValid === 'notIsValid' || emailIsValid === 'duplicated' ? (
           <p className='font-paragraph--sm text-negative'>이메일을 다시 확인해주세요</p>
         ) : (
           <p className='mt-19'></p>

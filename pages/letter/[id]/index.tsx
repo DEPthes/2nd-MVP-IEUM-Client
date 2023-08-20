@@ -21,7 +21,7 @@ export default function Letters() {
               {letter?.contents}
             </div>
             <div className='float-right font-label--sm mt-8 text-primary'>
-              &apos;{letter?.senderNickname === null ? <u>GPT</u> : <u>{letter?.senderNickname}</u>}&apos;
+              &apos;{letter?.senderNickname === null ? <u>GPT</u> : <u>{letter?.senderNickname}</u>}&apos;의 편지
             </div>
             <div className='flex justify-center items-center mt-72 w-full'>
               <button

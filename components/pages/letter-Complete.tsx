@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../layouts/layout';
-import CompleteImg from '../../../public/imgs/complete.svg';
+import Layout from '../layouts/layout';
+import CompleteImg from '../../public/imgs/complete.svg';
 
 const ResponseComplete: React.FC = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const ResponseComplete: React.FC = () => {
           <p className='mt-24 text-primary text-center font-heading--md'>발송이 완료 되었어요!</p>
           <p className='mt-4 text-primary text-center font-label--md'>받은 편지를 확인하러 우체통으로 이동해볼까요?</p>
           <button
-            className='mt-30 px-107 py-13 justify-center items-center border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
+            className='mt-30 w-342 h-50 px-12 py-8 border-primary rounded-10 text-tertiary bg-primary gap-4 font-label--md hover:bg-hover'
             type='button'
             onClick={() => router.push('/letter/all')}
           >

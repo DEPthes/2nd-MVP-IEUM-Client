@@ -1,4 +1,3 @@
-import { authToken } from '@/class/authToken';
 import useUserQuery from '@/hooks/queries/useUserQuery';
 import useAlert from '@/recoil/alert/useAlert';
 import { useRouter } from 'next/router';
@@ -8,6 +7,8 @@ import React, { useEffect } from 'react';
 // letter/new
 // letter/all
 // letter/[id]/response
+
+// 페이지마다 접근 불가 메세지가 다름
 function getErrorMsg(pathname: string) {
   ///letter/new
   if (pathname === '/letter/new' || pathname === '/letter/[id]/response') {
@@ -36,5 +37,5 @@ export default function OnlyUser({ children }: { children: React.ReactNode }) {
       });
     }
   }, [isError, showAlert, router]);
-  return children;
+  return user ? children : null;
 }

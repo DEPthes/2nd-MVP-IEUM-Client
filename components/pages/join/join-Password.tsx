@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import CheckSquare from '@/components/check-square';
-import { passwordTest, checkPasswordTest } from '@/libs/join/passwordTest';
 
 import DeleteIcon from '../../../public/icons/delete.svg';
 import ReturnIcon from '../../../public/icons/return2.svg';
@@ -18,6 +17,8 @@ import useApiError from '@/hooks/custom/useApiError';
 import { AxiosError } from 'axios';
 
 import animation from '../../../styles/loading.module.css';
+import { passwordRegex } from '@/libs/passwordRegex';
+import { checkPasswordTest } from '@/libs/passwordTest';
 
 type JoinPasswordType = {
   email: string;
@@ -134,7 +135,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   };
 
   //에러 처리
-  const { handlerError } = useApiError({
+  const { handleError } = useApiError({
     // 닉네임 GPT오류
     500: () => {
       setCheckNickname('error');
@@ -168,7 +169,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     } catch (error) {
       // 서버에서 500 오류가 발생한 경우
       setIsFetch(false);
-      handlerError(error as AxiosError);
+      handleError(error as AxiosError);
     }
   }
 
@@ -183,7 +184,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
     );
   };
 
-  const passwordIsValid = passwordTest(passwordValue.passwordValue);
+  const passwordIsValid = passwordRegex.test(passwordValue.passwordValue);
 
   const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue, passwordValue.passwordValue);
 
@@ -209,7 +210,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
         onSuccess: (response) => {
           successHandler(response.data.check);
         },
-        onError: (err) => handlerError(err as AxiosError),
+        onError: (err) => handleError(err as AxiosError),
       },
     );
   };

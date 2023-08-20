@@ -10,7 +10,6 @@ export default function All() {
   const router = useRouter();
   const [letterType, setLetterType] = useState<LetterType>('unread');
   const { letters } = useLettersQuery(letterType);
-  console.log(letters);
 
   const mailBoxs = letters?.map((letter) => {
     const modifiedDate = new Date(letter.modifiedAt);

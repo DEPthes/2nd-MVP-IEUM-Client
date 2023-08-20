@@ -44,7 +44,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
-  const { handlerError: handlerCheckError } = useApiError({
+  const { handleError: handlerCheckError } = useApiError({
     400: () => {
       showAlert({
         title: (
@@ -69,7 +69,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
       }),
   });
 
-  const { handlerError: handlerTempError } = useApiError({
+  const { handleError: handlerTempError } = useApiError({
     500: () =>
       showAlert({
         title: '임시저장을 실패했습니다.',
@@ -84,18 +84,16 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
-    newload(load);
-    componentChangeHandler('Select');
-    // newCheckMutation.mutate(
-    //   { title, contents },
-    //   {
-    //     onSuccess: () => {
-    //       newload(load);
-    //       componentChangeHandler('Select');
-    //     },
-    //     onError: (err) => handlerCheckError(err as AxiosError),
-    //   },
-    // );
+    newCheckMutation.mutate(
+      { title, contents },
+      {
+        onSuccess: () => {
+          newload(load);
+          componentChangeHandler('Select');
+        },
+        onError: (err) => handlerCheckError(err as AxiosError),
+      },
+    );
   };
 
   //임시저장 버튼
@@ -165,6 +163,11 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
             <div className='font-heading--lg text-primary'>AI가 편지 내용을 검사하고 있어요!</div>
             <Loading />
           </div>
+        ) : newTempMutation.isLoading ? (
+          <div className='mt-160'>
+            <div className='font-heading--lg text-primary'>임시저장을 하고 있어요!</div>
+            <Loading />
+          </div>
         ) : (
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
@@ -186,7 +189,6 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               onInput={onTextareaHandler}
               value={contents}
               spellCheck={false}
-              style={{ minHeight: '456px' }}
             />
             <span className='float-right font-heading--sm mt-4 text-primary tablet:font-heading--md'>
               {contents.length}자/3500자

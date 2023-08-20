@@ -7,7 +7,7 @@ import { withVerify } from '@/apis/withVerify';
 export const EMAILDUPLICATED_QUERY_KEY = 'EmailDuplicated';
 
 export default function useEmailDuplicated(email: string) {
-  const { handlerError } = useApiError({ 401: () => console.log('ㅇㅇ') });
+  const { handleError } = useApiError({ 401: () => console.log('ㅇㅇ') });
   const {
     data: EmailDuplicated,
     isLoading,
@@ -17,7 +17,7 @@ export default function useEmailDuplicated(email: string) {
     queryKey: [EMAILDUPLICATED_QUERY_KEY], // 고유한 key
     queryFn: () => getEmailDuplicated(email), // api 함수
     select: (res) => res.data.information, // 데이터 정제
-    onError: handlerError,
+    onError: handleError,
   });
   return { EmailDuplicated, isLoading, isError };
 }

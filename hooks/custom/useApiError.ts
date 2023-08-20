@@ -5,18 +5,34 @@
 // 2. hook에서 http status key로 정의한 handler
 // 3. 어디에서도 정의되지 않은 에러를 처리하는 handler
 
+import useAlert from '@/recoil/alert/useAlert';
 import { AxiosError } from 'axios';
 
-const defaultHandlers: { common: () => void; default: () => void; [key: number]: () => void } = {
-  common: () => {}, // 공통 처리 로직
-  default: () => {}, // 어디에서도 정의되지 않은 에러를 처리
-  401: () => {
-    console.log('인증 에러');
-  },
-};
-
 export default function useApiError(handlers?: { [key: number]: () => void }) {
-  const handlerError = (error: AxiosError) => {
+  const { showAlert } = useAlert();
+  const defaultHandlers: { common: () => void; default: () => void; [key: number]: () => void } = {
+    common: () => {}, // 공통 처리 로직
+
+    // 어디에서도 정의되지 않은 에러를 처리
+    default: () => {
+      showAlert({
+        title: '알 수 없는 문제가 발생했습니다.\n잠시 후에 다시 시도해주세요.',
+        actions: [{ title: '확인', style: 'primary', handler: null }],
+      });
+    },
+    401: () =>
+      showAlert({
+        title: '토큰이 만료되었습니다.\n다시 로그인해주세요.',
+        actions: [{ title: '확인', style: 'primary', handler: null }],
+      }),
+    500: () =>
+      showAlert({
+        title: '서버에 문제가 발생했습니다.\n잠시 후에 다시 시도해주세요.',
+        actions: [{ title: '확인', style: 'primary', handler: null }],
+      }),
+  };
+  const handleError = (err: unknown) => {
+    const error = err as AxiosError; // api 요청의 모든 에러를 Axios 에러로 통일
     const status = error.response?.status;
 
     // status 타입 가드
@@ -45,5 +61,5 @@ export default function useApiError(handlers?: { [key: number]: () => void }) {
     defaultHandlers.common();
   };
 
-  return { handlerError };
+  return { handleError };
 }

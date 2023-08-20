@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import ResponseWriting from '../../../components/pages/response/response-Writing';
 import ResponseSelect from '../../../components/pages/response/response-Select';
-import ResponseComplete from '../../../components/pages/response/response-Complete';
+import LetterComplete from '../../../components/pages/letter-Complete';
 
 type Props = {};
 
@@ -51,7 +51,7 @@ export default function Response({}: Props) {
           selectId={selectId}
         />
       )}
-      {component === 'Complete' && <ResponseComplete />}
+      {component === 'Complete' && <LetterComplete />}
     </div>
   );
 }
