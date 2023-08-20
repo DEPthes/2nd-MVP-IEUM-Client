@@ -15,11 +15,13 @@ import { useMutation } from 'react-query';
 import { postSignUp } from '@/apis/postSignUp';
 import useApiError from '@/hooks/custom/useApiError';
 import { AxiosError } from 'axios';
+import { authToken } from '@/class/authToken';
 
 import animation from '../../../styles/loading.module.css';
 import { passwordRegex } from '@/libs/passwordRegex';
 import { checkPasswordTest } from '@/libs/passwordTest';
 import { nicknameRegex } from '@/libs/nicknameRegex';
+import { postLogin } from '@/apis/postLogin';
 
 type JoinPasswordType = {
   email: string;
@@ -34,6 +36,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
 
   const router = useRouter();
   const newSignUpMutation = useMutation(postSignUp);
+  const newLoginMutation = useMutation(postLogin);
 
   //초기 닉네임 설정
   const setInitNicknames = () => {
@@ -191,10 +194,25 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
     checkSquare.admitSquare &&
     checkSquare.ageSquare;
 
-  const successHandler = (check: boolean) => {
+  const successHandler = (check: boolean, access_token: string) => {
     if (check) {
+      //acess_token 저장
+      authToken.setToken(access_token);
       router.push('/');
+    } else {
     }
+  };
+
+  const loginHandler = (check: boolean, email: string, password: string) => {
+    newLoginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (response) => {
+          successHandler(response.data.check, response.data.information.accessToken);
+        },
+        onError: (err) => handleError(err as AxiosError),
+      },
+    );
   };
 
   //에러처리 => 인증번호가 일치하지 않을 경우
@@ -207,7 +225,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
       { nickname, email, password },
       {
         onSuccess: (response) => {
-          successHandler(response.data.check);
+          loginHandler(response.data.check, email, password);
         },
         onError: (err) => handleError(err as AxiosError),
       },
