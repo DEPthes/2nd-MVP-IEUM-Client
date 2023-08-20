@@ -22,33 +22,28 @@ import { checkPasswordTest } from '@/libs/passwordTest';
 
 type JoinPasswordType = {
   email: string;
+  getNicknames: string[];
 };
 
-//초기 닉네임 설정
-const initNicknames = [
-  '혁명적인설탕',
-  '고요한오리',
-  '긍정적인다람쥐',
-  '꾸준한호랑이',
-  '센스있는팬더',
-  '빛나는별',
-  '신비로운달',
-  '환상적인바람',
-  '푸른바다',
-  '자유로운새',
-];
+//initNicknames[Math.floor(Math.random() * initNicknames.length)]
 
-const getRandomNickname = () => {
-  const randomIndex = Math.floor(Math.random() * initNicknames.length);
-  return initNicknames[randomIndex];
-};
+const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
+  const [nicknames, setNicknames] = useState<string[]>(getNicknames);
+  //받아온 닉네임의 초기값을 설정하는 함수.
 
-const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   const router = useRouter();
   const newSignUpMutation = useMutation(postSignUp);
-  const [nickname, setNickname] = useState<string>(getRandomNickname());
+
+  //초기 닉네임 설정
+  const setInitNicknames = () => {
+    const initNickname: string = nicknames[0];
+    setNicknames((prevNicknames) => prevNicknames.slice(1));
+    return initNickname;
+  };
+
+  const [nickname, setNickname] = useState<string>(setInitNicknames);
+
   //API로부터 받아온 닉네임들 저장하는 배열
-  const [nicknames, setNicknames] = useState<string[]>([]);
 
   const [showPassword, setShowPassword] = useState({
     showPassword: false,
@@ -149,14 +144,17 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email }) => {
   async function changeNicknameHandler() {
     setIsDuplicatedCheckAble(false);
     try {
-      // 저장된 배열이 0일 때만 API 호출
-      if (nicknames.length === 0) {
+      // 저장된 배열이 5일 때만 API 호출
+      if (nicknames.length <= 5) {
         setIsFetch(true);
         const response = await getNickname();
-        setNicknames(response.data.information.nickname);
+        const updatedNicknames: string[] = nicknames.concat(response.data.information.nickname);
+        setNicknames(updatedNicknames);
       }
       setIsFetch(false);
       setNickname(nicknames[0]);
+
+      console.log(nicknames);
 
       //GPT가 빈 배열을 가져오는 경우
       if (nicknames.length === 0) {
