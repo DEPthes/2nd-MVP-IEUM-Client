@@ -8,6 +8,7 @@ export default function useLettersQuery(params: GetLettersReqParams) {
   const {
     data: lettersInfiniteData,
     isLoading,
+    isFetching,
     isError,
     fetchNextPage: getNextLetters,
     isSuccess: getLettersIsSuccess,
@@ -23,5 +24,5 @@ export default function useLettersQuery(params: GetLettersReqParams) {
     },
   });
   const letters = lettersInfiniteData?.pages.map((letter) => letter.data.information.content).flat();
-  return { letters, isLoading, isError, getNextLetters, getLettersIsSuccess, hasNextPage };
+  return { letters, isFetching, isError, getNextLetters, getLettersIsSuccess, hasNextPage };
 }
