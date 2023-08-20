@@ -55,6 +55,7 @@ function Header() {
     });
   }
 
+  // 로그아웃 alert
   function showLogoutAlert() {
     showAlert({
       title: '로그아웃하시겠어요?',
@@ -65,6 +66,7 @@ function Header() {
     });
   }
 
+  // 계정 탈퇴 alert
   function showDeleteUserAlert() {
     showAlert({
       title: (
