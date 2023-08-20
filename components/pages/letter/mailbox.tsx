@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Letter from '@/components/pages/letter/receive';
 type MailboxProps = {
   letterId: number;
-  nickname: string;
+  nickname: string | null;
   title: string;
   day: string;
   envelopType: number;

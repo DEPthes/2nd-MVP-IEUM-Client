@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import JoinPassword from '@/components/pages/join/join-Password';
 import Layout from '@/components/layouts/layout';
 import AuthEmail from '@/components/authEmail';
+import { getNicknameFromGPT } from '@/libs/getNicknameFromGPT';
 
 const Join = () => {
   const [page, setPage] = useState<'Email' | 'Password'>('Email');
   const [email, setEmail] = useState<string>('');
+  const [nicknames, setNicknames] = useState<string[]>([]);
+
+  const moveNextPage = () => {
+    setPage('Password');
+  };
+
+  const getNickname = async () => {
+    const response = getNicknameFromGPT();
+    setNicknames(await response);
+  };
+
+  useEffect(() => {
+    getNickname();
+  }, []);
 
   return (
     <Layout onlyAccess='notUser'>
       {page === 'Email' && (
         <AuthEmail
+          screenType='join'
           title={
             <>
               <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
@@ -20,11 +36,11 @@ const Join = () => {
               </h4>
             </>
           }
-          moveNextPage={() => setPage('Password')}
+          moveNextPage={moveNextPage}
           setEmail={setEmail}
         />
       )}
-      {page === 'Password' && <JoinPassword email={email} />}
+      {page === 'Password' && <JoinPassword email={email} getNicknames={nicknames} />}
     </Layout>
   );
 };
