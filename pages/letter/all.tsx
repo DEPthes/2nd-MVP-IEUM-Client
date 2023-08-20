@@ -18,8 +18,6 @@ export default function All() {
     hasNextPage,
   } = useLettersQuery({ type: letterType, page: 0, size: 20 });
 
-  console.log(isLettersLoading);
-
   const [scrollRef, inView] = useInView();
 
   const mailBoxs = letters?.map((letter) => {
