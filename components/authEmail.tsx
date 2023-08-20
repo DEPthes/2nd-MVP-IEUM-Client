@@ -10,20 +10,22 @@ import { useMutation } from 'react-query';
 
 type Props = {
   title: React.ReactNode;
+  screenType: 'join' | 'reset-password';
   moveNextPage: () => void;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const DEFAULT_TIMER_TIME = 1000 * 60 * 3; // 타이머 초기 값 -> 3분
 
-export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
-  const router = useRouter();
+export default function AuthEmail({ title, screenType, moveNextPage, setEmail }: Props) {
   // 이메일 입력값
   const [emailValue, setEmailValue] = useState<string>('');
 
   // 이메일 유효성 검사 여부
-  // normal - 기본값 | notIsValid - 형식 오류 | positive - 통과 | duplicated - 중복
-  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated'>('normal');
+  // normal - 기본값 | notIsValid - 형식 오류 | positive - 통과 | duplicated - 중복(회원가입에만 해당) | notUser - 존재하지 않는 회원(비밀번호 재설정에만 해당)
+  const [emailIsValid, setEmailIsValid] = useState<'normal' | 'notIsValid' | 'positive' | 'duplicated' | 'notUser'>(
+    'normal',
+  );
   const [time, setTime] = useState<number>(DEFAULT_TIMER_TIME);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [AuthNumberSended, setAuthNumberSended] = useState<boolean>(false); // 인증번호 발송되었는지
@@ -112,13 +114,15 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
     // 비밀번호 재설정 페이지는 이메일 중복 검사를 추가로 수행한다.
     // 이메일이 중복되어야 기존 회원임을 인증함
 
-    if (router.pathname === '/reset-password') {
-      const response = await getEmailDuplicated(emailValue);
-      const isUser = !response.data.information.available;
-      if (!isUser) {
-        setEmailIsValid('duplicated');
-        return;
-      }
+    const response = await getEmailDuplicated(emailValue);
+    const isExistUser = !response.data.information.available; // 이미 존재하는 유저인지
+    if (screenType === 'join' && isExistUser) {
+      setEmailIsValid('duplicated');
+      return;
+    }
+    if (screenType === 'reset-password' && !isExistUser) {
+      setEmailIsValid('notUser');
+      return;
     }
 
     //타이머 시작 로직
@@ -165,7 +169,7 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
           className={`w-full px-12 py-15 rounded-10 border-2 focus:border-[#707070] outline-none placeholder-text_secondary placeholder:font-paragraph--sm gap-127 font-paragraph--sm ${
             emailIsValid === 'normal'
               ? 'bg-white border-primary/30'
-              : emailIsValid === 'notIsValid' || emailIsValid === 'duplicated'
+              : emailIsValid === 'notIsValid' || emailIsValid === 'duplicated' || emailIsValid === 'notUser'
               ? 'bg-negative/10 border-negative focus:border-negative'
               : ''
           }`}
@@ -174,8 +178,10 @@ export default function AuthEmail({ title, moveNextPage, setEmail }: Props) {
           placeholder='이메일을 입력해주세요'
           onChange={emailChangeHandler}
         />
-        {emailIsValid === 'notIsValid' || emailIsValid === 'duplicated' ? (
+        {emailIsValid === 'notIsValid' || emailIsValid === 'notUser' ? (
           <p className='font-paragraph--sm text-negative'>이메일을 다시 확인해주세요</p>
+        ) : emailIsValid === 'duplicated' ? (
+          <p className='font-paragraph--sm text-negative'>이미 가입된 이메일이에요</p>
         ) : (
           <p className='mt-19'></p>
         )}

@@ -1,5 +1,5 @@
 import { LetterType, LettersResponse, getLetters } from '@/apis/getLetters';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 import { withVerify } from '@/apis/withVerify';
 
 // 우체통

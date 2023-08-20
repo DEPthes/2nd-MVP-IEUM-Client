@@ -55,7 +55,9 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
     admitSquare: false,
   });
 
-  const [checkNickname, setCheckNickname] = useState<'' | 'inputNickName' | 'positive' | 'duplicated' | 'error'>('');
+  const [checkNickname, setCheckNickname] = useState<'' | 'inputNickName' | 'positive' | 'duplicated' | 'error'>(
+    'positive',
+  );
 
   const [passwordValue, setPasswordValue] = useState({
     passwordValue: '',
@@ -143,6 +145,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
   //GPT닉네임 바꾸는 함수
   async function changeNicknameHandler() {
     setIsDuplicatedCheckAble(false);
+
     try {
       // 저장된 배열이 5일 때만 API 호출
       if (nicknames.length <= 5) {
@@ -154,15 +157,13 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
       setIsFetch(false);
       setNickname(nicknames[0]);
 
-      console.log(nicknames);
-
       //GPT가 빈 배열을 가져오는 경우
       if (nicknames.length === 0) {
         setCheckNickname('error');
       } else {
         setCheckNickname('');
       }
-
+      setCheckNickname('positive');
       setNicknames((prevNicknames) => prevNicknames.slice(1));
     } catch (error) {
       // 서버에서 500 오류가 발생한 경우
@@ -171,28 +172,21 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
     }
   }
 
-  //signUp 유효성 검사
-  const signUpTest = () => {
-    return (
-      checkNickname === 'positive' &&
-      passwordIsValid &&
-      checkPasswordIsValid &&
-      checkSquare.admitSquare &&
-      checkSquare.ageSquare
-    );
-  };
-
   const passwordIsValid = passwordRegex.test(passwordValue.passwordValue);
 
   const checkPasswordIsValid = checkPasswordTest(passwordValue.checkPasswordValue, passwordValue.passwordValue);
 
-  const signUpIsValid = signUpTest();
+  // 간편가입 완료 버튼 활성화 여부
+  const signUpIsValid =
+    checkNickname === 'positive' &&
+    passwordIsValid &&
+    checkPasswordIsValid &&
+    checkSquare.admitSquare &&
+    checkSquare.ageSquare;
 
   const successHandler = (check: boolean) => {
-    console.log(check);
     if (check) {
       router.push('/');
-      console.log('sign-up');
     }
   };
 
@@ -249,10 +243,14 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
         <button
           className={`relative flex w-full h-50 mt-16 justify-center items-center 
            rounded-10 text-[16px] font-label--md text-left not-italic text-[#FFFCF7]
-           ${isDuplicatedCheckAble && nickname !== '' ? 'bg-[#675149] hover:bg-[#2D2421]' : 'bg-[#707070]'}`}
+           ${
+             isDuplicatedCheckAble && nickname !== '' && checkNickname !== 'positive'
+               ? 'bg-[#675149] hover:bg-[#2D2421]'
+               : 'bg-[#707070]'
+           }`}
           type='button'
           onClick={duplicationCheckHandler}
-          disabled={!isDuplicatedCheckAble || nickname === ''}
+          disabled={!isDuplicatedCheckAble || nickname === '' || checkNickname === 'positive'}
         >
           중복체크
         </button>
@@ -295,6 +293,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
                   : 'bg-[#e11900]/10 border-[#E11900] focus:border-[#E11900]'
               }`}
             placeholder='비밀번호를 입력'
+            autoComplete='off'
           />
           <button type='button' onClick={togglePasswordHandler}>
             {showPassword.showPassword ? (
@@ -324,6 +323,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
                   : 'bg-[#e11900]/10 border-[#E11900] focus:border-[#E11900]'
               }`}
             placeholder='비밀번호를 입력'
+            autoComplete='off'
           />
           <button type='button' onClick={toggleCheckPasswordHandler}>
             {showPassword.showCheckPassword ? (

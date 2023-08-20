@@ -26,6 +26,7 @@ const Join = () => {
     <Layout onlyAccess='notUser'>
       {page === 'Email' && (
         <AuthEmail
+          screenType='join'
           title={
             <>
               <h1 className='text-primary text-center font-heading--lg mb-16'>간편가입</h1>
