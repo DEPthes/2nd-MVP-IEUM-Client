@@ -1,12 +1,23 @@
 import Layout from '@/components/layouts/layout';
 import { useRouter } from 'next/router';
 import useLetterQuery from '@/hooks/queries/useLetterQuery';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
+import { LETTERS_QUERY_KEY } from '@/hooks/queries/useLettersQuery';
 
 export default function Letters() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const letterId = Number(router.query.id);
   const { letter, isLoading } = useLetterQuery(letterId);
+
+  // 편지 읽음 성공 시 우체통 페이지에도 읽음 처리를 위해 캐시 무효화
+  useEffect(() => {
+    if (letter) {
+      queryClient.invalidateQueries(LETTERS_QUERY_KEY);
+    }
+  }, [letter, queryClient]);
+
   return (
     <Layout>
       {isLoading ? (

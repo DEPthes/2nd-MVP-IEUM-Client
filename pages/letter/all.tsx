@@ -1,15 +1,24 @@
-import { LetterType } from '@/apis/getLetters';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import Layout from '@/components/layouts/layout';
-import OnlyUser from '@/components/layouts/onlyUser';
 import Mailbox from '@/components/pages/letter/mailbox';
 import useLettersQuery from '@/hooks/queries/useLettersQuery';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { LetterType } from '@/apis/getLetters';
+import LoadingIcon from '../../public/icons/loading2.svg';
 
 export default function All() {
   const router = useRouter();
   const [letterType, setLetterType] = useState<LetterType>('unread');
-  const { letters } = useLettersQuery(letterType);
+  const {
+    letters,
+    isLoading: isLettersLoading,
+    getNextLetters,
+    getLettersIsSuccess,
+    hasNextPage,
+  } = useLettersQuery({ type: letterType, page: 0, size: 20 });
+
+  const [scrollRef, inView] = useInView();
 
   const mailBoxs = letters?.map((letter) => {
     const modifiedDate = new Date(letter.modifiedAt);
@@ -43,6 +52,13 @@ export default function All() {
     );
   });
 
+  useEffect(() => {
+    console.log(hasNextPage);
+    if (inView && hasNextPage) {
+      getNextLetters();
+    }
+  }, [inView, hasNextPage, getNextLetters]);
+
   return (
     <Layout onlyAccess='user'>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
@@ -68,7 +84,11 @@ export default function All() {
                 읽은 편지
               </button>
             </div>
-            <div className='flex flex-col gap-24 items-center'>{mailBoxs}</div>
+            <div className='flex flex-col gap-24 items-center'>
+              {letters && mailBoxs}
+              {isLettersLoading && <LoadingIcon />}
+              <div ref={scrollRef}></div>
+            </div>
           </div>
         </div>
       </main>
