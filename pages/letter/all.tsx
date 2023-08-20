@@ -12,11 +12,13 @@ export default function All() {
   const [letterType, setLetterType] = useState<LetterType>('unread');
   const {
     letters,
-    isLoading: isLettersLoading,
+    isFetching: isLettersLoading,
     getNextLetters,
     getLettersIsSuccess,
     hasNextPage,
   } = useLettersQuery({ type: letterType, page: 0, size: 20 });
+
+  console.log(isLettersLoading);
 
   const [scrollRef, inView] = useInView();
 
@@ -53,7 +55,6 @@ export default function All() {
   });
 
   useEffect(() => {
-    console.log(hasNextPage);
     if (inView && hasNextPage) {
       getNextLetters();
     }
