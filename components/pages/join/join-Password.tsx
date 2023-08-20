@@ -19,6 +19,7 @@ import { AxiosError } from 'axios';
 import animation from '../../../styles/loading.module.css';
 import { passwordRegex } from '@/libs/passwordRegex';
 import { checkPasswordTest } from '@/libs/passwordTest';
+import { nicknameRegex } from '@/libs/nicknameRegex';
 
 type JoinPasswordType = {
   email: string;
@@ -70,7 +71,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
 
   const setNicknameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
-    setIsDuplicatedCheckAble(true);
+    setIsDuplicatedCheckAble(nicknameRegex.test(event.target.value));
     setCheckNickname('inputNickName');
   };
 
@@ -110,7 +111,8 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
 
   const duplicationCheckHandler = async () => {
     const response = await getNicknameDuplicated(nickname!);
-    if (response.data.information.available) {
+
+    if (response.data.information.available && nicknameRegex.test(nickname)) {
       setCheckNickname('positive');
     } else {
       setCheckNickname('duplicated');
@@ -171,6 +173,11 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
       handleError(error as AxiosError);
     }
   }
+
+  //닉네임 실시간 유효성 검사.
+  // useEffect(() => {
+  //   setCheckNickname(nicknameRegex.test(nickname) ? 'positive' : 'inputNickName');
+  // }, [nickname]);
 
   const passwordIsValid = passwordRegex.test(passwordValue.passwordValue);
 
