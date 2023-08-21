@@ -25,7 +25,7 @@ type LoadType = {
 
 const SendTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
   const [selectedButtonId, setSelectedButtonId] = useState<number>(0);
-  const { temps } = useTempsQuery();
+  const { temps, isLoading: isTempsLoading } = useTempsQuery();
   const { temp } = useTempQuery(selectedButtonId);
   const [load, setLoad] = useState<LoadType>();
 
@@ -59,19 +59,30 @@ const SendTemp: React.FC<SendProps> = ({ setShow, onLoadChange }) => {
         <div className='text-primary font-label--md desktop:font-heading--md'>임시저장된 편지</div>
         <div className={overScroll.scroll}>
           <div className='mt-24 w-305 h-120 bg-[#F0E4D1] overflow-auto desktop:w-327 desktop:h-120 desktop:mt-48'>
-            {temps?.map((data) => (
-              <div key={data.letterId} className='flex items-center flex-row px-12 py-8'>
-                <button className='mr-9' onClick={() => handleButtonClicks(data.letterId)}>
-                  {selectedButtonId === data.letterId ? <RecordIcon /> : <CircleIcon />}
-                </button>
-                <div className='text-primary font-heading--sm'>
-                  {data.title.length > 16 ? data.title.substring(0, 15) + '...' : data.title}
-                </div>
-                <div className='ml-auto text-primary font-label--sm'>
-                  {data.modifiedAt.substring(0, 10).replaceAll('-', '.')}
-                </div>
+            {isTempsLoading && (
+              <div className='w-full h-full flex justify-center items-center text-primary font-label--md'>
+                불러오는 중...
               </div>
-            ))}
+            )}
+            {temps && !temps.length && (
+              <div className='w-full h-full flex justify-center items-center text-primary font-label--md'>
+                임시저장된 편지가 없습니다.
+              </div>
+            )}
+            {temps &&
+              temps.map((data) => (
+                <div key={data.letterId} className='flex items-center flex-row px-12 py-8'>
+                  <button className='mr-9' onClick={() => handleButtonClicks(data.letterId)}>
+                    {selectedButtonId === data.letterId ? <RecordIcon /> : <CircleIcon />}
+                  </button>
+                  <div className='text-primary font-heading--sm'>
+                    {data.title.length > 16 ? data.title.substring(0, 15) + '...' : data.title}
+                  </div>
+                  <div className='ml-auto text-primary font-label--sm'>
+                    {data.modifiedAt.substring(0, 10).replaceAll('-', '.')}
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
         <div className='flex justify-center items-center w-full mt-24 desktop:mt-48'>
