@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /letter
+
+# Host
+Host: https://ieum.vercel.app
+
+# Sitemaps
+Sitemap: https://ieum.vercel.app/sitemap.xml
