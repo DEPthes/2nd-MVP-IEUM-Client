@@ -17,6 +17,8 @@ export default function HeadMeta({ metaDescription }: HeadMetaProps) {
       <meta property='og:type' content='website' />
       <meta property='og:image' content={'/imgs/logo2.png'} />
       <meta property='og:article:author' content='이:음 | 랜덤 익명 편지 서비스' />
+      <meta name='naver-site-verification' content='a3724ba507e92040a2f68997a8967b6e11d94836' />
+      <meta name='google-site-verification' content='XIaRQEwciTKFV8e8Ezrgswd0vukQbHcQO6Vt2I-fwtk' />
     </Head>
   );
 }
