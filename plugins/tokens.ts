@@ -97,6 +97,7 @@ const tokens = plugin(({ addUtilities }) => {
       'line-height': '160%',
       'font-size': '1.2rem',
     },
+
     '.font-letter--title': {
       'font-family': 'KCC-eunyoung',
       'letter-spacing': '0.1',
@@ -111,6 +112,21 @@ const tokens = plugin(({ addUtilities }) => {
       'font-weight': '400',
       'line-height': '160%',
       'font-size': '1.6rem',
+    },
+    '.font-letter--title-desktop': {
+      'font-family': 'KCC-eunyoung',
+      'letter-spacing': '0.1',
+      'font-weight': '400',
+      'line-height': '160%',
+      '-webkit-text-stroke': '0.1',
+      'font-size': '2.2rem',
+    },
+    '.font-letter--content-desktop': {
+      'font-family': 'KCC-eunyoung',
+      'letter-spacing': '0.1',
+      'font-weight': '400',
+      'line-height': '160%',
+      'font-size': '2rem',
     },
   });
 });
