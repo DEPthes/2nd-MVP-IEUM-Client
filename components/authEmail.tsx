@@ -34,8 +34,9 @@ export default function AuthEmail({ title, screenType, moveNextPage, setEmail }:
     'normal',
   );
 
+  const { handleApiError } = useApiError();
+
   const checkEmailDuplicatedMutation = useMutation(getEmailDuplicated);
-  const { handleError: handleDefaultError } = useApiError();
 
   // 인증번호 받아오기
   const newSendAuthNumberMutation = useMutation(postSendAuthNumber);
@@ -94,7 +95,6 @@ export default function AuthEmail({ title, screenType, moveNextPage, setEmail }:
         clearInterval(timer);
         setAuthNumberIsValid('timeOver');
         setTimerStarted(false);
-        console.log('타이머가 종료되었습니다.');
       }
 
       return () => {
@@ -141,11 +141,6 @@ export default function AuthEmail({ title, screenType, moveNextPage, setEmail }:
     }
   };
 
-  //에러처리 => 인증번호가 일치하지 않을 경우
-  const { handleError } = useApiError({
-    400: () => setAuthNumberIsValid('notIsValid'),
-  });
-
   //인증번호 확인
   const checkAuthNumberHandler = async () => {
     newCheckAuthNumberMutation.mutate(
@@ -154,7 +149,11 @@ export default function AuthEmail({ title, screenType, moveNextPage, setEmail }:
         onSuccess: (response) => {
           checkAuthNumberSuccessHandler(response.data.check);
         },
-        onError: (err) => handleError(err as AxiosError),
+
+        //에러처리 => 인증번호가 일치하지 않을 경우
+        onError: handleApiError({
+          400: () => setAuthNumberIsValid('notIsValid'),
+        }),
       },
     );
   };

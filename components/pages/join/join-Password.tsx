@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import CheckSquare from '@/components/check-square';
 
@@ -137,15 +137,7 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
   };
 
   //에러 처리
-  const { handleError } = useApiError({
-    // 닉네임 GPT오류
-    500: () => {
-      setCheckNickname('error');
-      setIsDuplicatedCheckAble(true);
-    },
-    // 회원가입 체크
-    400: () => console.log('sign-up error'),
-  });
+  const { handleApiError } = useApiError();
 
   //GPT닉네임 바꾸는 함수
   async function changeNicknameHandler() {
@@ -173,7 +165,15 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
     } catch (error) {
       // 서버에서 500 오류가 발생한 경우
       setIsFetch(false);
-      handleError(error as AxiosError);
+      handleApiError({
+        // 닉네임 GPT오류
+        500: () => {
+          setCheckNickname('error');
+          setIsDuplicatedCheckAble(true);
+        },
+        // 회원가입 체크
+        400: () => console.log('sign-up error'),
+      });
     }
   }
 
@@ -210,7 +210,15 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
         onSuccess: (response) => {
           successHandler(response.data.check, response.data.information.accessToken);
         },
-        onError: (err) => handleError(err as AxiosError),
+        onError: handleApiError({
+          // 닉네임 GPT오류
+          500: () => {
+            setCheckNickname('error');
+            setIsDuplicatedCheckAble(true);
+          },
+          // 회원가입 체크
+          400: () => console.log('sign-up error'),
+        }),
       },
     );
   };
@@ -227,7 +235,15 @@ const JoinPassword: React.FC<JoinPasswordType> = ({ email, getNicknames }) => {
         onSuccess: (response) => {
           loginHandler(response.data.check, email, password);
         },
-        onError: (err) => handleError(err as AxiosError),
+        onError: handleApiError({
+          // 닉네임 GPT오류
+          500: () => {
+            setCheckNickname('error');
+            setIsDuplicatedCheckAble(true);
+          },
+          // 회원가입 체크
+          400: () => console.log('sign-up error'),
+        }),
       },
     );
   };

@@ -48,37 +48,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
     setEnvelopType(num);
   };
 
-  const { handleError: handlerSendError } = useApiError({
-    500: () =>
-      showAlert({
-        title: (
-          <div className='flex flex-col items-center'>
-            <span>편지 보내기에 실패했습니다.</span>
-            <span>편지를 다시 보낼까요?</span>
-          </div>
-        ),
-        actions: [
-          { title: '네', style: 'primary', handler: newSendHandler },
-          { title: '아니요', style: 'tertiary', handler: null },
-        ],
-      }),
-  });
-
-  const { handleError: handlerSendGptError } = useApiError({
-    500: () =>
-      showAlert({
-        title: (
-          <div className='flex flex-col items-center'>
-            <span>편지 보내기에 실패했습니다.</span>
-            <span>편지를 다시 보낼까요?</span>
-          </div>
-        ),
-        actions: [
-          { title: '네', style: 'primary', handler: newSendGptHandler },
-          { title: '아니요', style: 'tertiary', handler: null },
-        ],
-      }),
-  });
+  const { handleApiError } = useApiError();
 
   //편지 사람에게 보내기
   const newSendMutation = useMutation(postSend);
@@ -89,7 +59,21 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
-        onError: (err) => handlerSendError(err as AxiosError),
+        onError: handleApiError({
+          500: () =>
+            showAlert({
+              title: (
+                <div className='flex flex-col items-center'>
+                  <span>편지 보내기에 실패했습니다.</span>
+                  <span>편지를 다시 보낼까요?</span>
+                </div>
+              ),
+              actions: [
+                { title: '네', style: 'primary', handler: newSendHandler },
+                { title: '아니요', style: 'tertiary', handler: null },
+              ],
+            }),
+        }),
       },
     );
   };
@@ -103,7 +87,21 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
         onSuccess: () => {
           componentChangeHandler('Complete');
         },
-        onError: (err) => handlerSendGptError(err as AxiosError),
+        onError: handleApiError({
+          500: () =>
+            showAlert({
+              title: (
+                <div className='flex flex-col items-center'>
+                  <span>편지 보내기에 실패했습니다.</span>
+                  <span>편지를 다시 보낼까요?</span>
+                </div>
+              ),
+              actions: [
+                { title: '네', style: 'primary', handler: newSendGptHandler },
+                { title: '아니요', style: 'tertiary', handler: null },
+              ],
+            }),
+        }),
       },
     );
   };

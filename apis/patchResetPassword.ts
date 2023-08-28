@@ -25,7 +25,6 @@ export async function patchResetPassword({
     renewPassword,
   });
   if (!response.data.check) {
-    console.log('오류');
     throw new IeumError(400);
   }
   return response;
