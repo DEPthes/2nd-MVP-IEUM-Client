@@ -8,9 +8,9 @@ export default function OnlyNotUser({ children }: { children: React.ReactNode })
   const { showAlert } = useAlert();
   const router = useRouter();
   useEffect(() => {
-    if (user) {
+    if (!isError) {
       router.replace('/');
     }
-  }, [user, showAlert, router]);
+  }, [isError, showAlert, router]);
   return children;
 }
