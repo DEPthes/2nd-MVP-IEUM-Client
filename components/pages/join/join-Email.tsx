@@ -67,7 +67,6 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
         clearInterval(timer);
         setAuthNumberIsValid('timeOver');
         setTimerStarted(false);
-        console.log('타이머가 종료되었습니다.');
       }
 
       return () => {

@@ -77,7 +77,6 @@ const PasswordEmail: React.FC<PasswordEmailProps> = ({ moveNextPage, setEmail })
         clearInterval(timer);
         setAuthNumberIsValid('timeOver');
         setTimerStarted(false);
-        console.log('타이머가 종료되었습니다.');
       }
 
       return () => {
