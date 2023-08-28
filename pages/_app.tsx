@@ -1,13 +1,8 @@
-import ieumAxios from '@/apis/ieumAxios';
-import { authToken } from '@/class/authToken';
+import '@/styles/globals.css';
 import AppQueryClientProvider from '@/components/appQueryClientProvider';
 import AlertView from '@/components/modal/alertView';
-import useApiError from '@/hooks/custom/useApiError';
-import '@/styles/globals.css';
-import axios, { AxiosError } from 'axios';
+import { Analytics } from '@vercel/analytics/react';
 import type { AppProps } from 'next/app';
-import { useEffect, useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { RecoilRoot } from 'recoil';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -16,6 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AppQueryClientProvider>
         <AlertView />
         <Component {...pageProps} />
+        <Analytics />
       </AppQueryClientProvider>
     </RecoilRoot>
   );
