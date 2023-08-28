@@ -7,7 +7,7 @@ import { getNickname } from '@/apis/getNickname';
 export const NICKNAME_QUERY_KEY = 'Nickname';
 
 export default function useNickname() {
-  const { handleError } = useApiError({ 500: () => console.log('ㅇㅇ') });
+  const { handleApiError } = useApiError();
   const {
     data: Nickname,
     isLoading,
@@ -17,7 +17,7 @@ export default function useNickname() {
     queryKey: [NICKNAME_QUERY_KEY], // 고유한 key
     queryFn: () => getNickname(), // api 함수
     select: (res) => res.data.information, // 데이터 정제
-    onError: handleError,
+    onError: handleApiError(),
   });
   return { Nickname, isLoading, isError };
 }

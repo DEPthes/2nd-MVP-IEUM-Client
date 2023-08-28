@@ -112,9 +112,7 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
   };
 
   //에러처리 => 인증번호가 일치하지 않을 경우
-  const { handleError } = useApiError({
-    400: () => setAuthNumberIsValid('notIsValid'),
-  });
+  const { handleApiError } = useApiError();
 
   //인증번호 확인
   const checkAuthNumberHandler = async () => {
@@ -126,7 +124,9 @@ const JoinEmail: React.FC<JoinEmailProps> = ({ joinChangeHandler }) => {
           onSuccess: (response) => {
             checkAuthNumberSuccessHandler(response.data.check);
           },
-          onError: (err) => handleError(err as AxiosError),
+          onError: handleApiError({
+            400: () => setAuthNumberIsValid('notIsValid'),
+          }),
         },
       );
     }

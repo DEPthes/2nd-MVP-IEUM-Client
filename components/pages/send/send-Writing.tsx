@@ -44,41 +44,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const newTempMutation = useMutation(postTemp);
   const newCheckMutation = useMutation(postCheck);
 
-  const { handleError: handlerCheckError } = useApiError({
-    400: () => {
-      showAlert({
-        title: (
-          <div className='flex flex-col items-center'>
-            <span>적절하지 못한 문구가 포함되어 있어요.</span>
-            <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
-          </div>
-        ),
-        actions: [
-          { title: '수정하기', style: 'primary', handler: null },
-          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-        ],
-      });
-    },
-    500: () =>
-      showAlert({
-        title: '다시 작성해주세요',
-        actions: [
-          { title: '수정하기', style: 'primary', handler: null },
-          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-        ],
-      }),
-  });
-
-  const { handleError: handlerTempError } = useApiError({
-    500: () =>
-      showAlert({
-        title: '임시저장을 실패했습니다.',
-        actions: [
-          { title: '수정하기', style: 'primary', handler: null },
-          { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
-        ],
-      }),
-  });
+  const { handleApiError } = useApiError();
 
   //다음 단계 버튼
   const handleSendButtonClick = () => {
@@ -91,7 +57,30 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
           newload(load);
           componentChangeHandler('Select');
         },
-        onError: (err) => handlerCheckError(err as AxiosError),
+        onError: handleApiError({
+          400: () => {
+            showAlert({
+              title: (
+                <div className='flex flex-col items-center'>
+                  <span>적절하지 못한 문구가 포함되어 있어요.</span>
+                  <span>편지 발송을 원한다면 문구 수정이 필요해요.</span>
+                </div>
+              ),
+              actions: [
+                { title: '수정하기', style: 'primary', handler: null },
+                { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+              ],
+            });
+          },
+          500: () =>
+            showAlert({
+              title: '다시 작성해주세요',
+              actions: [
+                { title: '수정하기', style: 'primary', handler: null },
+                { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+              ],
+            }),
+        }),
       },
     );
   };
@@ -110,7 +99,16 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
             ],
           });
         },
-        onError: (err) => handlerTempError(err as AxiosError),
+        onError: handleApiError({
+          500: () =>
+            showAlert({
+              title: '임시저장을 실패했습니다.',
+              actions: [
+                { title: '수정하기', style: 'primary', handler: null },
+                { title: '임시저장하기', style: 'tertiary', handler: newTempHandler },
+              ],
+            }),
+        }),
       },
     );
   };

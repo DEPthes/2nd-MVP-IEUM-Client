@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import EyeOpenIcon from '../../../public/icons/eye-opened.svg';
 import EyeHiddenIcon from '../../../public/icons/eye-hidden.svg';
-import Layout from '../../layouts/layout';
 import useAlert from '../../../recoil/alert/useAlert';
 import { patchResetPassword } from '@/apis/patchResetPassword';
 import { useMutation } from 'react-query';
-import { AxiosError } from 'axios';
 import useApiError from '@/hooks/custom/useApiError';
 import { useRouter } from 'next/router';
 import { passwordRegex } from '@/libs/passwordRegex';
@@ -29,7 +27,7 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
   });
   const { showAlert } = useAlert();
   const newChangePasswordMutation = useMutation(patchResetPassword);
-  const { handleError: handleDefaultError } = useApiError();
+  const { handleApiError } = useApiError();
 
   //새 비밀번호 입력 비밀번호 보이기&숨기기
   const togglePasswordHandler = () => {
@@ -97,7 +95,7 @@ const PasswordPassword: React.FC<PasswordPasswordProps> = ({ email }) => {
               { title: '아니요', style: 'tertiary', handler: () => router.push('/') },
             ],
           }),
-        onError: handleDefaultError,
+        onError: handleApiError(),
       },
     );
   };

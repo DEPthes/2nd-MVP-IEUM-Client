@@ -8,7 +8,7 @@
 import useAlert from '@/recoil/alert/useAlert';
 import { AxiosError } from 'axios';
 
-export default function useApiError(handlers?: { [key: number]: () => void }) {
+export default function useApiError() {
   const { showAlert } = useAlert();
   const defaultHandlers: { common: () => void; default: () => void; [key: number]: () => void } = {
     common: () => {}, // 공통 처리 로직
@@ -31,7 +31,7 @@ export default function useApiError(handlers?: { [key: number]: () => void }) {
         actions: [{ title: '확인', style: 'primary', handler: null }],
       }),
   };
-  const handleError = (err: unknown) => {
+  const handleApiError = (handlers?: { [key: number]: () => void }) => (err: unknown) => {
     const error = err as AxiosError; // api 요청의 모든 에러를 Axios 에러로 통일
     const status = error.response?.status;
 
@@ -60,6 +60,5 @@ export default function useApiError(handlers?: { [key: number]: () => void }) {
     // 공통 처리 로직 수행
     defaultHandlers.common();
   };
-
-  return { handleError };
+  return { handleApiError };
 }
