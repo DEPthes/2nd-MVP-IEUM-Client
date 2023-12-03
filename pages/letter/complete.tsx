@@ -2,12 +2,17 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layouts/layout';
 import CompleteImg from '../../public/imgs/complete.svg';
+import Head from 'next/head';
 
 const CompletePage: React.FC = () => {
   const router = useRouter();
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 편지 발송 완료</title>
+        <meta name='description' content='편지가 발송되었어요' />
+      </Head>
       <main className='px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <div className='mt-115 text-center'>
           <div className='flex justify-center'>

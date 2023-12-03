@@ -6,6 +6,7 @@ import Mailbox from '@/components/pages/letter/mailbox';
 import useLettersQuery from '@/hooks/queries/useLettersQuery';
 import { LetterType } from '@/apis/getLetters';
 import LoadingIcon from '../../public/icons/loading2.svg';
+import Head from 'next/head';
 
 export default function All() {
   const router = useRouter();
@@ -60,6 +61,10 @@ export default function All() {
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 우체통</title>
+        <meta name='description' content='나에게 온 편지를 열어보고, 마음을 담아 답장해보세요' />
+      </Head>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         <div className='flex flex-col justify-center '>
           <div className='flex w-354 flex-col gap-46 items-center tablet:w-836 desktop:w-1152'>

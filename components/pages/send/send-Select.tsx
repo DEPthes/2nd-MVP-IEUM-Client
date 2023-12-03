@@ -9,6 +9,7 @@ import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
 import Loading from '../../../public/icons/loading2.svg';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -109,6 +110,10 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 편지 봉투 선택</title>
+        <meta name='description' content='편지 봉투를 골라보세요' />
+      </Head>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         {newSendMutation.isLoading || newSendGptMutation.isLoading ? (
           <div className='mt-160'>

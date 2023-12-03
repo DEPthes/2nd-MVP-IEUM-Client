@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import useLetterQuery from '@/hooks/queries/useLetterQuery';
 import React from 'react';
 import LoadingIcon from '../../../public/icons/loading2.svg';
+import Head from 'next/head';
 
 export default function Letters() {
   const router = useRouter();
@@ -11,6 +12,10 @@ export default function Letters() {
 
   return (
     <Layout>
+      <Head>
+        <title>이:음 | 답장 보기</title>
+        <meta name='description' content='편지를 확인해보아요' />
+      </Head>
       {isLoading ? (
         <LoadingIcon />
       ) : (

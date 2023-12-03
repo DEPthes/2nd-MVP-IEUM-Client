@@ -4,6 +4,8 @@ import Layout from '@/components/layouts/layout';
 import AuthEmail from '@/components/authEmail';
 import { getNicknameFromGPT } from '@/libs/getNicknameFromGPT';
 
+import Head from 'next/head';
+
 const Join = () => {
   const [page, setPage] = useState<'Email' | 'Password'>('Email');
   const [email, setEmail] = useState<string>('');
@@ -24,6 +26,10 @@ const Join = () => {
 
   return (
     <Layout onlyAccess='notUser'>
+      <Head>
+        <title>이:음 | 간편가입</title>
+        <meta name='description' content='정성이 담긴 편지의 온기를 느껴보세요' />
+      </Head>
       {page === 'Email' && (
         <AuthEmail
           screenType='join'
