@@ -1,7 +1,6 @@
 # *
 User-agent: *
 Allow: /
-Disallow: /letter
 
 # Host
 Host: https://ieum.depth-mju.co.kr
