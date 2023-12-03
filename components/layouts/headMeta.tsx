@@ -9,7 +9,8 @@ export default function HeadMeta({ metaDescription }: HeadMetaProps) {
   return (
     <Head>
       <title>이:음 | 랜덤 익명 편지 서비스</title>
-      <link rel='icon' href='/icons/favicon.ico' />
+      <link rel='icon' href='..//icons/favicon.ico' />
+      <link rel='canonical' href='https://ieum.depth-mju.co.kr' />
       <meta name='description' content={metaDescription ?? '정성이 담긴 편지의 온기를 다시 느껴보세요.'} />
       <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       <meta property='og:title' content='이:음 | 랜덤 익명 편지 서비스' />

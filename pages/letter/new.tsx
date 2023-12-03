@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import SendWriting from '../../components/pages/send/send-Writing';
 import SendSelect from '../../components/pages/send/send-Select';
-import LetterComplete from '../../components/pages/letter-Complete';
 
-export type ComponentType = 'Writing' | 'Select' | 'Complete';
+export type ComponentType = 'Writing' | 'Select';
 
 type LoadType = {
   id: number;
@@ -39,7 +38,6 @@ const LetterNew = () => {
       {component === 'Select' && (
         <SendSelect componentChangeHandler={componentChangeHandler} title={title} contents={contents} load={load} />
       )}
-      {component === 'Complete' && <LetterComplete />}
     </div>
   );
 };

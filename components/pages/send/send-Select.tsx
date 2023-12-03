@@ -7,8 +7,8 @@ import { postSend } from '@/apis/postSend';
 import { postSendGpt } from '@/apis/postSendGpt';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
-import { AxiosError } from 'axios';
 import Loading from '../../../public/icons/loading2.svg';
+import { useRouter } from 'next/router';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -30,6 +30,7 @@ type LoadType = {
 
 const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, contents, load }) => {
   const { showAlert } = useAlert();
+  const router = useRouter();
   const [envelopType, setEnvelopType] = useState(1);
   const [check, setCheck] = useState({
     envelope1: true,
@@ -57,7 +58,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
       { title, contents, envelopType, originalLetterId: null, letterId: load?.id, letterType: load?.letterType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>
@@ -85,7 +86,7 @@ const SendSelect: React.FC<SendProps> = ({ componentChangeHandler, title, conten
       { title, contents, envelopType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>

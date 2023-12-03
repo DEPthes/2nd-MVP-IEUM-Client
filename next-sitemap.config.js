@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 
 module.exports = {
-  siteUrl: 'https://ieum.vercel.app',
+  siteUrl: 'https://ieum.depth-mju.co.kr',
   generateRobotsTxt: true,
   sitemapSize: 7000,
   changefreq: 'daily',

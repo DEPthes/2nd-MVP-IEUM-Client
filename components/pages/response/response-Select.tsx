@@ -7,7 +7,6 @@ import { postSend } from '@/apis/postSend';
 import { postSendGptReply } from '@/apis/postSendGptReply';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import Loading from '../../../public/icons/loading2.svg';
 
@@ -60,7 +59,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>
@@ -88,7 +87,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       { title, contents, envelopType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>
