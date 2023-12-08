@@ -11,7 +11,7 @@ import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
 import Loading from '../../../public/icons/loading2.svg';
 import useApiError from '@/hooks/custom/useApiError';
-import { AxiosError } from 'axios';
+import Head from 'next/head';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -50,6 +50,8 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
   const handleSendButtonClick = () => {
     newtitle(title);
     newcontents(contents);
+    newload(load);
+    componentChangeHandler('Select');
     newCheckMutation.mutate(
       { title, contents },
       {
@@ -155,6 +157,10 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 편지 작성</title>
+        <meta name='description' content='나의 이야기를 담은 편지를 작성해보세요' />
+      </Head>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         {newCheckMutation.isLoading ? (
           <div className='mt-160'>
@@ -170,7 +176,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
             <input
-              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover font-letter--title desktop:font-letter--title-desktop'
+              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover font-label--md desktop:font-label--md'
               type='text'
               placeholder='편지 제목을 입력하세요.'
               minLength={1}
@@ -180,7 +186,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
-              className='flex items-start self-stretch w-full min-h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-letter--content desktop:font-letter--content-desktop'
+              className='flex items-start self-stretch w-full min-h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-label--md desktop:font-label--md'
               placeholder='편지 내용을 입력하세요.'
               minLength={1}
               maxLength={MAX_LENGTH}

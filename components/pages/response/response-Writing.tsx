@@ -11,6 +11,7 @@ import { postCheck } from '@/apis/postCheck';
 import { useMutation } from 'react-query';
 import Loading from '../../../public/icons/loading2.svg';
 import useApiError from '@/hooks/custom/useApiError';
+import Head from 'next/head';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType) => void;
@@ -155,6 +156,9 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 답장 쓰기</title>
+      </Head>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         {newCheckMutation.isLoading ? (
           <div className='mt-160'>

@@ -1,10 +1,9 @@
 # *
 User-agent: *
 Allow: /
-Disallow: /letter
 
 # Host
-Host: https://ieum.vercel.app
+Host: https://ieum.depth-mju.co.kr
 
 # Sitemaps
-Sitemap: https://ieum.vercel.app/sitemap.xml
+Sitemap: https://ieum.depth-mju.co.kr/sitemap.xml
