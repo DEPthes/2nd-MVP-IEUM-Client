@@ -7,9 +7,9 @@ import { postSend } from '@/apis/postSend';
 import { postSendGptReply } from '@/apis/postSendGptReply';
 import useApiError from '@/hooks/custom/useApiError';
 import useAlert from '../../../recoil/alert/useAlert';
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import Loading from '../../../public/icons/loading2.svg';
+import Head from 'next/head';
 
 type SendProps = {
   componentChangeHandler: (ComponentType: ComponentType, load?: LoadType) => void;
@@ -60,7 +60,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       { title, contents, envelopType, originalLetterId: selectId, letterId: load?.id, letterType: load?.letterType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>
@@ -88,7 +88,7 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
       { title, contents, envelopType },
       {
         onSuccess: () => {
-          componentChangeHandler('Complete');
+          router.push('/letter/complete');
         },
         onError: handleApiError({
           500: () =>
@@ -111,6 +111,9 @@ const ResponseSelect: React.FC<SendProps> = ({ componentChangeHandler, title, co
 
   return (
     <Layout onlyAccess='user'>
+      <Head>
+        <title>이:음 | 답장 봉투 선택</title>
+      </Head>
       <main className='flex justify-center px-24 py-40 tablet:px-32 tablet:py-56 desktop:px-64 desktop:py-64'>
         {newSendMutation.isLoading || newSendGptReplyMutation.isLoading ? (
           <div className='mt-160'>

@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import useApiError from '@/hooks/custom/useApiError';
 import Layout from '@/components/layouts/layout';
 
+import Head from 'next/head';
+
 export default function Login() {
   const router = useRouter();
   const newLoginMutation = useMutation(postLogin);
@@ -80,6 +82,10 @@ export default function Login() {
   };
   return (
     <Layout>
+      <Head>
+        <title>이:음 | 로그인</title>
+        <meta name='description' content='이:음의 이용 방법에 대해 알아보아요' />
+      </Head>
       <main className='flex justify-center'>
         <form className='w-342 mt-133 mx-24' onSubmit={submitHandler}>
           <h1 className='font-heading--lg text-primary mb-24 text-center'>로그인</h1>
