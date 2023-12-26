@@ -93,6 +93,12 @@ export default function All() {
               {isLettersLoading && <LoadingIcon />}
               <div ref={scrollRef}></div>
             </div>
+            {letters && !letters.length && (
+              <div className='mt-150 flex flex-col justify-center items-center font-label--md text-primary'>
+                <span>우체통이 비어있어요.</span>
+                <span>먼저 마음을 전해보세요!</span>
+              </div>
+            )}
           </div>
         </div>
       </main>
