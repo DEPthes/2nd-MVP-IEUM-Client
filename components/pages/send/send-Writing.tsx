@@ -186,7 +186,7 @@ const SendWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle, ne
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
-              className='flex items-start self-stretch w-full min-h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-label--md desktop:font-label--md'
+              className='flex items-start self-stretch w-full min-h-440 mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-label--md desktop:font-label--md'
               placeholder='편지 내용을 입력하세요.'
               minLength={1}
               maxLength={MAX_LENGTH}
