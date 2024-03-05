@@ -174,7 +174,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
           <form className='w-334 tablet:w-900 desktop:w-[1280px]'>
             <p className='text-primary text-center font-heading--lg desktop:font-heading--xl'>편지 작성</p>
             <input
-              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover font-letter--title desktop:font-letter--title-desktop'
+              className='flex items-center self-stretch w-full mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover font-label--md desktop:font-label--md'
               type='text'
               placeholder='편지 제목을 입력하세요.'
               minLength={1}
@@ -184,7 +184,7 @@ const ResponseWriting: React.FC<SendProps> = ({ componentChangeHandler, newtitle
               onChange={onInputHandler}
             />
             <AutoResizableTextarea
-              className='flex items-start self-stretch w-full min-h-440 mt-24 py-8 px-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-letter--content desktop:font-letter--content-desktop'
+              className='flex items-start self-stretch w-full min-h-440 mt-24 p-12 border-primary/30 rounded-8 border-2 outline-none bg-tertiary placeholder-text_secondary text-hover resize-none font-label--md desktop:font-label--md'
               placeholder='편지 내용을 입력하세요.'
               minLength={1}
               maxLength={MAX_LENGTH}
